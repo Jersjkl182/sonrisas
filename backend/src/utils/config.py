@@ -17,7 +17,7 @@ class Config:
     DATABASE_URL = os.environ.get('DATABASE_URL')
     if DATABASE_URL and DATABASE_URL.startswith('mysql://'):
         # Parsear DATABASE_URL para Railway
-        url = urlparse.urlparse(DATABASE_URL)
+        url = urllib.parse.urlparse(DATABASE_URL)
         MYSQL_HOST = url.hostname
         MYSQL_USER = url.username
         MYSQL_PASSWORD = url.password
