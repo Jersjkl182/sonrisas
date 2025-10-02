@@ -1,25 +1,54 @@
-"""Módulo de conexión a MySQL.
+"""Módulo de conexión a MySQL utilizando Py MySQL puro para compatibilidad con Railway."""
 
-Intentamos utilizar ``flask_mysqldb`` con el conector nativo ``mysqlclient``.  Si
-no está disponible (por ejemplo en Windows con versiones recientes de Python),
-realizamos un *fallback* automático a ``PyMySQL`` instalándolo como sustituto de
-``MySQLdb``.
-"""
+import pymysql
+from flask import g, current_app
 
-# Intentamos registrar PyMySQL como reemplazo del driver nativo, esto permite que
-# ``flask_mysqldb`` funcione incluso cuando ``mysqlclient`` no está compilado
-# para la versión de Python del usuario.
-try:
-    import MySQLdb  # noqa: F401
-except ModuleNotFoundError:
-    # ``mysqlclient`` / ``MySQLdb`` no está instalado, hacemos fallback.
-    import pymysql
-    pymysql.install_as_MySQLdb()
-    import MySQLdb  # Ahora MySQLdb está disponible
+# Configurar Py MySQL para usar el charset correcto
+pymysql.install_as_MySQLdb()
 
-from flask_mysqldb import MySQL
+class MySQLConnection:
+    def __init__(self, app=None):
+        self.app = app
+        if app is not None:
+            self.init_app(app)
+    
+    def init_app(self, app):
+        """Inicializa la conexión MySQL con la aplicación Flask."""
+        app.teardown_appcontext(self.close_db)
+    
+    def get_connection(self):
+        """Obtiene una conexión a la base de datos."""
+        if 'db_connection' not in g:
+            try:
+                g.db_connection = pymysql.connect(
+                    host=current_app.config['MYSQL_HOST'],
+                    user=current_app.config['MYSQL_USER'],
+                    password=current_app.config['MYSQL_PASSWORD'],
+                    database=current_app.config['MYSQL_DB'],
+                    port=current_app.config['MYSQL_PORT'],
+                    charset='utf8mb4',
+                    cursorclass=pymysql.cursors.DictCursor,
+                    autocommit=True
+                )
+            except Exception as e:
+                current_app.logger.error(f"Error conectando a MySQL: {e}")
+                raise
+        
+        return g.db_connection
+    
+    def close_db(self, error):
+        """Cierra la conexión a la base de datos."""
+        db = g.pop('db_connection', None)
+        if db is not None:
+            db.close()
+    
+    @property
+    def connection(self):
+        """Propiedad para mantener compatibilidad con Flask-MySQLdb."""
+        return self.get_connection()
 
-mysql = MySQL()
+# Instancia global para mantener compatibilidad
+mysql = MySQLConnection()
 
 # Helper function para obtener cursor con manejo de errores
 def get_cursor(cursor_type='dict'):
@@ -33,10 +62,15 @@ def get_cursor(cursor_type='dict'):
         cursor: Cursor de base de datos
     """
     try:
+        connection = mysql.get_connection()
         if cursor_type == 'dict':
-            return mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            return connection.cursor(pymysql.cursors.DictCursor)
         else:
-            return mysql.connection.cursor()
+            return connection.cursor()
     except Exception as e:
-        print(f"Error al crear cursor: {e}")
+        current_app.logger.error(f"Error al crear cursor: {e}")
         return None
+
+def get_connection():
+    """Función helper para obtener conexión directa."""
+    return mysql.get_connection()
