@@ -1,0 +1,735 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Auditoría Completa - Administrador{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== ESTILOS PARA AUDITORÍA COMPLETA - INLINE ===== */
+body .container-fluid,
+html .container-fluid {
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    padding: 30px !important;
+}
+
+body .audit-header,
+html .audit-header {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: white !important;
+    padding: 30px !important;
+    border-radius: 20px !important;
+    margin-bottom: 30px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Asegurar que TODOS los textos en el header sean blancos */
+body .audit-header *,
+html .audit-header * {
+    color: white !important;
+}
+
+body .audit-header .h3,
+body .audit-header h1,
+body .audit-header h2,
+body .audit-header h3,
+html .audit-header .h3,
+html .audit-header h1,
+html .audit-header h2,
+html .audit-header h3 {
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+body .audit-header .text-muted,
+html .audit-header .text-muted {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+body .d-flex,
+html .d-flex {
+    display: flex !important;
+}
+
+body .justify-content-between,
+html .justify-content-between {
+    justify-content: space-between !important;
+}
+
+body .align-items-center,
+html .align-items-center {
+    align-items: center !important;
+}
+
+body .mb-4,
+html .mb-4 {
+    margin-bottom: 2rem !important;
+}
+
+body .h3,
+html .h3 {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    margin: 0 0 8px 0 !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+    color: white !important;
+}
+
+body .text-muted,
+html .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+}
+
+body .btn,
+html .btn {
+    padding: 12px 20px !important;
+    border-radius: 25px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: all 0.3s ease !important;
+    border: 2px solid transparent !important;
+    cursor: pointer !important;
+}
+
+body .btn-outline-primary,
+html .btn-outline-primary {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+body .btn-outline-primary:hover,
+html .btn-outline-primary:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-2px) !important;
+    text-decoration: none !important;
+    color: white !important;
+}
+
+body .btn-outline-secondary,
+html .btn-outline-secondary {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+body .btn-outline-secondary:hover,
+html .btn-outline-secondary:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-2px) !important;
+    text-decoration: none !important;
+    color: white !important;
+}
+
+/* Cards de estadísticas con glassmorphism */
+body .card,
+html .card {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-radius: 25px !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 30px !important;
+    transition: all 0.3s ease !important;
+}
+
+body .card:hover,
+html .card:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-5px) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Asegurar contraste en las cards */
+body .card *,
+html .card * {
+    color: #2c3e50 !important;
+}
+
+body .card .text-muted,
+html .card .text-muted {
+    color: #495057 !important;
+    opacity: 0.8 !important;
+}
+
+body .card-header,
+html .card-header {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+    padding: 25px !important;
+    border-radius: 25px 25px 0 0 !important;
+    margin-bottom: 0 !important;
+}
+
+body .card-body,
+html .card-body {
+    padding: 25px !important;
+}
+
+body .card-title,
+html .card-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #2c3e50 !important;
+    margin: 0 !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+}
+
+/* Tablas */
+body .table,
+html .table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
+}
+
+body .table th,
+html .table th {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
+    padding: 15px !important;
+    text-align: left !important;
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+body .table td,
+html .table td {
+    padding: 15px !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    color: #495057 !important;
+}
+
+body .table tr:hover,
+html .table tr:hover {
+    background: rgba(102, 126, 234, 0.05) !important;
+}
+
+/* Grid responsive */
+body .row,
+html .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    margin: 0 -20px !important;
+    gap: 20px 0 !important;
+}
+
+body .col-12,
+html .col-12 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    padding: 0 20px !important;
+    margin-bottom: 20px !important;
+}
+
+body .col-md-6,
+html .col-md-6 {
+    flex: 0 0 calc(50% - 20px) !important;
+    max-width: calc(50% - 20px) !important;
+    padding: 0 20px !important;
+    margin-bottom: 20px !important;
+}
+
+body .col-md-4,
+html .col-md-4 {
+    flex: 0 0 calc(33.333333% - 20px) !important;
+    max-width: calc(33.333333% - 20px) !important;
+    padding: 0 20px !important;
+    margin-bottom: 20px !important;
+}
+
+body .col-md-3,
+html .col-md-3 {
+    flex: 0 0 calc(25% - 20px) !important;
+    max-width: calc(25% - 20px) !important;
+    padding: 0 20px !important;
+    margin-bottom: 20px !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body .d-flex,
+    html .d-flex {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    
+    body .col-md-6,
+    body .col-md-4,
+    body .col-md-3,
+    html .col-md-6,
+    html .col-md-4,
+    html .col-md-3 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 20px !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4 audit-header">
+                <div>
+                    <h2 class="h3 mb-1">🔍 Auditoría Completa del Sistema</h2>
+                    <p class="text-muted mb-0">Seguimiento y control de actividades del sistema</p>
+                </div>
+                <div>
+                    <button class="btn btn-outline-primary" onclick="refreshAuditData()">
+                        <i class="fas fa-sync-alt"></i> Actualizar
+                    </button>
+                    <a href="{{ url_for('admin_bp.admin') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <!-- Security Metrics -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Sesiones Activas</h6>
+                                    <h3 class="mb-0">{{ session_stats.active_sessions or 0 }}</h3>
+                                    <small>Usuarios conectados</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-users fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Sesiones Hoy</h6>
+                                    <h3 class="mb-0">{{ session_stats.today_sessions or 0 }}</h3>
+                                    <small>Inicios de sesión</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-sign-in-alt fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Usuarios Únicos Hoy</h6>
+                                    <h3 class="mb-0">{{ session_stats.unique_users_today or 0 }}</h3>
+                                    <small>Usuarios diferentes</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-user-check fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Archivos Multimedia</h6>
+                                    <h3 class="mb-0">{{ total_multimedia or 0 }}</h3>
+                                    <small>Total almacenados</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-file-image fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-history"></i> Actividad Reciente
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_activity %}
+                                <div class="timeline">
+                                    {% for activity in recent_activity %}
+                                    <div class="timeline-item">
+                                        <div class="timeline-marker 
+                                            {% if activity.accion == 'crear' %}bg-success
+                                            {% elif activity.accion == 'editar' %}bg-warning
+                                            {% elif activity.accion == 'eliminar' %}bg-danger
+                                            {% else %}bg-info{% endif %}">
+                                            <i class="fas 
+                                                {% if activity.accion == 'crear' %}fa-plus
+                                                {% elif activity.accion == 'editar' %}fa-edit
+                                                {% elif activity.accion == 'eliminar' %}fa-trash
+                                                {% else %}fa-info{% endif %}"></i>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <h6 class="timeline-title">
+                                                {{ activity.accion|title }} - {{ activity.descripcion }}
+                                            </h6>
+                                            <p class="timeline-text text-muted">
+                                                <strong>Usuario:</strong> {{ activity.usuario_nombre or 'Sistema' }}<br>
+                                                <strong>Objetivo:</strong> {{ activity.objetivo_nombre or 'N/A' }}<br>
+                                                <small><i class="fas fa-clock"></i> {{ activity.fecha.strftime('%d/%m/%Y %H:%M:%S') }}</small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">No hay actividad reciente</h6>
+                                    <p class="text-muted small">Las actividades del sistema aparecerán aquí.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-chart-pie"></i> Tipos de Archivos
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% if multimedia_stats.type_stats %}
+                                <canvas id="fileTypesChart" width="300" height="300"></canvas>
+                                <div class="mt-3">
+                                    {% for stat in multimedia_stats.type_stats %}
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="{% if stat.file_type == 'image' %}text-primary{% else %}text-success{% endif %}">
+                                            <i class="fas {% if stat.file_type == 'image' %}fa-image{% else %}fa-video{% endif %}"></i>
+                                            {% if stat.file_type == 'image' %}Imágenes{% else %}Videos{% endif %}
+                                        </span>
+                                        <span class="badge {% if stat.file_type == 'image' %}badge-primary{% else %}badge-success{% endif %}">
+                                            {{ stat.count }}
+                                        </span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">Sin archivos</h6>
+                                    <p class="text-muted small">Los gráficos aparecerán cuando se suban archivos.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Health -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-heartbeat"></i> Estado del Sistema
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <div class="mb-2">
+                                            <i class="fas fa-database fa-2x text-success"></i>
+                                        </div>
+                                        <h6>Base de Datos</h6>
+                                        <span class="badge badge-success">Operativa</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <div class="mb-2">
+                                            <i class="fas fa-server fa-2x text-success"></i>
+                                        </div>
+                                        <h6>Servidor Web</h6>
+                                        <span class="badge badge-success">Activo</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <div class="mb-2">
+                                            <i class="fas fa-shield-alt fa-2x text-success"></i>
+                                        </div>
+                                        <h6>Seguridad</h6>
+                                        <span class="badge badge-success">Protegido</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <div class="mb-2">
+                                            <i class="fas fa-cloud fa-2x text-info"></i>
+                                        </div>
+                                        <h6>Almacenamiento</h6>
+                                        <span class="badge badge-info">
+                                            {{ "%.1f"|format(multimedia_stats.total_size / (1024*1024)) }} MB
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-tools"></i> Herramientas de Administración
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <a href="{{ url_for('admin_bp.ver_sesiones') }}" class="btn btn-outline-info btn-block">
+                                        <i class="fas fa-list"></i><br>
+                                        Ver Sesiones
+                                    </a>
+                                </div>
+                                <div class="col-md-2">
+                                    <a href="{{ url_for('admin_bp.ver_usuarios_admin') }}" class="btn btn-outline-primary btn-block">
+                                        <i class="fas fa-users-cog"></i><br>
+                                        Gestionar Usuarios
+                                    </a>
+                                </div>
+                                <div class="col-md-2">
+                                    <a href="{{ url_for('admin_bp.listar_estudiantes') }}" class="btn btn-outline-success btn-block">
+                                        <i class="fas fa-graduation-cap"></i><br>
+                                        Estudiantes
+                                    </a>
+                                </div>
+                                <div class="col-md-2">
+                                    <a href="{{ url_for('admin_bp.gestionar_enlaces') }}" class="btn btn-outline-warning btn-block">
+                                        <i class="fas fa-link"></i><br>
+                                        Enlaces
+                                    </a>
+                                </div>
+                                <div class="col-md-2">
+                                    <a href="{{ url_for('admin_bp.reportes_sistema') }}" class="btn btn-outline-secondary btn-block">
+                                        <i class="fas fa-chart-line"></i><br>
+                                        Reportes
+                                    </a>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-outline-danger btn-block" onclick="exportAuditData()">
+                                        <i class="fas fa-download"></i><br>
+                                        Exportar Datos
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.opacity-75 {
+    opacity: 0.75;
+}
+
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -22px;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.timeline-content {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #dee2e6;
+}
+
+.timeline-title {
+    margin-bottom: 5px;
+    color: #495057;
+}
+
+.timeline-text {
+    margin-bottom: 0;
+    font-size: 0.9em;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.btn-block {
+    padding: 1rem;
+    height: auto;
+    white-space: normal;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="application/json" id="audit-data">{{ {
+    'session_stats': session_stats,
+    'recent_activity': recent_activity,
+    'multimedia_stats': multimedia_stats
+}|tojson|safe }}</script>
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Load audit data from JSON script tag
+    const auditData = JSON.parse(document.getElementById('audit-data').textContent);
+    
+    // File Types Chart
+    if (auditData.multimedia_stats && auditData.multimedia_stats.type_stats && auditData.multimedia_stats.type_stats.length > 0) {
+        const fileTypesCtx = document.getElementById('fileTypesChart').getContext('2d');
+        
+        const labels = auditData.multimedia_stats.type_stats.map(stat => 
+            stat.file_type === 'image' ? 'Imágenes' : 'Videos'
+        );
+        
+        const data = auditData.multimedia_stats.type_stats.map(stat => stat.count);
+        
+        new Chart(fileTypesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: ['#007bff', '#28a745'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+});
+
+function refreshAuditData() {
+    const refreshBtn = document.querySelector('[onclick="refreshAuditData()"]');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+    refreshBtn.disabled = true;
+
+    // Simulate refresh (in real implementation, make AJAX call)
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+function exportAuditData() {
+    if (confirm('¿Exportar datos de auditoría? Esto puede tomar unos momentos.')) {
+        // Load audit data from JSON script tag
+        const auditData = JSON.parse(document.getElementById('audit-data').textContent);
+        
+        // Create a temporary link to download audit data
+        const data = {
+            timestamp: new Date().toISOString(),
+            session_stats: auditData.session_stats,
+            recent_activity: auditData.recent_activity,
+            multimedia_stats: auditData.multimedia_stats
+        };
+        
+        const dataStr = JSON.stringify(data, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = `auditoria_${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+        
+        showAlert('success', 'Datos de auditoría exportados exitosamente');
+    }
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    `;
+    
+    document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.row'));
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

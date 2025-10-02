@@ -1,0 +1,1160 @@
+{% extends 'profesor/base_profesor.html' %}
+{% block title %}{{ 'Editar' if modo == 'editar' else 'Nueva' }} Observación{% endblock %}
+{% block content %}
+<div class="container">
+    <!-- Header de la sección -->
+    <div class="section-header" style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #e3f2fd;">
+        <h2 style="color: #1884d0; margin: 0; font-size: 2.2em; font-weight: 600;">
+            <i class="fas fa-{{ 'edit' if modo == 'editar' else 'plus-circle' }}" style="margin-right: 15px; color: #42a5f5;"></i>
+            {{ 'Editar' if modo == 'editar' else 'Nueva' }} Observación
+        </h2>
+        <p style="color: #666; margin: 8px 0 0 0; font-size: 1.1em;">
+            {{ 'Modifica los detalles de la observación' if modo == 'editar' else 'Registra una nueva observación sobre el comportamiento o progreso del estudiante' }}
+        </p>
+    </div>
+
+    <!-- Formulario mejorado -->
+    <div class="form-container" style="background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 35px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2);">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <!-- Fila 1: Título y Tipo -->
+            <div class="form-row" style="display: flex; gap: 25px; margin-bottom: 25px; flex-wrap: wrap;">
+                <div class="input-group" style="flex: 2; min-width: 300px;">
+                    <label for="titulo" style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50; font-size: 16px;">
+                        <i class="fas fa-bookmark" style="color: #42a5f5; margin-right: 8px;"></i>
+                        Título de la Observación *
+                    </label>
+                    <input type="text" 
+                           id="titulo" 
+                           name="titulo" 
+                           maxlength="100" 
+                           required
+                           value="{{ nota.titulo if nota else '' }}"
+                           placeholder="Ej: Excelente participación en clase"
+                           style="width: 100%; padding: 15px 18px; border: 2px solid #e1e8ed; border-radius: 12px; font-size: 16px; transition: all 0.3s ease; background: #fff;">
+                </div>
+                
+                <div class="input-group" style="flex: 1; min-width: 200px;">
+                    <label for="tipo" style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50; font-size: 16px;">
+                        <i class="fas fa-tags" style="color: #ff9800; margin-right: 8px;"></i>
+                        Tipo de Observación *
+                    </label>
+                    <select id="tipo" name="tipo" required style="width: 100%; padding: 15px 18px; border: 2px solid #e1e8ed; border-radius: 12px; font-size: 16px; background:#fff;">
+                        <option value="Positiva" {{ 'selected' if nota and nota.tipo == 'Positiva' else '' }}>Positiva</option>
+                        <option value="Mejora" {{ 'selected' if nota and nota.tipo == 'Mejora' else '' }}>Área de Mejora</option>
+                        <option value="Neutral" {{ 'selected' if nota and nota.tipo == 'Neutral' else '' }}>Neutral</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Fila 2: Estudiante -->
+            <div class="form-row" style="margin-bottom: 25px;">
+                <div class="input-group">
+                    <label for="id_estudiante" style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50; font-size: 16px;">
+                        <i class="fas fa-user-graduate" style="color: #66bb6a; margin-right: 8px;"></i>
+                        Estudiante *
+                    </label>
+                    {% if modo == 'crear' %}
+                    <select id="id_estudiante" name="id_estudiante" required style="width: 100%; padding: 15px 18px; border: 2px solid #e1e8ed; border-radius: 12px; font-size: 16px; background:#fff;">
+                        <option value="" disabled selected>Seleccione un estudiante</option>
+                        {% for estudiante in estudiantes %}
+                            <option value="{{ estudiante.id }}">
+                                {{ estudiante.nombre }} {{ estudiante.apellido }} - {{ estudiante.grado }}
+                                {% if estudiante.profesor_nombre %}
+                                    (Prof: {{ estudiante.profesor_nombre }} {{ estudiante.profesor_apellido }})
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% else %}
+                    <div style="width: 100%; padding: 15px 18px; border: 2px solid #e1e8ed; border-radius: 12px; font-size: 16px; background: #f8f9fa; color: #6c757d;">
+                        {{ nota.estudiante_nombre }} {{ nota.estudiante_apellido }} - {{ nota.grado }}
+                    </div>
+                    <input type="hidden" name="id_estudiante" value="{{ nota.id_estudiante }}">
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Fila 3: Descripción -->
+            <div class="form-row" style="margin-bottom: 30px;">
+                <div class="input-group">
+                    <label for="descripcion" style="display: block; margin-bottom: 10px; font-weight: 600; color: #2c3e50; font-size: 16px;">
+                        <i class="fas fa-file-alt" style="color: #9c27b0; margin-right: 8px;"></i>
+                        Descripción Detallada *
+                    </label>
+                    <textarea id="descripcion" 
+                              name="descripcion" 
+                              rows="5" 
+                              required
+                              placeholder="Describe detalladamente la observación: comportamiento, logros, áreas de mejora, situaciones específicas, etc."
+                              style="width: 100%; padding: 15px 18px; border: 2px solid #e1e8ed; border-radius: 12px; font-size: 16px; transition: all 0.3s ease; background: #fff; resize: vertical; min-height: 120px;">{{ nota.descripcion if nota else '' }}</textarea>
+                    <small style="color: #666; font-size: 14px; margin-top: 5px; display: block;">
+                        <i class="fas fa-lightbulb" style="margin-right: 5px;"></i>
+                    </small>
+                </div>
+            </div>
+
+            <!-- Fila 4: Archivos Multimedia -->
+            <div class="form-row" style="margin-bottom: 30px;">
+                <div class="input-group">
+                    <label style="display: block; margin-bottom: 15px; font-weight: 600; color: #2c3e50; font-size: 16px;">
+                        <i class="fas fa-images" style="color: #ff5722; margin-right: 8px;"></i>
+                        Archivos Multimedia (Opcional)
+                    </label>
+                    
+                    <!-- Upload Section Integrada -->
+                    <div class="multimedia-upload-section">
+                        <!-- Zona de Drag & Drop -->
+                        <div class="drop-zone-form" id="dropZoneForm">
+                            <div class="drop-zone-content">
+                                <i class="fas fa-cloud-upload-alt drop-icon"></i>
+                                <h4>Arrastra fotos o videos aquí</h4>
+                                <p>o</p>
+                                <button type="button" class="btn-select-files-form" onclick="document.getElementById('multimedia_files').click()">
+                                    <i class="fas fa-folder-open"></i> Seleccionar Archivos
+                                </button>
+                                <input type="file" 
+                                       id="multimedia_files" 
+                                       name="multimedia_files" 
+                                       multiple 
+                                       accept="image/*,video/*"
+                                       style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <!-- Preview de archivos seleccionados -->
+                        <div class="files-preview-form" id="filesPreviewForm" style="display: none;">
+                            <h6><i class="fas fa-eye"></i> Archivos Seleccionados:</h6>
+                            <div class="preview-grid-form" id="previewGridForm"></div>
+                        </div>
+                        
+                        <!-- Información de formatos -->
+                        <div class="upload-info-form">
+                            <div class="info-item-form">
+                                <i class="fas fa-images" style="color: #2196f3;"></i>
+                                <span>Imágenes: JPG, PNG, GIF, WEBP</span>
+                            </div>
+                            <div class="info-item-form">
+                                <i class="fas fa-video" style="color: #f44336;"></i>
+                                <span>Videos: MP4, AVI, MOV, WEBM</span>
+                            </div>
+                            <div class="info-item-form">
+                                <i class="fas fa-weight" style="color: #ff9800;"></i>
+                                <span>Máximo: 500MB por archivo</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón para limpiar archivos -->
+                        <div class="upload-actions-form" id="uploadActionsForm" style="display: none;">
+                            <button type="button" class="btn-clear-form" onclick="clearMultimediaFiles()">
+                                <i class="fas fa-times"></i> Limpiar Archivos (<span id="fileCountForm">0</span>)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Archivos multimedia existentes (solo en modo edición) -->
+            {% if modo == 'editar' and archivos_multimedia %}
+            <div class="existing-multimedia-section">
+                <h4><i class="fas fa-photo-video"></i> Archivos Multimedia Existentes</h4>
+                <div class="existing-files-grid">
+                    {% for archivo in archivos_multimedia %}
+                    <div class="existing-file-card">
+                        <div class="file-preview">
+                            {% if archivo.is_image %}
+                                <img src="{{ archivo.url }}" alt="{{ archivo.filename }}" onclick="openImageModal('{{ archivo.url }}', '{{ archivo.filename }}')">
+                            {% elif archivo.is_video %}
+                                <div class="video-preview">
+                                    <i class="fas fa-play-circle"></i>
+                                    <span>Video</span>
+                                </div>
+                            {% else %}
+                                <div class="file-preview-icon">
+                                    <i class="fas fa-file"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="file-info">
+                            <h6 title="{{ archivo.filename }}">{{ archivo.filename }}</h6>
+                            <p class="file-meta">
+                                <span><i class="fas fa-weight"></i> {{ archivo.formatted_size }}</span>
+                                <span><i class="fas fa-calendar"></i> {{ archivo.upload_date.strftime('%d/%m/%Y') }}</span>
+                            </p>
+                            <div class="file-actions">
+                                {% if archivo.is_image %}
+                                    <button type="button" onclick="openImageModal('{{ archivo.url }}', '{{ archivo.filename }}')" class="btn-view-existing">
+                                        <i class="fas fa-eye"></i> Ver
+                                    </button>
+                                {% else %}
+                                    <a href="{{ archivo.url }}" target="_blank" class="btn-view-existing">
+                                        <i class="fas fa-play"></i> Reproducir
+                                    </a>
+                                {% endif %}
+                                <button type="button" onclick="deleteExistingFile({{ archivo.id }})" class="btn-delete-existing">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Botones de acción -->
+            <div class="button-container" style="display: flex; gap: 15px; justify-content: center; margin-top: 35px; flex-wrap: wrap;">
+                <button type="submit" 
+                        style="background: linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%); color: white; border: none; padding: 15px 35px; border-radius: 25px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(66, 165, 245, 0.3); min-width: 180px;">
+                    <i class="fas fa-save" style="margin-right: 10px;"></i>
+                    {{ 'Actualizar' if modo == 'editar' else 'Crear' }} Observación
+                </button>
+                
+                {% if modo == 'editar' and nota %}
+                <a href="{{ url_for('obs_bp.ver_multimedia_observacion', obs_id=nota.id) }}" 
+                   style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; text-decoration: none; padding: 15px 35px; border-radius: 25px; font-size: 16px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3); min-width: 180px; text-align: center; display: inline-block;">
+                    <i class="fas fa-images" style="margin-right: 10px;"></i>
+                    Gestionar Multimedia
+                </a>
+                {% endif %}
+                
+                <a href="{{ url_for('obs_bp.listar_observaciones_profesor') }}" 
+                   style="background: linear-gradient(135deg, #78909c 0%, #546e7a 100%); color: white; text-decoration: none; padding: 15px 35px; border-radius: 25px; font-size: 16px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(120, 144, 156, 0.3); min-width: 180px; text-align: center; display: inline-block;">
+                    <i class="fas fa-arrow-left" style="margin-right: 10px;"></i>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+<style>
+.input-group input:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: #1884d0 !important;
+    box-shadow: 0 0 0 3px rgba(24, 132, 208, 0.1) !important;
+}
+
+.form-actions a:hover,
+.form-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2) !important;
+}
+
+.form-actions button:hover {
+    background: linear-gradient(135deg, #20c997, #17a2b8) !important;
+}
+
+.form-actions a:hover {
+    background: linear-gradient(135deg, #5a6268, #495057) !important;
+}
+
+/* ===== ESTILOS PARA MULTIMEDIA EN FORMULARIO ===== */
+.multimedia-upload-section {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    padding: 20px;
+    border: 2px dashed #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.multimedia-upload-section:hover {
+    border-color: #42a5f5;
+    background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+}
+
+.drop-zone-form {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.drop-zone-form.dragover {
+    background: rgba(66, 165, 245, 0.1);
+    border-color: #42a5f5;
+    transform: scale(1.02);
+}
+
+.drop-zone-form .drop-icon {
+    font-size: 2.5rem;
+    color: #42a5f5;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+.drop-zone-form h4 {
+    color: #2c3e50;
+    margin: 1rem 0 0.5rem 0;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.drop-zone-form p {
+    color: #6c757d;
+    margin: 0.5rem 0 1.5rem 0;
+}
+
+.btn-select-files-form {
+    background: linear-gradient(135deg, #42a5f5, #1e88e5);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(66, 165, 245, 0.3);
+}
+
+.btn-select-files-form:hover {
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(66, 165, 245, 0.4);
+}
+
+.files-preview-form {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.files-preview-form h6 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.preview-grid-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+}
+
+.preview-item-form {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.preview-item-form:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.preview-item-form img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.preview-item-form .file-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    color: #42a5f5;
+}
+
+.preview-item-form .file-name {
+    font-size: 0.8rem;
+    color: #2c3e50;
+    word-break: break-word;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.preview-item-form .file-size {
+    font-size: 0.7rem;
+    color: #6c757d;
+}
+
+.preview-item-form .remove-file-form {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.preview-item-form .remove-file-form:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+.upload-info-form {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.info-item-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: #6c757d;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.upload-actions-form {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.btn-clear-form {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-clear-form:hover {
+    background: linear-gradient(135deg, #495057, #343a40);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column !important;
+    }
+    
+    .form-actions {
+        flex-direction: column !important;
+    }
+    
+    .form-actions a,
+    .form-actions button {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    
+    .upload-info-form {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .preview-grid-form {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
+
+/* ===== ESTILOS PARA ARCHIVOS EXISTENTES ===== */
+.existing-multimedia-section {
+    margin-top: 2rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.existing-multimedia-section h4 {
+    color: #2c3e50;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #42a5f5;
+}
+
+.existing-multimedia-section h4 i {
+    color: #42a5f5;
+}
+
+.existing-files-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.existing-file-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid #e1e8ed;
+}
+
+.existing-file-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border-color: #42a5f5;
+}
+
+.file-preview {
+    height: 150px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.file-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-preview img:hover {
+    transform: scale(1.05);
+}
+
+.video-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #42a5f5;
+}
+
+.video-preview i {
+    font-size: 3rem;
+}
+
+.video-preview span {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.file-preview-icon {
+    color: #42a5f5;
+}
+
+.file-preview-icon i {
+    font-size: 3rem;
+}
+
+.file-info {
+    padding: 1rem;
+}
+
+.file-info h6 {
+    color: #2c3e50;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.file-meta {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.file-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #7f8c8d;
+}
+
+.file-meta i {
+    color: #42a5f5;
+    width: 12px;
+}
+
+.file-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-view-existing, .btn-delete-existing {
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    justify-content: center;
+}
+
+.btn-view-existing {
+    background: linear-gradient(135deg, #42a5f5, #1e88e5);
+    color: white;
+}
+
+.btn-view-existing:hover {
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 165, 245, 0.3);
+}
+
+.btn-delete-existing {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.btn-delete-existing:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+</style>
+
+<script>
+// ===== FUNCIONALIDAD DE MULTIMEDIA EN FORMULARIO =====
+let selectedMultimediaFiles = [];
+const maxFileSize = 500 * 1024 * 1024; // 500MB
+const maxFiles = 10;
+const allowedTypes = {
+    'image/jpeg': 'image',
+    'image/jpg': 'image', 
+    'image/png': 'image',
+    'image/gif': 'image',
+    'image/webp': 'image',
+    'video/mp4': 'video',
+    'video/avi': 'video',
+    'video/mov': 'video',
+    'video/webm': 'video'
+};
+
+// Elementos del DOM
+const dropZoneForm = document.getElementById('dropZoneForm');
+const fileInputForm = document.getElementById('multimedia_files');
+const filesPreviewForm = document.getElementById('filesPreviewForm');
+const previewGridForm = document.getElementById('previewGridForm');
+const uploadActionsForm = document.getElementById('uploadActionsForm');
+const fileCountForm = document.getElementById('fileCountForm');
+
+// Debug: Verificar que los elementos existen
+console.log('🔍 Verificando elementos del DOM:');
+console.log('dropZoneForm:', dropZoneForm);
+console.log('fileInputForm:', fileInputForm);
+console.log('filesPreviewForm:', filesPreviewForm);
+console.log('previewGridForm:', previewGridForm);
+console.log('uploadActionsForm:', uploadActionsForm);
+console.log('fileCountForm:', fileCountForm);
+
+// Verificar que todos los elementos existen
+if (!dropZoneForm || !fileInputForm || !filesPreviewForm || !previewGridForm || !uploadActionsForm || !fileCountForm) {
+    console.error('❌ Error: Algunos elementos del DOM no se encontraron');
+    showFormAlert('Error: Elementos del formulario no encontrados. Recarga la página.', 'warning');
+}
+
+// ===== DRAG & DROP =====
+dropZoneForm.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZoneForm.classList.add('dragover');
+});
+
+dropZoneForm.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dropZoneForm.classList.remove('dragover');
+});
+
+dropZoneForm.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZoneForm.classList.remove('dragover');
+    
+    const files = Array.from(e.dataTransfer.files);
+    handleMultimediaFiles(files);
+});
+
+// ===== SELECCIÓN DE ARCHIVOS =====
+if (fileInputForm) {
+    fileInputForm.addEventListener('change', (e) => {
+        console.log('📁 Archivos seleccionados:', e.target.files);
+        const files = Array.from(e.target.files);
+        console.log('📁 Array de archivos:', files);
+        handleMultimediaFiles(files);
+    });
+} else {
+    console.error('❌ fileInputForm no encontrado');
+}
+
+// ===== MANEJO DE ARCHIVOS =====
+function handleMultimediaFiles(files) {
+    console.log('🔄 handleMultimediaFiles llamada con:', files);
+    console.log('📊 Archivos actuales:', selectedMultimediaFiles.length);
+    
+    // Validar número de archivos
+    if (selectedMultimediaFiles.length + files.length > maxFiles) {
+        console.log('❌ Demasiados archivos');
+        showFormAlert(`Máximo ${maxFiles} archivos permitidos`, 'warning');
+        return;
+    }
+    
+    // Procesar cada archivo
+    files.forEach(file => {
+        console.log('🔍 Procesando archivo:', file.name, file.type, file.size);
+        if (validateMultimediaFile(file)) {
+            selectedMultimediaFiles.push(file);
+            console.log('✅ Archivo agregado:', file.name);
+        } else {
+            console.log('❌ Archivo rechazado:', file.name);
+        }
+    });
+    
+    console.log('📊 Total archivos después del procesamiento:', selectedMultimediaFiles.length);
+    updateMultimediaPreview();
+    updateMultimediaFileInput();
+}
+
+// ===== VALIDACIÓN DE ARCHIVOS =====
+function validateMultimediaFile(file) {
+    // Validar tipo
+    if (!allowedTypes[file.type]) {
+        showFormAlert(`Tipo de archivo no permitido: ${file.name}`, 'warning');
+        return false;
+    }
+    
+    // Validar tamaño
+    if (file.size > maxFileSize) {
+        showFormAlert(`Archivo demasiado grande: ${file.name}. Máximo 500MB`, 'warning');
+        return false;
+    }
+    
+    // Validar duplicados
+    if (selectedMultimediaFiles.some(f => f.name === file.name && f.size === file.size)) {
+        showFormAlert(`Archivo duplicado: ${file.name}`, 'warning');
+        return false;
+    }
+    
+    return true;
+}
+
+// ===== ACTUALIZAR PREVIEW =====
+function updateMultimediaPreview() {
+    console.log('🖼️ updateMultimediaPreview llamada');
+    console.log('📊 Archivos para mostrar:', selectedMultimediaFiles.length);
+    
+    if (selectedMultimediaFiles.length === 0) {
+        console.log('📭 No hay archivos, ocultando preview');
+        if (filesPreviewForm) filesPreviewForm.style.display = 'none';
+        if (uploadActionsForm) uploadActionsForm.style.display = 'none';
+        return;
+    }
+    
+    console.log('📋 Mostrando preview y acciones');
+    if (filesPreviewForm) {
+        filesPreviewForm.style.display = 'block';
+        console.log('✅ filesPreviewForm mostrado');
+    } else {
+        console.error('❌ filesPreviewForm no encontrado');
+    }
+    
+    if (uploadActionsForm) {
+        uploadActionsForm.style.display = 'block';
+        console.log('✅ uploadActionsForm mostrado');
+    } else {
+        console.error('❌ uploadActionsForm no encontrado');
+    }
+    
+    if (fileCountForm) {
+        fileCountForm.textContent = selectedMultimediaFiles.length;
+        console.log('✅ fileCountForm actualizado:', selectedMultimediaFiles.length);
+    } else {
+        console.error('❌ fileCountForm no encontrado');
+    }
+    
+    if (previewGridForm) {
+        previewGridForm.innerHTML = '';
+        console.log('🧹 previewGridForm limpiado');
+        
+        selectedMultimediaFiles.forEach((file, index) => {
+            console.log(`🎨 Creando preview para archivo ${index + 1}:`, file.name);
+            const previewItem = createMultimediaPreviewItem(file, index);
+            previewGridForm.appendChild(previewItem);
+        });
+        console.log('✅ Todos los previews agregados');
+    } else {
+        console.error('❌ previewGridForm no encontrado');
+    }
+}
+
+// ===== CREAR ITEM DE PREVIEW =====
+function createMultimediaPreviewItem(file, index) {
+    console.log(`🎨 createMultimediaPreviewItem para:`, file.name, file.type);
+    
+    const div = document.createElement('div');
+    div.className = 'preview-item-form';
+    
+    const fileType = allowedTypes[file.type];
+    const fileSize = formatFileSize(file.size);
+    
+    console.log(`📋 Tipo de archivo detectado:`, fileType);
+    console.log(`📏 Tamaño formateado:`, fileSize);
+    
+    let mediaElement = '';
+    if (fileType === 'image') {
+        console.log(`🖼️ Procesando imagen:`, file.name);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            console.log(`✅ Imagen cargada para preview:`, file.name);
+            const previewDiv = div.querySelector('.file-preview');
+            if (previewDiv) {
+                previewDiv.innerHTML = `<img src="${e.target.result}" alt="${file.name}">`;
+            } else {
+                console.error('❌ No se encontró .file-preview para la imagen');
+            }
+        };
+        reader.onerror = (e) => {
+            console.error('❌ Error al cargar imagen:', e);
+        };
+        reader.readAsDataURL(file);
+        mediaElement = '<div class="file-preview"><i class="fas fa-image file-icon"></i></div>';
+    } else if (fileType === 'video') {
+        console.log(`🎥 Procesando video:`, file.name);
+        mediaElement = '<div class="file-preview"><i class="fas fa-video file-icon"></i></div>';
+    } else {
+        console.log(`📄 Tipo de archivo desconocido:`, file.type);
+        mediaElement = '<div class="file-preview"><i class="fas fa-file file-icon"></i></div>';
+    }
+    
+    div.innerHTML = `
+        ${mediaElement}
+        <div class="file-name">${file.name}</div>
+        <div class="file-size">${fileSize}</div>
+        <button type="button" class="remove-file-form" onclick="removeMultimediaFile(${index})">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    console.log(`✅ Preview item creado para:`, file.name);
+    return div;
+}
+
+// ===== REMOVER ARCHIVO =====
+function removeMultimediaFile(index) {
+    selectedMultimediaFiles.splice(index, 1);
+    updateMultimediaPreview();
+    updateMultimediaFileInput();
+}
+
+// ===== LIMPIAR ARCHIVOS =====
+function clearMultimediaFiles() {
+    selectedMultimediaFiles = [];
+    fileInputForm.value = '';
+    updateMultimediaPreview();
+}
+
+// ===== ACTUALIZAR INPUT =====
+function updateMultimediaFileInput() {
+    const dt = new DataTransfer();
+    selectedMultimediaFiles.forEach(file => dt.items.add(file));
+    fileInputForm.files = dt.files;
+}
+
+// ===== FORMATEAR TAMAÑO =====
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// ===== MOSTRAR ALERTAS =====
+function showFormAlert(message, type = 'info') {
+    // Crear alerta temporal
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type} alert-dismissible fade show`;
+    alert.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideInRight 0.3s ease;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        background: ${type === 'warning' ? 'linear-gradient(135deg, #ff9800, #f57c00)' : 'linear-gradient(135deg, #2196f3, #1976d2)'};
+        color: white;
+    `;
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="close" onclick="this.parentElement.remove()" style="
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 10px;
+        ">
+            <span>&times;</span>
+        </button>
+    `;
+    
+    document.body.appendChild(alert);
+    
+    // Auto-remover después de 5 segundos
+    setTimeout(() => {
+        if (alert.parentElement) {
+            alert.remove();
+        }
+    }, 5000);
+}
+
+// Agregar estilos CSS para modal y animaciones
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .image-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .image-modal-content {
+        background: white;
+        border-radius: 20px;
+        max-width: 90vw;
+        max-height: 90vh;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .image-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        background: linear-gradient(135deg, #42a5f5, #1e88e5);
+        color: white;
+    }
+    
+    .image-modal-header h3 {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+    
+    .close-modal {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .close-modal:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+    
+    .image-modal-body {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: #f8f9fa;
+    }
+    
+    .image-modal-body img {
+        max-width: 100%;
+        max-height: 70vh;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        object-fit: contain;
+    }
+    
+    .image-modal-footer {
+        display: flex;
+        gap: 1rem;
+        padding: 1.5rem 2rem;
+        background: white;
+        border-top: 1px solid #e9ecef;
+        justify-content: flex-end;
+    }
+    
+    .btn-modal-action {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+    
+    .btn-modal-action:first-child {
+        background: linear-gradient(135deg, #42a5f5, #1e88e5);
+        color: white;
+    }
+    
+    .btn-modal-action:first-child:hover {
+        background: linear-gradient(135deg, #1e88e5, #1565c0);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(66, 165, 245, 0.3);
+    }
+    
+    .btn-modal-action:last-child {
+        background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        color: white;
+    }
+    
+    .btn-modal-action:last-child:hover {
+        background: linear-gradient(135deg, #7f8c8d, #6c7b7d);
+        transform: translateY(-2px);
+    }
+`;
+document.head.appendChild(style);
+
+// ===== FUNCIONES PARA ARCHIVOS EXISTENTES =====
+function openImageModal(imageUrl, filename) {
+    // Crear modal dinámicamente si no existe
+    let modal = document.getElementById('imageModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'imageModal';
+        modal.className = 'image-modal';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="image-modal-content">
+                <div class="image-modal-header">
+                    <h3 id="imageModalTitle">Vista de Imagen</h3>
+                    <button class="close-modal" onclick="closeImageModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="image-modal-body">
+                    <img id="modalImage" src="" alt="Imagen" />
+                </div>
+                <div class="image-modal-footer">
+                    <button class="btn-modal-action" onclick="downloadImage()">
+                        <i class="fas fa-download"></i> Descargar
+                    </button>
+                    <button class="btn-modal-action" onclick="closeImageModal()">
+                        <i class="fas fa-times"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('imageModalTitle');
+    
+    modalImage.src = imageUrl;
+    modalTitle.textContent = filename || 'Vista de Imagen';
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function downloadImage() {
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('imageModalTitle');
+    
+    if (modalImage && modalImage.src) {
+        const link = document.createElement('a');
+        link.href = modalImage.src;
+        link.download = modalTitle.textContent || 'imagen';
+        link.click();
+    }
+}
+
+function deleteExistingFile(fileId) {
+    if (confirm('¿Estás seguro de que deseas eliminar este archivo?')) {
+        // Crear formulario para enviar DELETE request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/profesor/multimedia/${fileId}/eliminar`;
+        
+        // Agregar CSRF token
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrf_token';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+        
+        // Agregar obs_id si está disponible
+        const obsIdInput = document.createElement('input');
+        obsIdInput.type = 'hidden';
+        obsIdInput.name = 'obs_id';
+        obsIdInput.value = window.location.pathname.split('/')[4]; // Extraer obs_id de la URL
+        form.appendChild(obsIdInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+console.log('✅ Sistema de multimedia en formulario cargado (límite: 500MB)');
+</script>
+{% endblock %}

@@ -1,0 +1,369 @@
+{% extends "base_administrador.html" %}
+
+{% block title %}Gestión de Enlaces - Administrador{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="h3 mb-1">🔗 Gestión de Enlaces</h2>
+                    <p class="text-muted mb-0">Administrar vinculaciones entre estudiantes, profesores y acudientes</p>
+                </div>
+                <div>
+                    <a href="{{ url_for('admin_bp.admin') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Total Estudiantes</h5>
+                                    <h3 class="mb-0">{{ estudiantes|length }}</h3>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-users fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Sin Profesor</h5>
+                                    <h3 class="mb-0">{{ estudiantes_sin_profesor }}</h3>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Sin Acudiente</h5>
+                                    <h3 class="mb-0">{{ estudiantes_sin_acudiente }}</h3>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-user-times fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Completos</h5>
+                                    <h3 class="mb-0">{{ estudiantes|length - estudiantes_sin_profesor - estudiantes_sin_acudiente }}</h3>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enlaces Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-link"></i> Enlaces Estudiante-Profesor-Acudiente
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if estudiantes %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" id="enlacesTable">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Estudiante</th>
+                                        <th>Grado</th>
+                                        <th>Profesor Asignado</th>
+                                        <th>Acudiente Asignado</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for estudiante in estudiantes %}
+                                    <tr>
+                                        <td>{{ estudiante.id }}</td>
+                                        <td>
+                                            <strong>{{ estudiante.nombre }} {{ estudiante.apellido }}</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-info">{{ estudiante.grado }}</span>
+                                        </td>
+                                        <td>
+                                            {% if estudiante.profesor_nombre %}
+                                                <span class="text-success">
+                                                    <i class="fas fa-user-check"></i>
+                                                    {{ estudiante.profesor_nombre }} {{ estudiante.profesor_apellido }}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-warning">
+                                                    <i class="fas fa-user-times"></i>
+                                                    Sin asignar
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if estudiante.acudiente_nombre %}
+                                                <span class="text-success">
+                                                    <i class="fas fa-user-check"></i>
+                                                    {{ estudiante.acudiente_nombre }} {{ estudiante.acudiente_apellido }}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-danger">
+                                                    <i class="fas fa-user-times"></i>
+                                                    Sin asignar
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if estudiante.profesor_id and estudiante.acudiente_id %}
+                                                <span class="badge badge-success">Completo</span>
+                                            {% elif estudiante.profesor_id %}
+                                                <span class="badge badge-warning">Falta Acudiente</span>
+                                            {% elif estudiante.acudiente_id %}
+                                                <span class="badge badge-warning">Falta Profesor</span>
+                                            {% else %}
+                                                <span class="badge badge-danger">Incompleto</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        data-toggle="modal" 
+                                                        data-target="#editarEnlaceModal"
+                                                        data-student-id="{{ estudiante.id }}"
+                                                        data-student-name="{{ estudiante.nombre }} {{ estudiante.apellido }}"
+                                                        data-profesor-id="{{ estudiante.profesor_id or '' }}"
+                                                        data-acudiente-id="{{ estudiante.acudiente_id or '' }}">
+                                                    <i class="fas fa-edit"></i> Editar
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-users fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay estudiantes registrados</h5>
+                            <p class="text-muted">Crea estudiantes primero para poder gestionar sus enlaces.</p>
+                            <a href="{{ url_for('admin_bp.crear_estudiante') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Crear Estudiante
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para editar enlaces -->
+<div class="modal fade" id="editarEnlaceModal" tabindex="-1" role="dialog" aria-labelledby="editarEnlaceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarEnlaceModalLabel">Editar Enlaces</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editarEnlaceForm">
+                    <input type="hidden" id="studentId" name="student_id">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    
+                    <div class="form-group">
+                        <label><strong>Estudiante:</strong></label>
+                        <p id="studentName" class="form-control-plaintext"></p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="profesorSelect">Profesor Asignado:</label>
+                                <select class="form-control" id="profesorSelect" name="profesor_id">
+                                    <option value="">-- Seleccionar Profesor --</option>
+                                    {% for profesor in profesores %}
+                                    <option value="{{ profesor.id }}">
+                                        {{ profesor.nombre }} {{ profesor.apellido }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="acudienteSelect">Acudiente Asignado:</label>
+                                <select class="form-control" id="acudienteSelect" name="acudiente_id">
+                                    <option value="">-- Seleccionar Acudiente --</option>
+                                    {% for acudiente in acudientes %}
+                                    <option value="{{ acudiente.id }}">
+                                        {{ acudiente.nombre }} {{ acudiente.apellido }} ({{ acudiente.correo }})
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="guardarEnlaces">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.table th {
+    border-top: none;
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.btn-group .btn {
+    border-radius: 0.25rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize DataTable
+    if ($.fn.DataTable) {
+        $('#enlacesTable').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+            },
+            "pageLength": 25,
+            "order": [[1, "asc"]]
+        });
+    }
+    
+    // Modal functionality
+    $('#editarEnlaceModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const studentId = button.data('student-id');
+        const studentName = button.data('student-name');
+        const profesorId = button.data('profesor-id');
+        const acudienteId = button.data('acudiente-id');
+        
+        const modal = $(this);
+        modal.find('#studentId').val(studentId);
+        modal.find('#studentName').text(studentName);
+        modal.find('#profesorSelect').val(profesorId);
+        modal.find('#acudienteSelect').val(acudienteId);
+    });
+    
+    // Save changes
+    $('#guardarEnlaces').click(function() {
+        const studentId = $('#studentId').val();
+        const profesorId = $('#profesorSelect').val();
+        const acudienteId = $('#acudienteSelect').val();
+        
+        // Update profesor
+        if (profesorId !== $('#profesorSelect').data('original')) {
+            updateEnlace(studentId, 'profesor', profesorId);
+        }
+        
+        // Update acudiente
+        if (acudienteId !== $('#acudienteSelect').data('original')) {
+            updateEnlace(studentId, 'acudiente', acudienteId);
+        }
+        
+        $('#editarEnlaceModal').modal('hide');
+        
+        // Reload page after a short delay
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    });
+});
+
+function updateEnlace(studentId, tipo, nuevoId) {
+    const formData = new FormData();
+    formData.append('csrf_token', '{{ csrf_token() }}');
+    formData.append(tipo + '_id', nuevoId);
+    
+    fetch(`{{ url_for('admin_bp.cambiar_' + '${tipo}' + '_estudiante', student_id=0) }}`.replace('0', studentId), {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            showAlert('success', `${tipo.charAt(0).toUpperCase() + tipo.slice(1)} actualizado exitosamente`);
+        } else {
+            showAlert('danger', `Error al actualizar ${tipo}`);
+        }
+    })
+    .catch(error => {
+        showAlert('danger', `Error de conexión: ${error.message}`);
+    });
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    `;
+    
+    document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.row'));
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

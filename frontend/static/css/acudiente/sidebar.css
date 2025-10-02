@@ -1,0 +1,200 @@
+/* Sidebar moderno para Acudiente - Basado en admin.css */
+
+#btn-menu {
+    display: none;
+}
+
+.container-menu {
+    position: fixed;
+    background: rgba(163, 215, 255, 0.25);
+    -webkit-backdrop-filter: blur(94.83333587646484px);
+    backdrop-filter: blur(94.83333587646484px);
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: -100%;
+    transition: all 0.4s ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+    box-shadow: 5px 0 20px rgba(0, 0, 0, 0.4);
+    z-index: 101;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+#btn-menu:checked ~ .container-menu {
+    left: 0;
+    opacity: 1;
+    visibility: visible;
+}
+
+.cont-menu {
+    width: 100%;
+    max-width: 320px;
+    overflow-y: auto;
+    background: rgba(163, 215, 255, 0.25);
+    -webkit-backdrop-filter: blur(94.83333587646484px);
+    backdrop-filter: blur(94.83333587646484px);
+    height: 100vh;
+    position: relative;
+    transform: translateX(-100%);
+    transition: transform 0.4s ease-in-out;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+#btn-menu:checked ~ .container-menu .cont-menu {
+    transform: translateX(0%);
+}
+
+/* Overlay cuando el menú está abierto */
+.capa {
+    display: none;
+}
+#btn-menu:checked ~ .capa {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    z-index: 140;
+}
+
+.cont-menu .ellipse-div {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.75);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.cont-menu .ellipse-div:hover {
+    background-color: #1884d0;
+}
+
+.cont-menu .ellipse-div label {
+    color: #1884d0;
+    font-size: 28px;
+    line-height: 1;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cont-menu .ellipse-div:hover label {
+    color: #ffffff;
+}
+
+.cont-menu .teaching-notes {
+    color: #ecf0f1;
+    font-size: 22px;
+    margin-bottom: 40px;
+    margin-top: 20px;
+    font-family: 'Montserrat Alternates', sans-serif;
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.cont-menu nav {
+    width: 100%;
+    padding: 70px 15px 120px 15px;
+    flex-grow: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #888 rgb(255, 255, 255);
+}
+
+.cont-menu nav .menu-item {
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.cont-menu nav .menu-item .menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px 12px 25px;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-left 0.3s ease;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-bottom: 12px;
+}
+
+.cont-menu nav .menu-item .menu-header:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 5px solid #1884d0;
+}
+
+.cont-menu nav .menu-item .menu-header a {
+    color: #2c3e50;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cont-menu nav .menu-item .menu-header a .text {
+    margin-left: 8px;
+    font-size: 18px;
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: normal;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.logout-item {
+    margin-top: auto;
+    padding: 0 15px 20px 15px;
+}
+
+.logout-item a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px 12px 25px;
+    color: #e74c3c;
+    text-decoration: none;
+    border-radius: 8px;
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+.logout-item a:hover {
+    background: rgba(231, 76, 60, 0.2);
+}
+
+.logout-item a .text {
+    margin-left: 8px;
+    font-size: 18px;
+}
+

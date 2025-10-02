@@ -1,0 +1,290 @@
+{% extends 'profesor/base_profesor.html' %}
+{% block title %}Mis Observaciones{% endblock %}
+{% block content %}
+<div class="container">
+    <!-- Header de la sección -->
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #e3f2fd;">
+        <div>
+            <h2 style="color: #1884d0; margin: 0; font-size: 2.2em; font-weight: 600;">
+                <i class="fas fa-clipboard-list" style="margin-right: 15px; color: #42a5f5;"></i>
+                Mis Observaciones
+            </h2>
+            <p style="color: #666; margin: 8px 0 0 0; font-size: 1.1em;">Gestiona las observaciones de tus estudiantes</p>
+        </div>
+        <a href="{{ url_for('obs_bp.crear_observacion') }}" class="btn btn-primary" style="background: linear-gradient(135deg, #42a5f5, #1976d2); padding: 15px 25px; font-size: 16px; font-weight: 600; border-radius: 12px; box-shadow: 0 4px 15px rgba(66, 165, 245, 0.3); transition: all 0.3s ease; text-decoration: none; color: white; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-plus"></i>
+            Nueva Observación
+        </a>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        <div class="stat-card" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb); border: 2px solid rgba(33, 150, 243, 0.2); border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <i class="fas fa-file-alt" style="font-size: 2.5em; color: #1976d2; margin-bottom: 10px;"></i>
+            <h4 style="color: #1565c0; margin: 0; font-size: 1.8em; font-weight: 700;">{{ notas|length }}</h4>
+            <p style="color: #424242; margin: 5px 0 0 0; font-weight: 500;">Total Observaciones</p>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border: 2px solid rgba(76, 175, 80, 0.2); border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <i class="fas fa-calendar-week" style="font-size: 2.5em; color: #388e3c; margin-bottom: 10px;"></i>
+            <h4 style="color: #2e7d32; margin: 0; font-size: 1.8em; font-weight: 700;">Esta Semana</h4>
+            <p style="color: #424242; margin: 5px 0 0 0; font-weight: 500;">Observaciones Recientes</p>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #e8f5e8, #c8e6c9); border: 2px solid rgba(76, 175, 80, 0.2); border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <i class="fas fa-check-circle" style="font-size: 2.5em; color: #388e3c; margin-bottom: 10px;"></i>
+            <h4 style="color: #2e7d32; margin: 0; font-size: 1.8em; font-weight: 700;">{{ reading_stats.observaciones_leidas if reading_stats else 0 }}</h4>
+            <p style="color: #424242; margin: 5px 0 0 0; font-weight: 500;">Observaciones Leídas</p>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #fff3e0, #ffcc02); border: 2px solid rgba(255, 193, 7, 0.2); border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <i class="fas fa-exclamation-circle" style="font-size: 2.5em; color: #f57c00; margin-bottom: 10px;"></i>
+            <h4 style="color: #ef6c00; margin: 0; font-size: 1.8em; font-weight: 700;">{{ reading_stats.observaciones_no_leidas if reading_stats else 0 }}</h4>
+            <p style="color: #424242; margin: 5px 0 0 0; font-weight: 500;">Sin Leer</p>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #f3e5f5, #e1bee7); border: 2px solid rgba(156, 39, 176, 0.2); border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <i class="fas fa-percentage" style="font-size: 2.5em; color: #7b1fa2; margin-bottom: 10px;"></i>
+            <h4 style="color: #6a1b9a; margin: 0; font-size: 1.8em; font-weight: 700;">{{ reading_stats.porcentaje_lectura if reading_stats else 0 }}%</h4>
+            <p style="color: #424242; margin: 5px 0 0 0; font-weight: 500;">Tasa de Lectura</p>
+        </div>
+    </div>
+
+    <!-- Filtros de Observaciones -->
+    <div class="filters-container" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); border-radius: 20px; margin-bottom: 30px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);">
+        <div class="filters-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); cursor: pointer;" onclick="toggleObservationFilters()">
+            <h3 style="margin: 0; color: #2c3e50; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-filter"></i>
+                Filtrar Observaciones
+            </h3>
+            <button type="button" class="toggle-filters-btn" style="background: none; border: none; color: #667eea; font-size: 16px; cursor: pointer; transition: transform 0.3s ease;">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+        
+        <div class="filters-content" id="observationFiltersContent" style="padding: 30px; display: none;">
+            <form method="GET" action="{{ url_for('obs_bp.listar_observaciones_profesor') }}" class="filters-form">
+                <div class="filters-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div class="filter-group">
+                        <label style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; font-size: 14px; display: block;">Estudiante</label>
+                        <select name="estudiante" style="width: 100%; padding: 12px 15px; border: 2px solid #e1e8ed; border-radius: 15px; font-size: 14px; transition: all 0.3s ease; background: white;">
+                            <option value="">Todos los estudiantes</option>
+                            {% for estudiante in estudiantes_list %}
+                                <option value="{{ estudiante.id }}" {{ 'selected' if request.args.get('estudiante')|int == estudiante.id else '' }}>
+                                    {{ estudiante.nombre }} {{ estudiante.apellido }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; font-size: 14px; display: block;">Tipo de Observación</label>
+                        <select name="tipo" style="width: 100%; padding: 12px 15px; border: 2px solid #e1e8ed; border-radius: 15px; font-size: 14px; transition: all 0.3s ease; background: white;">
+                            <option value="">Todos los tipos</option>
+                            <option value="positiva" {{ 'selected' if request.args.get('tipo') == 'positiva' else '' }}>Positiva</option>
+                            <option value="negativa" {{ 'selected' if request.args.get('tipo') == 'negativa' else '' }}>Negativa</option>
+                            <option value="neutral" {{ 'selected' if request.args.get('tipo') == 'neutral' else '' }}>Neutral</option>
+                            <option value="academica" {{ 'selected' if request.args.get('tipo') == 'academica' else '' }}>Académica</option>
+                            <option value="comportamiento" {{ 'selected' if request.args.get('tipo') == 'comportamiento' else '' }}>Comportamiento</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; font-size: 14px; display: block;">Estado de Lectura</label>
+                        <select name="lectura" style="width: 100%; padding: 12px 15px; border: 2px solid #e1e8ed; border-radius: 15px; font-size: 14px; transition: all 0.3s ease; background: white;">
+                            <option value="">Todos los estados</option>
+                            <option value="leida" {{ 'selected' if request.args.get('lectura') == 'leida' else '' }}>Leídas</option>
+                            <option value="no_leida" {{ 'selected' if request.args.get('lectura') == 'no_leida' else '' }}>No leídas</option>
+                            <option value="sin_acudiente" {{ 'selected' if request.args.get('lectura') == 'sin_acudiente' else '' }}>Sin acudiente</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; font-size: 14px; display: block;">Fecha Desde</label>
+                        <input type="date" name="fecha_desde" value="{{ request.args.get('fecha_desde', '') }}" 
+                               style="width: 100%; padding: 12px 15px; border: 2px solid #e1e8ed; border-radius: 15px; font-size: 14px; transition: all 0.3s ease; background: white;">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; font-size: 14px; display: block;">Fecha Hasta</label>
+                        <input type="date" name="fecha_hasta" value="{{ request.args.get('fecha_hasta', '') }}" 
+                               style="width: 100%; padding: 12px 15px; border: 2px solid #e1e8ed; border-radius: 15px; font-size: 14px; transition: all 0.3s ease; background: white;">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; font-size: 14px; display: block;">Buscar en Título</label>
+                        <input type="text" name="buscar" placeholder="Buscar en título..." value="{{ request.args.get('buscar', '') }}" 
+                               style="width: 100%; padding: 12px 15px; border: 2px solid #e1e8ed; border-radius: 15px; font-size: 14px; transition: all 0.3s ease; background: white;">
+                    </div>
+                </div>
+                
+                <div class="filters-actions" style="display: flex; gap: 15px; justify-content: flex-end;">
+                    <button type="submit" class="filter-btn apply-btn" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-search"></i>
+                        Aplicar Filtros
+                    </button>
+                    <a href="{{ url_for('obs_bp.listar_observaciones_profesor') }}" class="filter-btn clear-btn" style="background: rgba(108, 117, 125, 0.1); color: #6c757d; border: 2px solid #6c757d; padding: 12px 25px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-times"></i>
+                        Limpiar Filtros
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Resultados de filtros -->
+    {% if request.args %}
+    <div class="filter-results" style="background: rgba(23, 162, 184, 0.1); border: 1px solid rgba(23, 162, 184, 0.2); border-radius: 15px; padding: 15px 20px; margin-bottom: 20px;">
+        <p style="margin: 0; color: #0c5460; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-info-circle"></i>
+            Mostrando {{ notas|length }} observación(es)
+            {% if request.args.get('estudiante') %}del estudiante seleccionado{% endif %}
+            {% if request.args.get('tipo') %}de tipo {{ request.args.get('tipo') }}{% endif %}
+            {% if request.args.get('lectura') %}
+                {% if request.args.get('lectura') == 'leida' %}leídas{% endif %}
+                {% if request.args.get('lectura') == 'no_leida' %}no leídas{% endif %}
+                {% if request.args.get('lectura') == 'sin_acudiente' %}sin acudiente{% endif %}
+            {% endif %}
+            {% if request.args.get('fecha_desde') %}desde {{ request.args.get('fecha_desde') }}{% endif %}
+            {% if request.args.get('fecha_hasta') %}hasta {{ request.args.get('fecha_hasta') }}{% endif %}
+            {% if request.args.get('buscar') %}que coinciden con "{{ request.args.get('buscar') }}"{% endif %}
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Tabla de observaciones mejorada -->
+    <div class="table-container" style="background: rgba(255, 255, 255, 0.95); border-radius: 15px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2);">
+        <table class="table" style="margin: 0;">
+            <thead style="background: linear-gradient(135deg, #1976d2, #1565c0);">
+                <tr>
+                    <th style="color: white; padding: 18px 20px; font-weight: 600; font-size: 16px; border: none;">
+                        <i class="fas fa-hashtag" style="margin-right: 8px;"></i>ID
+                    </th>
+                    <th style="color: white; padding: 18px 20px; font-weight: 600; font-size: 16px; border: none;">
+                        <i class="fas fa-bookmark" style="margin-right: 8px;"></i>Título
+                    </th>
+                    <th style="color: white; padding: 18px 20px; font-weight: 600; font-size: 16px; border: none;">
+                        <i class="fas fa-child" style="margin-right: 8px;"></i>Estudiante
+                    </th>
+                    <th style="color: white; padding: 18px 20px; font-weight: 600; font-size: 16px; border: none;">
+                        <i class="fas fa-calendar" style="margin-right: 8px;"></i>Fecha
+                    </th>
+                    <th style="color: white; padding: 18px 20px; font-weight: 600; font-size: 16px; border: none; text-align: center;">
+                        <i class="fas fa-eye" style="margin-right: 8px;"></i>Estado Lectura
+                    </th>
+                    <th style="color: white; padding: 18px 20px; font-weight: 600; font-size: 16px; border: none; text-align: center;">
+                        <i class="fas fa-cogs" style="margin-right: 8px;"></i>Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for nota in notas %}
+                <tr style="transition: all 0.3s ease;">
+                    <td style="padding: 16px 20px; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: #1976d2;">
+                        <span style="background: linear-gradient(135deg, #e3f2fd, #bbdefb); padding: 6px 12px; border-radius: 20px; font-size: 14px;">
+                            #{{ nota.id }}
+                        </span>
+                    </td>
+                    <td style="padding: 16px 20px; border-bottom: 1px solid #e0e0e0; color: #333; font-weight: 500;">
+                        {{ nota.titulo or '-' }}
+                    </td>
+                    <td style="padding: 16px 20px; border-bottom: 1px solid #e0e0e0; color: #555;">
+                        <i class="fas fa-user-graduate" style="color: #42a5f5; margin-right: 8px;"></i>
+                        {{ nota.hijo }}
+                    </td>
+                    <td style="padding: 16px 20px; border-bottom: 1px solid #e0e0e0; color: #666;">
+                        <i class="fas fa-clock" style="color: #66bb6a; margin-right: 8px;"></i>
+                        {{ nota.fecha.strftime('%d/%m/%Y') if nota.fecha else '-' }}
+                    </td>
+                    <td style="padding: 16px 20px; border-bottom: 1px solid #e0e0e0; text-align: center;">
+                        <div style="display: flex; gap: 8px; justify-content: center;">
+                            <a href="{{ url_for('obs_bp.editar_observacion', obs_id=nota.id) }}" 
+                               style="background: linear-gradient(135deg, #ff9800, #f57c00); color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);"
+                               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(255, 152, 0, 0.4)'"
+                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(255, 152, 0, 0.3)'"
+                               title="Editar observación">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{{ url_for('obs_bp.ver_multimedia_observacion', obs_id=nota.id) }}" 
+                               style="background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; padding: 8px 12px; border-radius: 8px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);"
+                               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(156, 39, 176, 0.4)'"
+                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(156, 39, 176, 0.3)'"
+                               title="Gestionar fotos y videos">
+                                <i class="fas fa-images"></i>
+                            </a>
+                            <form action="{{ url_for('obs_bp.eliminar_observacion', obs_id=nota.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta observación?')">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" 
+                                        style="background: linear-gradient(135deg, #f44336, #d32f2f); color: white; padding: 8px 12px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);"
+                                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 67, 54, 0.4)'"
+                                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 67, 54, 0.3)'"
+                                        title="Eliminar observación">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: #666; font-size: 18px;">
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                            <i class="fas fa-clipboard-list" style="font-size: 3em; color: #bbb;"></i>
+                            <p style="margin: 0; font-weight: 500;">No hay observaciones registradas</p>
+                            <a href="{{ url_for('obs_bp.crear_observacion') }}" class="btn btn-primary" style="background: linear-gradient(135deg, #42a5f5, #1976d2); padding: 12px 20px; border-radius: 8px; text-decoration: none; color: white;">
+                                <i class="fas fa-plus" style="margin-right: 8px;"></i>Crear Primera Observación
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(66, 165, 245, 0.4) !important;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+</style>
+
+<script>
+function toggleObservationFilters() {
+    const filtersContent = document.getElementById('observationFiltersContent');
+    const toggleBtn = document.querySelector('.toggle-filters-btn');
+    
+    if (filtersContent.style.display === 'none' || filtersContent.style.display === '') {
+        filtersContent.style.display = 'block';
+        toggleBtn.style.transform = 'rotate(180deg)';
+    } else {
+        filtersContent.style.display = 'none';
+        toggleBtn.style.transform = 'rotate(0deg)';
+    }
+}
+
+// Mostrar filtros automáticamente si hay parámetros de búsqueda
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasFilters = Array.from(urlParams.keys()).some(key => 
+        ['estudiante', 'tipo', 'lectura', 'fecha_desde', 'fecha_hasta', 'buscar'].includes(key)
+    );
+    
+    if (hasFilters) {
+        const filtersContent = document.getElementById('observationFiltersContent');
+        const toggleBtn = document.querySelector('.toggle-filters-btn');
+        filtersContent.style.display = 'block';
+        toggleBtn.style.transform = 'rotate(180deg)';
+    }
+});
+</script>
+
+{% endblock %}

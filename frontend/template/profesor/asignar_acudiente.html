@@ -1,0 +1,460 @@
+{% extends 'profesor/base_profesor.html' %}
+
+{% block title %}Asignar Acudiente - Panel de Profesor{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-user-friends"></i>
+            </div>
+            <div class="header-text">
+                <h1>Asignar Acudiente Existente</h1>
+                <p>Selecciona un acudiente registrado para asignar a {{ estudiante.nombre }} {{ estudiante.apellido }}</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('obs_bp.listar_estudiantes_profesor') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="form-content">
+        <!-- Información del estudiante -->
+        <div class="student-info-card">
+            <div class="student-avatar">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="student-details">
+                <h3>{{ estudiante.nombre }} {{ estudiante.apellido }}</h3>
+                <p><i class="fas fa-graduation-cap"></i> {{ estudiante.grado }}</p>
+                <p><i class="fas fa-calendar"></i> {{ estudiante.fecha_nacimiento.strftime('%d/%m/%Y') if estudiante.fecha_nacimiento else 'No especificada' }}</p>
+            </div>
+        </div>
+
+        <form method="POST" class="assignment-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            
+            <div class="form-section">
+                <h3>
+                    <i class="fas fa-users"></i>
+                    Seleccionar Acudiente
+                </h3>
+                
+                {% if acudientes %}
+                <div class="acudientes-grid">
+                    {% for acudiente in acudientes %}
+                    <div class="acudiente-card">
+                        <input type="radio" id="acudiente_{{ acudiente.id }}" name="acudiente_id" value="{{ acudiente.id }}" required>
+                        <label for="acudiente_{{ acudiente.id }}">
+                            <div class="acudiente-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="acudiente-info">
+                                <h4>{{ acudiente.nombre }} {{ acudiente.apellido }}</h4>
+                                <p><i class="fas fa-envelope"></i> {{ acudiente.correo }}</p>
+                                <p><i class="fas fa-calendar-plus"></i> Registrado: {{ acudiente.fecha_registro.strftime('%d/%m/%Y') if acudiente.fecha_registro else 'N/A' }}</p>
+                            </div>
+                            <div class="selection-indicator">
+                                <i class="fas fa-check"></i>
+                            </div>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-users-slash"></i>
+                    </div>
+                    <h3>No hay acudientes registrados</h3>
+                    <p>No se encontraron acudientes en el sistema. Puedes crear uno nuevo.</p>
+                    <a href="{{ url_for('obs_bp.crear_acudiente_para_estudiante', student_id=estudiante.id) }}" class="empty-action-btn">
+                        <i class="fas fa-user-plus"></i>
+                        Crear Nuevo Acudiente
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if acudientes %}
+            <div class="form-actions">
+                <button type="button" class="cancel-btn" onclick="window.history.back()">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-link"></i>
+                    Asignar Acudiente
+                </button>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<style>
+/* Estilos específicos para asignar acudiente */
+.form-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.form-header {
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.1), rgba(9, 132, 227, 0.05));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: white;
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
+}
+
+.header-text h1 {
+    margin: 0 0 8px 0;
+    color: #2d3436;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.header-text p {
+    margin: 0;
+    color: #636e72;
+    font-size: 16px;
+}
+
+.back-btn {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(116, 185, 255, 0.3);
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(116, 185, 255, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.student-info-card {
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.1), rgba(9, 132, 227, 0.05));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.student-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+}
+
+.student-details h3 {
+    margin: 0 0 10px 0;
+    color: #2d3436;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.student-details p {
+    margin: 5px 0;
+    color: #636e72;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.student-details i {
+    color: #74b9ff;
+    width: 16px;
+}
+
+.form-section {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.form-section h3 {
+    margin: 0 0 25px 0;
+    color: #2d3436;
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-section h3 i {
+    color: #74b9ff;
+}
+
+.acudientes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.acudiente-card {
+    position: relative;
+}
+
+.acudiente-card input[type="radio"] {
+    display: none;
+}
+
+.acudiente-card label {
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(116, 185, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.acudiente-card label:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.2);
+    border-color: rgba(116, 185, 255, 0.4);
+}
+
+.acudiente-card input[type="radio"]:checked + label {
+    border-color: #74b9ff;
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.1), rgba(9, 132, 227, 0.05));
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.3);
+}
+
+.acudiente-card input[type="radio"]:checked + label .selection-indicator {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.acudiente-avatar {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.acudiente-info h4 {
+    margin: 0 0 10px 0;
+    color: #2d3436;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.acudiente-info p {
+    margin: 5px 0;
+    color: #636e72;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.acudiente-info i {
+    color: #74b9ff;
+    width: 14px;
+}
+
+.selection-indicator {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    background: #74b9ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.3s ease;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    padding: 20px 0;
+}
+
+.cancel-btn, .submit-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.cancel-btn {
+    background: linear-gradient(135deg, #636e72, #2d3436);
+    color: white;
+}
+
+.cancel-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 110, 114, 0.4);
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    color: white;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(116, 185, 255, 0.4);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 40px;
+    color: #636e72;
+}
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.1), rgba(9, 132, 227, 0.05));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    color: #74b9ff;
+    margin: 0 auto 25px auto;
+}
+
+.empty-state h3 {
+    margin: 0 0 15px 0;
+    color: #2d3436;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.empty-state p {
+    margin: 0 0 30px 0;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.empty-action-btn {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    color: white;
+    text-decoration: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(116, 185, 255, 0.3);
+}
+
+.empty-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px 15px;
+    }
+    
+    .form-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .student-info-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .acudientes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

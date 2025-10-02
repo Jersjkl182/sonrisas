@@ -1,0 +1,407 @@
+{% extends 'acudiente/base_acudiente.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/acudiente/perfil_acudiente.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Header del perfil -->
+    <div class="profile-header">
+        <div class="profile-avatar-section">
+            <div class="profile-avatar">
+                <i class="fas fa-user-circle"></i>
+                <div class="status-indicator active"></div>
+            </div>
+            <div class="profile-basic-info">
+                <h1>{{ perfil.nombre }} {{ perfil.apellido }}</h1>
+                <p class="profile-role">
+                    <i class="fas fa-heart"></i>
+                    Acudiente
+                </p>
+                <div class="profile-status">
+                    <span class="status-badge active">
+                        <i class="fas fa-check-circle"></i>
+                        {{ perfil.estado_cuenta }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-actions">
+            <button class="edit-profile-btn" onclick="openEditModal()">
+                <i class="fas fa-edit"></i>
+                Editar Perfil
+            </button>
+            <button class="change-password-btn" onclick="openPasswordModal()">
+                <i class="fas fa-key"></i>
+                Cambiar Contraseña
+            </button>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="profile-stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ perfil.hijos_registrados }}</div>
+                <div class="stat-label">Hijos Registrados</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ perfil.observaciones_totales }}</div>
+                <div class="stat-label">Observaciones Totales</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ perfil.fecha_registro.split('-')[0] }}</div>
+                <div class="stat-label">Año de Registro</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ 'ON' if perfil.notificaciones_activas else 'OFF' }}</div>
+                <div class="stat-label">Notificaciones</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información personal -->
+    <div class="profile-sections">
+        <div class="profile-section">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-user"></i>
+                    Información Personal
+                </h2>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-envelope"></i>
+                        Correo Electrónico
+                    </div>
+                    <div class="info-value">{{ perfil.email }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-phone"></i>
+                        Teléfono
+                    </div>
+                    <div class="info-value">{{ perfil.telefono }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Dirección
+                    </div>
+                    <div class="info-value">{{ perfil.direccion }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-calendar-plus"></i>
+                        Fecha de Registro
+                    </div>
+                    <div class="info-value">{{ perfil.fecha_registro }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-clock"></i>
+                        Último Acceso
+                    </div>
+                    <div class="info-value">{{ perfil.ultimo_acceso }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-shield-alt"></i>
+                        Estado de Cuenta
+                    </div>
+                    <div class="info-value">
+                        <span class="status-badge active">{{ perfil.estado_cuenta }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuraciones -->
+        <div class="profile-section">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-cog"></i>
+                    Configuraciones
+                </h2>
+            </div>
+            
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-title">
+                            <i class="fas fa-bell"></i>
+                            Notificaciones por Email
+                        </div>
+                        <div class="setting-description">Recibir notificaciones de nuevas observaciones</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" {{ 'checked' if perfil.notificaciones_activas else '' }}>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-title">
+                            <i class="fas fa-mobile-alt"></i>
+                            Notificaciones Push
+                        </div>
+                        <div class="setting-description">Recibir alertas instantáneas en el navegador</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-title">
+                            <i class="fas fa-download"></i>
+                            Descarga Automática de Reportes
+                        </div>
+                        <div class="setting-description">Generar reportes mensuales automáticamente</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-title">
+                            <i class="fas fa-eye"></i>
+                            Modo Privado
+                        </div>
+                        <div class="setting-description">Ocultar información sensible en pantallas compartidas</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actividad reciente -->
+    <div class="profile-section">
+        <div class="section-header">
+            <h2>
+                <i class="fas fa-history"></i>
+                Actividad Reciente
+            </h2>
+        </div>
+        
+        <div class="activity-timeline">
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Último acceso al sistema</div>
+                    <div class="timeline-description">Ingresó al dashboard de acudiente</div>
+                    <div class="timeline-time">{{ perfil.ultimo_acceso }}</div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Visualizó observaciones</div>
+                    <div class="timeline-description">Revisó las observaciones de María García</div>
+                    <div class="timeline-time">2024-01-15 14:30:00</div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Descargó reporte PDF</div>
+                    <div class="timeline-description">Exportó observaciones del mes de enero</div>
+                    <div class="timeline-time">2024-01-14 10:15:00</div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Actualizó configuraciones</div>
+                    <div class="timeline-description">Activó notificaciones por email</div>
+                    <div class="timeline-time">2024-01-12 16:45:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para editar perfil -->
+<div id="editProfileModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Editar Perfil</h3>
+            <button class="close-btn" onclick="closeEditModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form class="edit-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" value="{{ perfil.nombre }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido</label>
+                        <input type="text" value="{{ perfil.apellido }}" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" value="{{ perfil.email }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" value="{{ perfil.telefono }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <textarea rows="3">{{ perfil.direccion }}</textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancelar</button>
+                    <button type="submit" class="save-btn">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para cambiar contraseña -->
+<div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Cambiar Contraseña</h3>
+            <button class="close-btn" onclick="closePasswordModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form class="password-form">
+                <div class="form-group">
+                    <label>Contraseña Actual</label>
+                    <input type="password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nueva Contraseña</label>
+                    <input type="password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Confirmar Nueva Contraseña</label>
+                    <input type="password" required>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closePasswordModal()">Cancelar</button>
+                    <button type="submit" class="save-btn">Cambiar Contraseña</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// JavaScript para modales
+function openEditModal() {
+    document.getElementById('editProfileModal').style.display = 'flex';
+}
+
+function closeEditModal() {
+    document.getElementById('editProfileModal').style.display = 'none';
+}
+
+function openPasswordModal() {
+    document.getElementById('passwordModal').style.display = 'flex';
+}
+
+function closePasswordModal() {
+    document.getElementById('passwordModal').style.display = 'none';
+}
+
+// Cerrar modales al hacer clic fuera
+window.onclick = function(event) {
+    const editModal = document.getElementById('editProfileModal');
+    const passwordModal = document.getElementById('passwordModal');
+    
+    if (event.target === editModal) {
+        closeEditModal();
+    }
+    if (event.target === passwordModal) {
+        closePasswordModal();
+    }
+}
+
+// Manejar toggles de configuración
+document.addEventListener('DOMContentLoaded', function() {
+    const toggles = document.querySelectorAll('.toggle-switch input');
+    
+    toggles.forEach(toggle => {
+        toggle.addEventListener('change', function() {
+            // Aquí se haría una llamada AJAX para guardar la configuración
+            console.log('Configuración actualizada:', this.checked);
+        });
+    });
+});
+</script>
+{% endblock %}

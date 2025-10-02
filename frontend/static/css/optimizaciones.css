@@ -1,0 +1,383 @@
+/* =======================================
+    OPTIMIZACIONES DE RENDIMIENTO CSS
+    Mejoras para glassmorphism y animaciones
+    ======================================= */
+
+/* =======================================
+    OPTIMIZACIÓN DE GLASSMORPHISM
+    ======================================= */
+
+/* Mejorar rendimiento de backdrop-filter */
+.glassmorphism-optimized {
+    background: var(--glass-bg-primary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md);
+    
+    /* Optimizaciones de rendimiento */
+    will-change: transform, opacity;
+    transform: translateZ(0); /* Forzar aceleración de hardware */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    
+    /* Backdrop-filter optimizado */
+    -webkit-backdrop-filter: var(--glass-blur-medium);
+    backdrop-filter: var(--glass-blur-medium);
+    
+    /* Fallback para navegadores sin soporte */
+    @supports not (backdrop-filter: blur(15px)) {
+        background: rgba(255, 255, 255, 0.95);
+    }
+}
+
+/* Glassmorphism ligero para mejor rendimiento */
+.glassmorphism-lite {
+    background: var(--glass-bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border-light);
+    box-shadow: var(--shadow-sm);
+    
+    /* Sin backdrop-filter para elementos que no lo necesitan */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* =======================================
+    ANIMACIONES OPTIMIZADAS
+    ======================================= */
+
+/* Animaciones que solo usan transform y opacity */
+@keyframes fadeInOptimized {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes slideInOptimized {
+    from {
+        opacity: 0;
+        transform: translate3d(30px, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes scaleInOptimized {
+    from {
+        opacity: 0;
+        transform: scale3d(0.9, 0.9, 1);
+    }
+    to {
+        opacity: 1;
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+/* Spinner optimizado */
+@keyframes spinOptimized {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =======================================
+    CLASES DE ANIMACIÓN OPTIMIZADAS
+    ======================================= */
+
+.animate-optimized {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.fade-in-optimized {
+    animation: fadeInOptimized 0.3s var(--ease-smooth) forwards;
+}
+
+.slide-in-optimized {
+    animation: slideInOptimized 0.3s var(--ease-smooth) forwards;
+}
+
+.scale-in-optimized {
+    animation: scaleInOptimized 0.3s var(--ease-smooth) forwards;
+}
+
+.spin-optimized {
+    animation: spinOptimized 1s linear infinite;
+}
+
+/* =======================================
+    HOVER EFFECTS OPTIMIZADOS
+    ======================================= */
+
+.hover-optimized {
+    transition: transform var(--transition-normal) var(--ease-smooth),
+                box-shadow var(--transition-normal) var(--ease-smooth);
+    will-change: transform, box-shadow;
+}
+
+.hover-optimized:hover {
+    transform: translateY(-2px) translateZ(0);
+    box-shadow: var(--shadow-hover-medium);
+}
+
+.hover-scale-optimized {
+    transition: transform var(--transition-normal) var(--ease-smooth);
+    will-change: transform;
+}
+
+.hover-scale-optimized:hover {
+    transform: scale(1.05) translateZ(0);
+}
+
+/* =======================================
+    RESPONSIVE OPTIMIZATIONS
+    ======================================= */
+
+/* Reducir efectos en dispositivos móviles */
+@media (max-width: 768px) {
+    .glassmorphism-optimized {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .hover-optimized:hover,
+    .hover-scale-optimized:hover {
+        transform: none;
+    }
+    
+    /* Reducir animaciones en móviles */
+    .animate-optimized {
+        animation-duration: 0.2s;
+    }
+}
+
+/* Respetar preferencias de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+    .animate-optimized,
+    .fade-in-optimized,
+    .slide-in-optimized,
+    .scale-in-optimized {
+        animation: none;
+    }
+    
+    .hover-optimized,
+    .hover-scale-optimized {
+        transition: none;
+    }
+    
+    .hover-optimized:hover,
+    .hover-scale-optimized:hover {
+        transform: none;
+    }
+}
+
+/* =======================================
+    UTILIDADES DE RENDIMIENTO
+    ======================================= */
+
+/* Forzar aceleración de hardware */
+.gpu-accelerated {
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+/* Optimizar para scroll suave */
+.smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Optimizar imágenes */
+.image-optimized {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    transform: translateZ(0);
+}
+
+/* =======================================
+    LAZY LOADING OPTIMIZATIONS
+    ======================================= */
+
+/* Placeholder para lazy loading */
+.lazy-placeholder {
+    background: linear-gradient(90deg, 
+        var(--glass-bg-light) 25%, 
+        var(--glass-bg-primary) 50%, 
+        var(--glass-bg-light) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Estados de carga optimizados */
+.loading-optimized {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading-optimized::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid var(--admin-primary);
+    border-radius: 50%;
+    animation: spinOptimized 1s linear infinite;
+}
+
+/* =======================================
+    PRINT OPTIMIZATIONS
+    ======================================= */
+
+@media print {
+    .glassmorphism-optimized,
+    .glassmorphism-lite {
+        background: white !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+    }
+    
+    .animate-optimized,
+    .hover-optimized,
+    .hover-scale-optimized {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
+/* =======================================
+    DARK MODE OPTIMIZATIONS
+    ======================================= */
+
+@media (prefers-color-scheme: dark) {
+    .glassmorphism-optimized {
+        background: rgba(0, 0, 0, 0.7);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .glassmorphism-lite {
+        background: rgba(0, 0, 0, 0.5);
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .lazy-placeholder {
+        background: linear-gradient(90deg, 
+            rgba(255, 255, 255, 0.1) 25%, 
+            rgba(255, 255, 255, 0.2) 50%, 
+            rgba(255, 255, 255, 0.1) 75%);
+    }
+}
+
+/* =======================================
+    ACCESSIBILITY OPTIMIZATIONS
+    ======================================= */
+
+/* Mejorar contraste para accesibilidad */
+.high-contrast {
+    filter: contrast(1.2);
+}
+
+/* Focus visible mejorado */
+.focus-optimized:focus-visible {
+    outline: 2px solid var(--admin-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(24, 132, 208, 0.2);
+}
+
+/* Texto más legible */
+.text-optimized {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* =======================================
+    CONTENIDO CRÍTICO
+    ======================================= */
+
+/* Estilos para contenido above-the-fold */
+.critical-content {
+    contain: layout style paint;
+    will-change: auto;
+}
+
+/* Optimizar fuentes */
+.font-optimized {
+    font-display: swap;
+    text-rendering: optimizeSpeed;
+}
+
+/* =======================================
+    GRID Y FLEXBOX OPTIMIZADOS
+    ======================================= */
+
+.grid-optimized {
+    display: grid;
+    contain: layout;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-6);
+}
+
+.flex-optimized {
+    display: flex;
+    contain: layout;
+    gap: var(--space-4);
+}
+
+/* =======================================
+    SCROLL OPTIMIZATIONS
+    ======================================= */
+
+.scroll-optimized {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--admin-primary) transparent;
+}
+
+.scroll-optimized::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scroll-optimized::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scroll-optimized::-webkit-scrollbar-thumb {
+    background: var(--admin-primary);
+    border-radius: 4px;
+}
+
+.scroll-optimized::-webkit-scrollbar-thumb:hover {
+    background: var(--admin-secondary);
+}

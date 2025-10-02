@@ -1,0 +1,2278 @@
+@import url('../variables.css');
+@import url('../base.css');
+
+/* =======================================
+RESET Y ESTILOS GENERALES
+   ======================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif; /* Usar Inter como fuente principal */
+}
+
+body {
+    background: var(--color-fondo) url(../../img/fondo.png) center/cover fixed no-repeat;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    color: var(--color-texto-claro);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+    font-family: var(--font-primary);
+}
+
+/* ===== ESTILOS ESPECÍFICOS PARA DASHBOARD ===== */
+/* Sección de Accesos Rápidos */
+.quick-access-section {
+    margin-bottom: 40px !important;
+}
+
+.section-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin-bottom: 30px !important;
+    padding: 20px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 15px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.section-icon {
+    width: 50px !important;
+    height: 50px !important;
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-size: 20px !important;
+}
+
+.section-title {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: white !important;
+    margin: 0 !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+}
+
+.section-subtitle {
+    color: rgba(255, 255, 255, 0.8) !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+}
+
+.quick-access-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+    gap: 25px !important;
+}
+
+/* Tarjetas de Acceso */
+.access-card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px) !important;
+    border-radius: 20px !important;
+    padding: 25px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    transition: all 0.3s ease !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.access-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+.access-card.featured {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)) !important;
+    border: 2px solid rgba(102, 126, 234, 0.3) !important;
+}
+
+.card-icon {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 24px !important;
+    color: white !important;
+    flex-shrink: 0 !important;
+}
+
+.card-icon.students {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+}
+
+.card-icon.users {
+    background: linear-gradient(135deg, #42a5f5, #1e88e5) !important;
+}
+
+.card-icon.sessions {
+    background: linear-gradient(135deg, #26c6da, #00acc1) !important;
+}
+
+.card-icon.reports {
+    background: linear-gradient(135deg, #ab47bc, #8e24aa) !important;
+}
+
+.card-content {
+    flex: 1 !important;
+}
+
+.card-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #2c3e50 !important;
+    margin: 0 0 8px 0 !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+}
+
+.card-description {
+    color: #7f8c8d !important;
+    font-size: 14px !important;
+    margin: 0 0 15px 0 !important;
+    line-height: 1.4 !important;
+}
+
+.card-stats {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 15px !important;
+    margin-bottom: 15px !important;
+}
+
+.stat-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 12px !important;
+    color: #667eea !important;
+    font-weight: 600 !important;
+}
+
+.card-actions {
+    display: flex !important;
+    gap: 10px !important;
+}
+
+.action-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 12px !important;
+    color: #667eea !important;
+    font-weight: 600 !important;
+}
+
+.action-btn a {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+.action-btn:hover {
+    color: #764ba2 !important;
+}
+
+.card-arrow {
+    color: #bdc3c7 !important;
+    font-size: 18px !important;
+    transition: all 0.3s ease !important;
+}
+
+.access-card:hover .card-arrow {
+    color: #667eea !important;
+    transform: translateX(5px) !important;
+}
+
+/* Sección de Actividad Reciente */
+.activity-section {
+    margin-bottom: 40px !important;
+}
+
+.activity-list {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px) !important;
+    border-radius: 20px !important;
+    padding: 25px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.activity-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    padding: 15px 0 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.activity-item:last-child {
+    border-bottom: none !important;
+}
+
+.activity-icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    color: white !important;
+    flex-shrink: 0 !important;
+}
+
+.activity-icon.login {
+    background: linear-gradient(135deg, #4caf50, #388e3c) !important;
+}
+
+.activity-icon.create {
+    background: linear-gradient(135deg, #2196f3, #1976d2) !important;
+}
+
+.activity-icon.update {
+    background: linear-gradient(135deg, #ff9800, #f57c00) !important;
+}
+
+.activity-content {
+    flex: 1 !important;
+}
+
+.activity-title {
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    margin: 0 0 4px 0 !important;
+    font-size: 14px !important;
+}
+
+.activity-description {
+    color: #7f8c8d !important;
+    font-size: 12px !important;
+    margin: 0 !important;
+}
+
+.activity-time {
+    color: #bdc3c7 !important;
+    font-size: 12px !important;
+    font-style: italic !important;
+}
+
+/* Responsive para Dashboard */
+@media (max-width: 768px) {
+    .quick-access-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .access-card {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 15px !important;
+    }
+    
+    .section-header {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 10px !important;
+    }
+    
+    .card-stats {
+        justify-content: center !important;
+    }
+}
+
+/* Capa de fondo para el menú (overlay y blur) */
+.capa {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Oscurece el fondo */
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px); /* Efecto de desenfoque */
+    z-index: 99; /* Por debajo del menú, por encima del contenido */
+    display: none; /* Oculto por defecto */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Activa la capa cuando el menú está abierto */
+#btn-menu:checked ~ .capa {
+    display: block;
+    visibility: visible;
+    /* Nueva animación de aparición */
+    animation: overlayFadeIn 0.45s ease forwards;
+}
+
+/* Animación fade-in + ligero zoom para el overlay */
+@keyframes overlayFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* HTML y Body */
+html, body {
+    height: 100%;
+}
+
+/* =======================================
+   HEADER Y NAVEGACIÓN
+   ======================================= */
+.header {
+    width: 100%;
+    padding: 15px 25px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background: rgba(163, 215, 255, 0.9); /* Pastel blue header to match public site */
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header .container {
+    width: 100%;
+    max-width: 1400px; /* Ancho máximo para el contenido del header */
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header .btn-menu label {
+    color: #1884d0; /* Azul primario para visibilidad */
+    font-size: 34px; /* Ligeramente más grande */
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.55); /* Pastilla translúcida */
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.header .btn-menu label:hover {
+    background-color: #1884d0;
+    color: #ffffff;
+}
+
+.header .btn-menu label:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* -- Override theme_modern which hides .btn-menu globally -- */
+.header .btn-menu{
+    display:block !important;
+}
+
+/* Ocultar el logo de Teaching Notes en el header */
+.header .logo {
+    display: flex; /* Muestra el logo */
+    align-items: center;
+}
+
+.header .logo-img {
+    height: 60px; /* Tamaño original del logo en el header */
+    width: auto;
+}
+
+/* Dropdown del usuario en el header */
+.user-profile-dropdown {
+    position: relative;
+}
+
+.header .user-profile-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #1884d0;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.header .user-profile-link:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.header .user-profile-link i {
+    transition: transform 0.3s ease;
+    font-size: 14px;
+    color: #1884d0 !important;
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+    min-width: 200px;
+    margin-top: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.user-dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-dropdown-menu .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #2c3e50;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.user-dropdown-menu .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.user-dropdown-menu .dropdown-item:hover {
+    background: rgba(163, 215, 255, 0.1);
+    color: #1884d0;
+}
+
+.user-dropdown-menu .dropdown-item i {
+    color: #1884d0 !important;
+    font-size: 16px;
+}
+
+.user-dropdown-menu .dropdown-item:hover i {
+    transform: scale(1.1);
+}
+
+/* =======================================
+   MENÚ LATERAL (SIDEBAR)
+   ======================================= */
+
+/* --- Sidebar Logo --- */
+.logo-img-sidebar {
+    height: 30px;
+    width: 30px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+}
+
+/* --- Override colors for new light background --- */
+.cont-menu nav .menu-item .menu-header,
+.cont-menu nav .submenu li a,
+.cont-menu nav .logout-item a {
+    color: var(--text-main);
+}
+
+.cont-menu nav .menu-item .menu-header:hover,
+.cont-menu nav .submenu li a:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Icon color tweaks */
+.cont-menu nav i {
+    color: #1884d0; /* primary blue accent */
+}
+
+/* Asegura que el texto de los enlaces sea oscuro y legible */
+.cont-menu nav .text {
+    color: var(--text-main);
+}
+
+#btn-menu {
+    display: none; /* Oculta el checkbox */
+}
+
+.container-menu {
+    position: fixed;
+    background: rgba(163, 215, 255, 0.25); /* Light pastel blue translucent background */
+    -webkit-backdrop-filter: blur(94.83333587646484px);
+    backdrop-filter: blur(94.83333587646484px);
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: -100%; /* Oculto a la izquierda por defecto */
+    transition: all 0.4s ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+    box-shadow: 5px 0 20px rgba(0, 0, 0, 0.4);
+    z-index: 101; /* Asegura que esté por encima del header al abrirse */
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+#btn-menu:checked ~ .container-menu {
+    left: 0;
+    opacity: 1;
+    visibility: visible;
+}
+
+.cont-menu {
+    width: 100%;
+    max-width: 320px; /* Ancho del menú ampliado */
+    overflow-y: auto; /* Scroll global si todo excede altura */
+    background: rgba(163, 215, 255, 0.25); /* Light pastel blue translucent background */
+    -webkit-backdrop-filter: blur(94.83333587646484px);
+    backdrop-filter: blur(94.83333587646484px);
+    height: 100vh;
+    position: relative;
+    transform: translateX(-100%); /* Para la animación de entrada */
+    transition: transform 0.4s ease-in-out;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+#btn-menu:checked ~ .container-menu .cont-menu {
+    transform: translateX(0%);
+}
+
+.cont-menu .ellipse-div {
+    position: absolute;
+    top: 30px; /* Aumentado de 20px a 30px para bajar más el botón */
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    width: 46px; /* Más grande para mejor alcance */
+    height: 46px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.75); /* Más opaco para contraste */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.cont-menu .ellipse-div:hover {
+    background-color: #1884d0;
+}
+
+.cont-menu .ellipse-div:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.cont-menu .ellipse-div label {
+    color: #1884d0; /* Color de icono consistente */
+    font-size: 28px;
+    line-height: 1;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cont-menu .ellipse-div:hover label {
+    color: #ffffff;
+}
+
+.cont-menu .teaching-notes {
+    color: #ecf0f1;
+    font-size: 22px;
+    margin-bottom: 40px;
+    margin-top: 20px;
+    font-family: 'Montserrat Alternates', sans-serif;
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.cont-menu nav {
+    width: 100%;
+    padding: 120px 15px 120px 15px; /* Aumentado de 100px a 120px para mayor separación del botón de cerrar */
+    flex-grow: 1; /* Permite que la navegación ocupe el espacio disponible */
+    overflow-y: auto; /* HABILITA EL SCROLL VERTICAL */
+    scrollbar-width: thin; /* Estilo de scrollbar para Firefox */
+    scrollbar-color: #888 rgb(255, 255, 255); /* Color del scrollbar para Firefox */
+}
+/* Chrome, Safari y Edge */
+.cont-menu nav::-webkit-scrollbar {
+    width: 8px;
+}
+.cont-menu nav::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+.cont-menu nav::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+/* Estilos para elementos de menú individuales y submenús */
+.cont-menu nav .menu-item {
+    margin-bottom: 20px; /* Aumentado de 10px a 20px para mejor espaciado */
+    border-radius: 8px;
+    overflow: hidden; /* Oculta el contenido del submenu cuando está colapsado */
+    position: relative; /* Necesario para el divisor pseudo-elemento */
+}
+
+.cont-menu nav .menu-item .menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Mayor separación del borde izquierdo */
+    padding: 12px 15px 12px 25px;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-left 0.3s ease;
+    border-radius: 8px;
+    /* Tarjeta blanca/translúcida */
+    background: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-bottom: 18px; /* Aumentado de 12px a 18px para mejor separación */
+}
+
+.cont-menu nav .menu-item .menu-header:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 5px solid #1884d0;
+}
+
+.cont-menu nav .menu-item .menu-header a {
+    color: var(--text-main); /* texto visible */
+    flex-grow: 1; /* Permite que el enlace ocupe el espacio */
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit; /* Hereda el color del menu-header */
+    
+    padding: 0; /* Reinicia el padding del <a> para que el menu-header lo controle */
+    margin: 0; /* Reinicia el margen del <a> */
+}
+.cont-menu nav .menu-item .menu-header a .text {
+    margin-left: 8px;
+    font-size: 18px;
+    flex: 1 1 auto; /* permite que crezca y se reduzca */
+    min-width: 0; /* necesario para que flexbox permita wrap */
+    white-space: normal; /* permite salto de línea */
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.cont-menu nav .menu-item .toggle-icon {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    margin-left: 10px;
+}
+
+.cont-menu nav .menu-item.active .toggle-icon {
+    transform: rotate(90deg); /* Gira el icono cuando el menú está activo */
+}
+
+.cont-menu nav .submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 0; /* Oculto por defecto */
+    overflow: hidden; /* Oculta el contenido que excede */
+    transition: max-height 0.4s ease-out; /* Transición para desplegar */
+    background-color: rgba(0, 0, 0, 0.1); /* Fondo ligero para el submenu */
+    border-radius: 0 0 8px 8px;
+}
+
+/* Desactiva divisor de banda para evitar rayas entre tarjetas */
+.cont-menu nav .menu-item:not(:last-child)::after {
+    display: none; /* eliminado */
+    /* content: ""; */
+    display: block;
+    height: 1px;
+    width: 80%; /* Ligero margen lateral */
+    background: rgba(255, 255, 255, 0.15);
+    margin: 10px auto; /* Centro del divisor */
+}
+
+.cont-menu nav .menu-item.active .submenu {
+    max-height: none; /* Permite que se expanda completamente */
+}
+
+.cont-menu nav .submenu li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 10px 15px 10px 40px; /* Indenta los sub-ítems */
+    color: var(--text-main); /* Dark text for readability */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.cont-menu nav .submenu li a:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+}
+
+.cont-menu nav .submenu li a .fas {
+    font-size: 0.9em;
+    margin-right: 10px;
+}
+
+/* Estilo para cerrar sesión (siempre visible al final) */
+.cont-menu nav .logout-item {
+    margin-top: 30px; /* Aumentado para mayor separación del último elemento del menú */
+    width: 100%;
+    padding: 0 15px; /* Mantén el padding para que el enlace no se pegue a los bordes */
+    margin-bottom: 30px; /* Aumentado para mejor espaciado del fondo */
+}
+
+.cont-menu nav .logout-item a {
+    color: #e74c3c !important; /* Estilo para cerrar sesión */
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centrar contenido en botón de cerrar sesión */
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    background-color: rgba(231, 76, 60, 0.1); /* Fondo sutil para el botón */
+    border: 1px solid #e74c3c;
+}
+
+.cont-menu nav .logout-item a:hover {
+    background-color: rgba(231, 76, 60, 0.3); /* Rojo más claro al pasar el ratón */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+}
+
+/* Animaciones de aparición para ítems de menú */
+.cont-menu .menu-item,
+.cont-menu .logout-item {
+    opacity: 1;                /* Visible por defecto */
+    transform: translateX(0);
+}
+
+/* Transición base para los ítems del menú */
+.cont-menu .menu-item,
+.cont-menu .logout-item {
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+/* Menú abierto: ítems visibles y en posición */
+#btn-menu:checked ~ .container-menu .menu-item,
+#btn-menu:checked ~ .container-menu .logout-item{
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Menú cerrado: ítems ocultos y desplazados */
+#btn-menu:not(:checked) ~ .container-menu .menu-item,
+#btn-menu:not(:checked) ~ .container-menu .logout-item{
+    opacity: 0;
+    transform: translateX(-25px);
+}
+
+/* Pequeño efecto de elevación al pasar el ratón */
+.cont-menu .menu-item .menu-header:hover,
+.cont-menu .logout-item a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255,255,255,0.08);
+}
+
+/* =======================================
+   CONTENIDO PRINCIPAL DEL DASHBOARD
+   ======================================= */
+main.admin-main-content {
+    flex-grow: 1;
+    padding: 120px 40px 40px 40px; /* Padding top para el header fijo */
+    margin-left: 0; /* Por defecto, sin margen */
+    transition: margin-left 0.4s ease-in-out;
+    position: relative;
+    z-index: 1;
+}
+
+/* Desplaza el contenido cuando el menú está abierto en pantallas más grandes */
+@media (min-width: 769px) {
+    #btn-menu:checked ~ main.admin-main-content {
+        margin-left: 280px;
+    }
+}
+
+main.admin-main-content h1 {
+    font-size: 3.2em;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    font-family: 'Montserrat Alternates', sans-serif;
+    color: #f0f0f0;
+}
+
+main.admin-main-content p {
+    font-size: 1.2em;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    text-align: center;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #000000;
+}
+
+/* Mensajes Flash */
+ul.flashes {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 800px;
+    text-align: left;
+}
+
+ul.flashes li {
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+ul.flashes li.success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+ul.flashes li.danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+ul.flashes li.warning {
+    background-color: #ffc107;
+    color: #333;
+}
+
+ul.flashes li.info {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+/* Dashboard Grid Layout */
+
+/* === Minimalistic Tiles Dashboard === */
+.tiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+    padding: 0 15px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tile {
+    background: var(--glass-bg);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 50px 25px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-main);
+    position: relative;
+}
+
+.tile:hover {
+transform: translateY(-6px);
+box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.tile-icon {
+font-size: 2.8em;
+margin-bottom: 18px;
+color: var(--primary);
+}
+
+.tile-title {
+    font-size: 1.4em;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color:#17a2b8;
+}
+
+.tile-text {
+    font-size: 1em;
+    color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+    .tiles-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    .tile {
+        padding: 40px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tiles-grid {
+        grid-template-columns: 1fr;
+    }
+    .tile {
+        padding: 35px 20px;
+    }
+}
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Columnas ajustables */
+    gap: 30px;
+    margin-top: 40px;
+    padding: 0 15px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Dashboard Card Style */
+.dashboard-card {
+    background: rgba(163, 215, 255, 0.25); /* Light pastel blue translucent background */
+    -webkit-backdrop-filter: blur(94.83333587646484px);
+    backdrop-filter: blur(94.83333587646484px);
+    border-radius: 15px;
+    padding: 35px;
+    color: #f0f0f0;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borde sutil */
+}
+
+.dashboard-card:hover {
+    transform: translateY(-12px) rotateX(3deg);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+}
+    
+.dashboard-card h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-family: 'Montserrat Alternates', sans-serif;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.dashboard-card h2 .fas {
+    font-size: 1.3em;
+    color: #82e0aa; /* Color de acento para los iconos en los títulos */
+}
+
+.dashboard-card p, .dashboard-card ul {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    line-height: 1.7;
+    color: #bdc3c7;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.dashboard-card ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.dashboard-card ul li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #ecf0f1;
+}
+.dashboard-card ul li .fas {
+    margin-top: 3px;
+    color: #82e0aa; /* Color para los iconos de lista */
+}
+
+.dashboard-button {
+    display: inline-flex; /* Para alinear ícono y texto */
+    align-items: center;
+    gap: 8px; /* Espacio entre ícono y texto */
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); /* Degradado azul */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(41, 128, 185, 0.4);
+    border: none;
+    cursor: pointer;
+}
+
+.dashboard-button:hover {
+    background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(41, 128, 185, 0.5);
+}
+
+.dashboard-button .fas {
+    font-size: 1.1em;
+}
+
+/* =======================================
+   ESTILOS PARA TABLAS Y ACCIONES DE TABLAS
+   (Unificado y Mejorado para Solicitudes y Usuarios)
+   ======================================= */
+.users-table-container,
+.requests-table-container {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    overflow-x: auto; /* Permite scroll horizontal en pantallas pequeñas */
+}
+
+.users-table,
+.requests-table {
+    width: 100%;
+    border-collapse: separate; /* Para que border-spacing funcione */
+    border-spacing: 0 10px; /* Espacio entre filas */
+    color: #ecf0f1;
+    min-width: 700px; /* Asegura que la tabla no se encoja demasiado */
+}
+
+.users-table th,
+.requests-table th {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #f0f0f0;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #2c3e50; /* Línea separadora */
+}
+
+.users-table td,
+.requests-table td {
+    background-color: rgba(255, 255, 255, 0.45);
+    padding: 15px;
+    border-bottom: 1px solid rgba(44, 62, 80, 0.5); /* Línea de tabla suave */
+    font-size: 0.95em;
+    vertical-align: middle; /* Alinea el contenido verticalmente */
+}
+
+.users-table tbody tr:last-child td,
+.requests-table tbody tr:last-child td {
+    border-bottom: none; /* Eliminar borde inferior de la última fila */
+}
+
+/* Badges de estado */
+.badge-status {
+    padding: 6px 12px; /* Un poco más de padding */
+    border-radius: 6px; /* Bordes ligeramente más suaves */
+    font-weight: bold;
+    font-size: 0.9em;
+    display: inline-flex; /* Usar flex para centrar contenido */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 90px; /* Ancho mínimo para consistencia */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Sombra sutil */
+}
+
+.badge-pending {
+    background-color: #f39c12; /* Naranja medio */
+    color: #fff;
+}
+
+.badge-approved {
+    background-color: #27ae60; /* Verde oscuro */
+    color: #fff;
+}
+
+.badge-rejected {
+    background-color: #c0392b; /* Rojo oscuro */
+    color: #fff;
+}
+
+/* =======================================
+   ESTILOS GENERALES DE BOTONES DE ACCIÓN
+   (Unificado y Reforzado para mejor alineación)
+   ======================================= */
+.action-button {
+    display: inline-flex; /* Crucial para alinear ícono y texto */
+    align-items: center;
+    justify-content: center; /* Centra el ícono y el texto horizontalmente */
+    padding: 10px 18px; /* Ajustado el padding */
+    border: none;
+    border-radius: 8px; /* Bordes más suaves */
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap; /* Evita que el texto se rompa */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    min-width: 130px; /* Aumentado el ancho mínimo para uniformidad */
+    max-width: 220px; /* Ancho máximo para evitar estiramientos */
+    flex-shrink: 0; /* Evita que los botones se encojan en flexbox */
+}
+
+.action-button i {
+    margin-right: 8px; /* Espacio entre el ícono y el texto */
+    font-size: 1em;
+}
+
+/* Colores y degradados */
+.action-button.approve {
+    background: linear-gradient(135deg, #27ae60, #2ecc71); /* Degradado verde */
+    color: #fff;
+}
+.action-button.approve:hover {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    box-shadow: 0 6px 16px rgba(46, 204, 113, 0.4);
+}
+
+.action-button.edit {
+    background: linear-gradient(135deg, #2980b9, #3498db); /* Degradado azul */
+    color: #fff;
+}
+.action-button.edit:hover {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+}
+
+.action-button.reject { /* Usado para 'Desactivar' usuarios */
+    background: linear-gradient(135deg, #d35400, #e67e22); /* Degradado naranja */
+    color: #fff;
+}
+.action-button.reject:hover {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    box-shadow: 0 6px 16px rgba(230, 126, 34, 0.4);
+}
+
+.action-button.delete-request { /* Usado para eliminar solicitudes y usuarios */
+    background: linear-gradient(135deg, #c0392b, #e74c3c); /* Degradado rojo */
+    color: #fff;
+}
+.action-button.delete-request:hover {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
+}
+
+.action-button.back {
+    background: linear-gradient(135deg, #7f8c8d, #95a5a6); /* Degradado gris */
+    color: #fff;
+}
+.action-button.back:hover {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    box-shadow: 0 6px 16px rgba(149, 165, 166, 0.4);
+}
+
+/* Estado deshabilitado para botones */
+.action-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+    background: linear-gradient(135deg, #555, #666) !important; /* Más plano y oscuro */
+    color: #bbb !important;
+    transform: none !important; /* No se mueve al pasar el ratón */
+}
+.action-button:disabled:hover {
+    background: linear-gradient(135deg, #555, #666) !important;
+    box-shadow: none !important;
+}
+
+
+/* Clase para agrupar botones en fila con espaciado uniforme */
+.button-group-row {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los botones salten de línea si no hay espacio */
+    gap: 12px; /* Espacio entre los botones */
+    justify-content: center; /* Centra los botones en la celda/contenedor */
+    align-items: center;
+    margin: 0 auto; /* Centra el grupo de botones si el contenedor es más grande */
+}
+
+.inline-form {
+    margin: 0;
+    padding: 0;
+    display: flex; /* Para que el botón dentro se alinee correctamente */
+}
+
+/* =======================================
+   ESTILOS MODERNOS PARA FORMULARIOS
+   ======================================= */
+.form-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 40px;
+    margin-top: 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.form-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 20px 20px 0 0;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: #34495e;
+    font-weight: 600;
+    font-size: 0.95em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-label i {
+    color: #667eea;
+    font-size: 1.1em;
+}
+
+/* Estilos modernos para todos los inputs */
+.form-control,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="search"],
+textarea,
+select {
+    width: 100%;
+    max-width: 450px;
+    padding: 12px 15px;
+    border: 2px solid rgba(163, 215, 255, 0.3);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #2c3e50;
+    font-size: 1em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    margin: 0 auto;
+    display: block;
+}
+
+.form-control:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+input[type="search"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #667eea;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 8px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.form-control::placeholder,
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="search"]::placeholder,
+textarea::placeholder {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+/* Custom Select modernizado */
+.select-with-arrow {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    display: block;
+}
+
+.select-with-arrow select.form-control,
+select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+.select-with-arrow select.form-control:hover,
+select:hover {
+    border-color: #667eea;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.select-with-arrow::after {
+    display: none; /* Removemos la flecha de Font Awesome */
+}
+
+/* Estilo para las opciones del select */
+.form-control option,
+select option {
+    background-color: #ffffff;
+    color: #2c3e50;
+    padding: 8px 12px;
+}
+
+/* Textarea modernizado */
+textarea {
+    min-height: 120px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+/* Botones de envío modernizados */
+.submit-button,
+button[type="submit"],
+input[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+    text-decoration: none;
+    margin: 10px 5px;
+}
+
+.submit-button:hover,
+button[type="submit"]:hover,
+input[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.cancel-button,
+.btn-cancel {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(149, 165, 166, 0.3);
+    text-decoration: none;
+    margin: 10px 5px;
+}
+
+.cancel-button:hover,
+.btn-cancel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
+}
+
+/* Estilos para el perfil de usuario (card) */
+.profile-card-layout {
+    background: rgba(163, 215, 255, 0.25); /* Light pastel blue translucent background */
+    -webkit-backdrop-filter: blur(94.83333587646484px);
+    backdrop-filter: blur(94.83333587646484px);
+    border-radius: 15px;
+    padding: 35px;
+    color: #f0f0f0;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 600px;
+    margin: 40px auto;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #34495e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 25px auto;
+    font-size: 4em;
+    color: #82e0aa;
+    border: 3px solid #82e0aa;
+    box-shadow: 0 0 15px rgba(130, 224, 170, 0.5);
+}
+
+.profile-details {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.profile-details p {
+    font-size: 1.1em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #bdc3c7;
+}
+
+.profile-details p strong {
+    color: #f0f0f0;
+    font-weight: 600;
+    min-width: 90px; /* Alinea los dos puntos */
+    display: inline-block;
+}
+
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+/* =======================================
+   RESPONSIVE
+   ======================================= */
+@media (max-width: 1024px) {
+    main.admin-main-content {
+        padding: 100px 30px 30px 30px;
+    }
+    .cont-menu {
+        max-width: 250px;
+    }
+    .dashboard-card {
+        padding: 30px;
+    }
+    .dashboard-card h2 {
+        font-size: 1.8em;
+    }
+    .dashboard-card p, .dashboard-card ul {
+        font-size: 1em;
+    }
+    .users-table, .requests-table {
+        min-width: 600px; /* Ajuste para tablets */
+    }
+}
+
+/* ==== Dashboard Metrics Extras ==== */
+.stat-number {
+    font-size: 3.4em;
+    font-weight: 700;
+    margin-top: 15px;
+    color: var(--text-white);
+    text-shadow: 0 2px 6px rgba(0,0,0,.4);
+}
+
+.tile {
+    position: relative; /* para badge */
+}
+.tile-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--danger);
+    color: #fff;
+    border-radius: 50%;
+    min-width: 38px;
+    min-height: 38px;
+    padding: 6px 0;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,.35);
+    font-size: .9em;
+}
+
+.tile-badge::after { content: ""; }
+
+/* ==== Tarjetas Dashboard mejoradas ==== */
+.dashboard-card{
+    position:relative;
+    overflow:hidden;
+    background:var(--glass-bg);
+    -webkit-backdrop-filter:blur(16px) saturate(160%);
+    backdrop-filter:blur(16px) saturate(160%);
+    border:1px solid var(--glass-border);
+    border-radius:20px;
+    padding:55px 35px;
+    text-align:center;
+    color:var(--text-white);
+    transition:transform .35s ease, box-shadow .35s ease;
+    box-shadow:0 10px 28px rgba(0,0,0,.35);
+}
+.dashboard-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(130deg,rgba(255,255,255,.08) 10%,rgba(255,255,255,.01) 60%);
+    pointer-events:none;
+}
+.dashboard-card:hover{
+    transform:translateY(-14px) rotateX(3deg);
+    box-shadow:0 18px 38px rgba(0,0,0,.5);
+}
+.dashboard-card h2{
+    font-size:2.2em;
+    margin-bottom:18px;
+    display:flex;align-items:center;justify-content:center;gap:12px;
+    font-family:'Montserrat Alternates',sans-serif;
+    color:var(--text-white);
+}
+
+/* === Botones Genéricos Modernizados === */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    font-size: 0.95em;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+    color: white;
+}
+
+.btn-secondary:hover {
+    box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    color: white;
+}
+
+.btn-success:hover {
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.btn-danger:hover {
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+.btn-info {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    color: white;
+}
+
+.btn-info:hover {
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+}
+
+.btn-warning {
+    background: linear-gradient(45deg, #f39c12, #e67e22);
+    color: white;
+}
+
+.btn-warning:hover {
+    box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
+}
+
+/* Tamaños de botones */
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.85em;
+}
+
+.btn-lg {
+    padding: 16px 28px;
+    font-size: 1.1em;
+}
+
+/* === BOTONES ESPECÍFICOS ADICIONALES === */
+
+/* Botones de acción en tablas */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-width: 40px;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn-action.edit {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    color: white;
+}
+
+.btn-action.edit:hover {
+    box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+}
+
+.btn-action.activate {
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    color: white;
+}
+
+.btn-action.activate:hover {
+    box-shadow: 0 6px 15px rgba(39, 174, 96, 0.4);
+}
+
+.btn-action.deactivate {
+    background: linear-gradient(45deg, #f39c12, #e67e22);
+    color: white;
+}
+
+.btn-action.deactivate:hover {
+    box-shadow: 0 6px 15px rgba(243, 156, 18, 0.4);
+}
+
+.btn-action.delete {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.btn-action.delete:hover {
+    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+}
+
+.btn-action:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Botones primarios alternativos */
+.btn-primary,
+.action-btn.primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover,
+.action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Botones secundarios alternativos */
+.action-btn.secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 6px 15px rgba(149, 165, 166, 0.3);
+}
+
+.action-btn.secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
+}
+
+/* Botones de refresh y filtros específicos */
+.btn-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(39, 174, 96, 0.3);
+}
+
+.btn-refresh:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+}
+
+.btn-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 18px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-filter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 18px;
+    background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    box-shadow: 0 6px 15px rgba(149, 165, 166, 0.3);
+}
+
+.btn-clear:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(149, 165, 166, 0.4);
+}
+
+/* Contenedor de botones de acción */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Header actions */
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-actions h2 {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+}
+
+/* === ESTILOS MODERNOS PARA FILTROS DE BÚSQUEDA === */
+.filter-form {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 20px 20px 0 0;
+}
+
+.filter-form .filter-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(163, 215, 255, 0.3);
+}
+
+.filter-form .filter-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.filter-form .filter-icon i {
+    font-size: 1.5em;
+    color: white;
+}
+
+.filter-form .filter-title {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+}
+
+/* Nueva rejilla interna responsive */
+.filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    align-items: end;
+}
+
+.filter-form .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.filter-row .filter-group.actions {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+.filter-form label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95em;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-form label i {
+    color: #667eea;
+    font-size: 1.1em;
+}
+
+/* Estilos modernos para inputs */
+.filter-form input[type="date"],
+.filter-form input[type="text"],
+.filter-form select {
+    padding: 12px 15px;
+    border: 2px solid rgba(163, 215, 255, 0.3);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #2c3e50;
+    font-size: 1em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.filter-form input[type="date"]:focus,
+.filter-form input[type="text"]:focus,
+.filter-form select:focus {
+    outline: none;
+    border-color: #667eea;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), 0 8px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.filter-form input[type="text"]::placeholder {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+/* Estilos para select personalizado */
+.filter-form select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+.filter-form select:hover {
+    border-color: #667eea;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Botones modernos */
+.filter-form .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.filter-form .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.filter-form .btn-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+}
+
+.filter-form .btn-primary:hover {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.filter-form .btn-secondary {
+    background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+    color: white;
+}
+
+.filter-form .btn-secondary:hover {
+    box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
+}
+
+.filter-form .btn-success {
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    color: white;
+}
+
+.filter-form .btn-success:hover {
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+}
+
+/* Responsive design para filtros */
+@media (max-width: 768px) {
+    .filter-form {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .filter-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .filter-row .filter-group.actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .filter-form .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-form .filter-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .filter-form .filter-title {
+        font-size: 1.3em;
+    }
+}
+.pagination-controls{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 25px 0;
+}
+.pagination-controls span{
+    color: #ecf0f1;
+}
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 15px;
+    }
+    .header .btn-menu label {
+        font-size: 28px;
+    }
+    .header .user-profile-link span {
+        display: none; /* Oculta el texto "Hola, [Usuario]" en móviles pequeños */
+    }
+
+    .container-menu {
+        justify-content: flex-start;
+    }
+    .cont-menu {
+        max-width: 300px; /* Ancho ligeramente mayor en móvil */
+        padding-top: 15px;
+    }
+    .cont-menu .ellipse-div {
+        top: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    /* Estilos del menú para enlaces y texto */
+    .cont-menu nav .menu-item .menu-header a .text,
+    .cont-menu nav .submenu li a .text {
+        font-size: 16px;
+    }
+    .cont-menu nav .menu-item .menu-header,
+    .cont-menu nav .submenu li a {
+        padding: 10px 12px;
+    }
+    
+    main.admin-main-content {
+        padding: 90px 20px 20px 20px;
+        margin-left: 0; /* Siempre 0 en móvil, el menú se superpone */
+    }
+    /* En móvil, el menú se superpone, no desplaza el contenido */
+    #btn-menu:checked ~ main.admin-main-content {
+        margin-left: 0;
+    }
+
+    main.admin-main-content h1 {
+        font-size: 2.5em;
+    }
+    main.admin-main-content p {
+        font-size: 1.1em;
+        margin-bottom: 30px;
+    }
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Una columna por tarjeta en móvil */
+        gap: 25px;
+    }
+    .dashboard-card {
+        padding: 25px;
+    }
+    .dashboard-card h2 {
+        font-size: 1.6em;
+    }
+    .dashboard-button {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+
+    /* Contenido de sección (tablas y formularios) */
+    .content-section {
+        margin: 20px auto;
+        padding: 15px;
+        width: 100%;
+    }
+    .section-title {
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+    .form-label {
+        font-size: 1em;
+    }
+    .form-control, .select-with-arrow, .form-card {
+        max-width: 100%; /* Permite que ocupen todo el ancho disponible */
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .form-control {
+        padding: 10px 12px;
+    }
+
+    /* Botones de acción en móvil: apilados y ocupando todo el ancho */
+    .button-group-row {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch; /* Estira los elementos para que ocupen todo el ancho */
+    }
+    .action-button {
+        width: 100%; /* Ocupa todo el ancho disponible */
+        justify-content: center; /* Centra el contenido */
+        min-width: unset; /* Reinicia el min-width */
+        max-width: unset; /* Reinicia el max-width */
+    }
+
+    /* Ocultar algunas columnas en la tabla para pantallas pequeñas */
+    /* Estas reglas son generales, ajústalas según tus necesidades exactas */
+    .users-table th:nth-child(3), /* Columna Nombre */
+    .users-table td:nth-child(3),
+    .users-table th:nth-child(4), /* Columna Apellido (si existe) */
+    .users-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .header .user-profile-link { /* Solo el icono de usuario visible */
+        gap: 0;
+        padding: 8px;
+    }
+    .header .btn-menu label {
+        font-size: 24px;
+    }
+    main.admin-main-content h1 {
+        font-size: 2em;
+    }
+    main.admin-main-content p {
+        font-size: 1em;
+    }
+    .dashboard-card h2 {
+        font-size: 1.4em;
+    }
+    .dashboard-card {
+        padding: 20px;
+    }
+    .profile-card-layout {
+        padding: 25px;
+    }
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        font-size: 3.5em;
+    }
+    .profile-details p {
+        font-size: 1em;
+        flex-direction: column; /* Apila detalles en pantallas muy pequeñas */
+        align-items: flex-start;
+        gap: 5px;
+    }
+    .profile-details p strong {
+        min-width: unset; /* Ya no es necesario alinear */
+    }
+}

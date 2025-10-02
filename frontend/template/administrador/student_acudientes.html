@@ -1,0 +1,532 @@
+{% extends 'administrador/base_admin.html' %}
+
+{% block title %}Gestión de Acudientes - {{ student.nombre }} {{ student.apellido }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Glassmorphism styles */
+body, html {
+    background: url("{{ url_for('static', filename='img/fondo.png') }}") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    min-height: 100vh !important;
+}
+
+.acudientes-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.page-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 25px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.header-icon i {
+    font-size: 2em;
+    color: white;
+}
+
+.header-text h1 {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 2.2em;
+    font-weight: 800;
+    color: #2c3e50;
+    margin: 0 0 5px 0;
+    text-shadow: 0 2px 10px rgba(255,255,255,0.5);
+}
+
+.header-text p {
+    color: #34495e;
+    font-size: 1.1em;
+    margin: 0;
+}
+
+.btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(45deg, #6c757d, #495057);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+}
+
+.btn-back:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(108, 117, 125, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.acudientes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.acudientes-section, .assign-section {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 25px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.section-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #74b9ff, #0984e3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(116, 185, 255, 0.3);
+}
+
+.section-icon i {
+    font-size: 1.3em;
+    color: white;
+}
+
+.section-title {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.acudiente-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.acudiente-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.acudiente-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.acudiente-details h4 {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 5px 0;
+}
+
+.acudiente-details p {
+    color: #34495e;
+    margin: 2px 0;
+    font-size: 0.9em;
+}
+
+.relation-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.relation-badge.principal {
+    background: linear-gradient(45deg, #00b894, #00a085);
+    color: white;
+}
+
+.relation-badge.secundario {
+    background: linear-gradient(45deg, #fdcb6e, #e17055);
+    color: white;
+}
+
+.acudiente-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.action-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.8em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-change {
+    background: linear-gradient(45deg, #74b9ff, #0984e3);
+    color: white;
+}
+
+.btn-remove {
+    background: linear-gradient(45deg, #e17055, #d63031);
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    color: white;
+}
+
+.assign-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9em;
+}
+
+.form-select, .form-input {
+    padding: 12px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #2c3e50;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus, .form-input:focus {
+    outline: none;
+    border-color: rgba(102, 126, 234, 0.5);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-assign {
+    padding: 12px 25px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-assign:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-assign:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 3em;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.limit-info {
+    background: linear-gradient(135deg, rgba(23, 162, 184, 0.15) 0%, rgba(23, 162, 184, 0.05) 100%);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(23, 162, 184, 0.3);
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.limit-info i {
+    color: #17a2b8;
+    font-size: 1.2em;
+}
+
+.limit-info p {
+    margin: 0;
+    color: #0c5460;
+    font-weight: 500;
+}
+
+.field-help {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85em;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.field-help strong {
+    color: #495057;
+}
+
+@media (max-width: 768px) {
+    .acudientes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .acudiente-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .acudiente-actions {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="acudientes-container">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-user-friends"></i>
+            </div>
+            <div class="header-text">
+                <h1>Gestión de Acudientes</h1>
+                <p>{{ student.nombre }} {{ student.apellido }} - {{ student.grado }}</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_bp.listar_estudiantes') }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Volver a Estudiantes
+            </a>
+        </div>
+    </div>
+
+    <!-- Información del límite -->
+    <div class="limit-info">
+        <i class="fas fa-info-circle"></i>
+        <p>Cada estudiante puede tener máximo 2 acudientes: uno principal y uno secundario. 
+           Actualmente tiene {{ current_count }}/2 acudientes asignados.</p>
+    </div>
+
+    <div class="acudientes-grid">
+        <!-- Acudientes Actuales -->
+        <div class="acudientes-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="section-title">Acudientes Asignados</h3>
+            </div>
+
+            {% if acudientes %}
+                {% for acudiente in acudientes %}
+                <div class="acudiente-card">
+                    <div class="acudiente-info">
+                        <div class="acudiente-details">
+                            <h4>{{ acudiente.nombre }} {{ acudiente.apellido }}</h4>
+                            <p><i class="fas fa-envelope"></i> {{ acudiente.correo }}</p>
+                            {% if acudiente.cedula %}
+                                <p><i class="fas fa-id-card"></i> {{ acudiente.cedula }}</p>
+                            {% endif %}
+                            {% if acudiente.ppt %}
+                                <p><i class="fas fa-passport"></i> {{ acudiente.ppt }}</p>
+                            {% endif %}
+                            <p><i class="fas fa-calendar"></i> Asignado: {{ acudiente.fecha_asignacion.strftime('%d/%m/%Y') }}</p>
+                        </div>
+                        <div class="relation-badge {{ acudiente.tipo_relacion }}">
+                            {{ acudiente.tipo_relacion }}
+                        </div>
+                    </div>
+                    
+                    <div class="acudiente-actions">
+                        <!-- Cambiar tipo -->
+                        <form method="POST" action="{{ url_for('student_acudiente_bp.cambiar_tipo_acudiente', student_id=student.id, acudiente_id=acudiente.acudiente_id) }}" style="display: inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="new_type" value="{{ 'secundario' if acudiente.tipo_relacion == 'principal' else 'principal' }}">
+                            <button type="submit" class="action-btn btn-change" 
+                                    onclick="return confirm('¿Cambiar a {{ 'secundario' if acudiente.tipo_relacion == 'principal' else 'principal' }}?')">
+                                <i class="fas fa-exchange-alt"></i>
+                                Cambiar a {{ 'Secundario' if acudiente.tipo_relacion == 'principal' else 'Principal' }}
+                            </button>
+                        </form>
+                        
+                        <!-- Remover -->
+                        <form method="POST" action="{{ url_for('student_acudiente_bp.remover_acudiente', student_id=student.id, acudiente_id=acudiente.acudiente_id) }}" style="display: inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="action-btn btn-remove" 
+                                    onclick="return confirm('¿Está seguro de remover este acudiente?')">
+                                <i class="fas fa-trash"></i>
+                                Remover
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-user-slash"></i>
+                    <h4>Sin acudientes asignados</h4>
+                    <p>Este estudiante no tiene acudientes asignados aún.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Asignar Nuevo Acudiente -->
+        <div class="assign-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h3 class="section-title">Asignar Acudiente</h3>
+            </div>
+
+            {% if can_add_more and available_acudientes %}
+                <form method="POST" action="{{ url_for('student_acudiente_bp.asignar_acudiente', student_id=student.id) }}" class="assign-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    
+                    <div class="form-group">
+                        <label for="acudiente_id">Seleccionar Acudiente</label>
+                        <select id="acudiente_id" name="acudiente_id" class="form-select" required>
+                            <option value="">-- Seleccione un acudiente --</option>
+                            {% for acudiente in available_acudientes %}
+                                <option value="{{ acudiente.id }}">
+                                    {{ acudiente.nombre }} {{ acudiente.apellido }} - {{ acudiente.correo }}
+                                    {% if acudiente.cedula %} ({{ acudiente.cedula }}){% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tipo_relacion">Tipo de Relación</label>
+                        <select id="tipo_relacion" name="tipo_relacion" class="form-select" required>
+                            {% if current_count == 0 %}
+                                <option value="principal" selected>Principal</option>
+                                <option value="secundario">Secundario</option>
+                            {% else %}
+                                <option value="principal">Principal</option>
+                                <option value="secundario" selected>Secundario</option>
+                            {% endif %}
+                        </select>
+                        <small class="field-help">
+                            <strong>Principal:</strong> Acudiente principal del estudiante. 
+                            <strong>Secundario:</strong> Acudiente de apoyo o suplente.
+                        </small>
+                    </div>
+                    
+                    <button type="submit" class="btn-assign">
+                        <i class="fas fa-plus"></i>
+                        Asignar Acudiente
+                    </button>
+                </form>
+            {% elif not can_add_more %}
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Límite alcanzado</h4>
+                    <p>Este estudiante ya tiene el máximo de 2 acudientes asignados.</p>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-user-times"></i>
+                    <h4>No hay acudientes disponibles</h4>
+                    <p>Todos los acudientes ya están asignados a este estudiante.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'profesor/base_profesor.html' %}
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:700px;margin:auto;">
+    <h2 style="color:#1884d0;font-weight:600;margin-bottom:25px;">Mi Perfil</h2>
+    <form action="{{ url_for('obs_bp.perfil_profesor') }}" method="POST" style="background:#fff;border-radius:12px;padding:25px;box-shadow:0 4px 20px rgba(0,0,0,0.05);">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div>
+                <label style="font-weight:500;color:#333;">Nombre</label>
+                <input type="text" name="nombre" value="{{ user.nombre }}" required style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;">
+            </div>
+            <div>
+                <label style="font-weight:500;color:#333;">Apellido</label>
+                <input type="text" name="apellido" value="{{ user.apellido }}" required style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;">
+            </div>
+        </div>
+        <div style="margin-top:20px;">
+            <label style="font-weight:500;color:#333;">Correo</label>
+            <input type="email" name="correo" value="{{ user.correo }}" required style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;">
+        </div>
+        <div style="text-align:right;margin-top:25px;">
+            <button type="submit" class="submit-button" style="background:linear-gradient(135deg,#42a5f5,#1976d2);color:#fff;padding:10px 25px;border:none;border-radius:8px;font-weight:600;cursor:pointer;">Guardar Cambios</button>
+        </div>
+    </form>
+
+    <h3 id="cambiar" style="color:#1884d0;font-weight:600;margin:40px 0 20px 0;">Cambiar Contraseña</h3>
+    <form action="{{ url_for('obs_bp.cambiar_contrasena_profesor') }}" method="POST" style="background:#fff;border-radius:12px;padding:25px;box-shadow:0 4px 20px rgba(0,0,0,0.05);">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div style="margin-bottom:18px;">
+            <label style="font-weight:500;color:#333;">Contraseña Actual</label>
+            <input type="password" name="contrasena_actual" required style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;">
+        </div>
+        <div style="margin-bottom:18px;">
+            <label style="font-weight:500;color:#333;">Nueva Contraseña</label>
+            <input type="password" name="nueva_contrasena" required style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;">
+        </div>
+        <div style="margin-bottom:18px;">
+            <label style="font-weight:500;color:#333;">Confirmar Contraseña</label>
+            <input type="password" name="confirmar_contrasena" required style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;">
+        </div>
+        <div style="text-align:right;">
+            <button type="submit" class="submit-button" style="background:linear-gradient(135deg,#66bb6a,#43a047);color:#fff;padding:10px 25px;border:none;border-radius:8px;font-weight:600;cursor:pointer;">Actualizar Contraseña</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

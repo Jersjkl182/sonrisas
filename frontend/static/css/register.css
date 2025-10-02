@@ -1,0 +1,265 @@
+/* =======================================
+PÁGINA DE REGISTRO
+======================================= */
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px);
+    padding-top: 40px; /* Reducido aún más el padding-top */
+    padding-bottom: 40px;
+    position: relative;
+    z-index: 2;
+    flex-grow: 1;
+}
+
+/* Blur fondo principal (Formulario de Registro) */
+.blur-fondo {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    padding: 36px 40px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.18);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    backdrop-filter: blur(18px) saturate(180%);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    z-index: 10;
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+/* Estilos del formulario */
+.form-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #23272f;
+    letter-spacing: 0;
+}
+
+.form-subtitle {
+    color: #e0e0e0;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.registro-form {
+    display: grid;
+    grid-template-columns: 1fr; /* Por defecto, una columna */
+    grid-gap: 20px;
+}
+
+@media (min-width: 769px) {
+    .registro-form {
+        grid-template-columns: 1fr 1fr; /* Dos columnas en pantallas grandes */
+    }
+
+    /* Coloca los elementos en las columnas correctas */
+    .registro-form .form-group:nth-child(1) { /* Nombre */
+        grid-column: 1;
+    }
+
+    .registro-form .form-group:nth-child(2) { /* Correo electrónico */
+        grid-column: 2;
+    }
+
+    .registro-form .form-group:nth-child(3) { /* Número celular */
+        grid-column: 1;
+    }
+
+    .registro-form .form-group:nth-child(4) { /* Nombre del colegio */
+        grid-column: 2;
+    }
+
+    .registro-form .form-group:nth-child(5), /* Cantidad de estudiantes */
+    .form-actions {
+        grid-column: span 2; /* Ocupan ambas columnas */
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.form-group label i {
+    margin-right: 8px;
+    color: #555;
+}
+
+.form-group input {
+    padding: 14px 18px;
+    border: 1px solid #bfc9e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    background: rgba(255,255,255,0.85);
+    box-shadow: none;
+    color: #23272f;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #6e8efb;
+    box-shadow: 0 0 0 4px rgba(110, 142, 251, 0.18);
+    background: #fff;
+}
+
+.form-group input::placeholder {
+    color: #aaa;
+}
+
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Actualización para el botón de envío (btn-registrar) */
+.btn-registrar {
+    width: 100%;
+    padding: 10px 28px;
+    background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    margin-bottom: 20px;
+    box-shadow: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: 0.2px;
+}
+
+.btn-registrar:hover {
+    background: linear-gradient(135deg, #a777e3 0%, #6e8efb 100%);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: none;
+}
+
+.btn-registrar:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(79, 112, 233, 0.3);
+}
+
+.btn-registrar:disabled {
+    background: linear-gradient(135deg, #a0b0f8 0%, #8ca0e9 100%);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.login-link {
+    margin-top: 20px;
+    color: #555;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.login-link:hover {
+    color: #4a6bff;
+    text-decoration: underline;
+}
+
+/* ===================== */
+/* Responsive - ESPECÍFICOS DE REGISTRO */
+/* ===================== */
+@media (max-width: 768px) {
+    .main-content {
+        padding-top: 80px; /* Ajustado para móviles */
+    }
+
+    .blur-fondo {
+        max-width: 90%;
+        padding: 25px 20px;
+    }
+
+    .form-title {
+        font-size: 24px;
+    }
+
+    .form-subtitle {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .registro-form {
+        grid-template-columns: 1fr; /* Volver a una columna en tablets */
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
+
+    .form-group input {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .btn-registrar {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding-top: 60px; /* Ajustado para móviles pequeños */
+    }
+
+    .blur-fondo {
+        max-width: 95%;
+        padding: 20px 15px;
+    }
+
+    .form-title {
+        font-size: 20px;
+    }
+
+    .form-subtitle {
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+    }
+
+    .form-group input {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .btn-registrar {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-image: url('../img/FondoTeachingNotes2.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    color: #23272f;
+}
+
+.blur-fondo, .form-title, .form-subtitle, .flash-messages {
+    color: #fff;
+}

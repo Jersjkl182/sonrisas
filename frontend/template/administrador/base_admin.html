@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Panel de Administrador - ESTUDIANTES ACTIVO{% endblock %}</title>
+    <!-- Fuentes y iconos -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat+Alternates:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- CSS consolidado del administrador -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/administrador/admin_consolidated.css') }}">
+    
+    <!-- CSS adicional según la página -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="btn-menu">
+            <label for="btn-menu"><i class="fa-solid fa-bars"></i></label>
+        </div>
+        <div class="user-profile-dropdown">
+            <button class="user-profile-link" id="userProfileBtn">
+                <span>Hola, {{ session.get('nombre', session.get('correo', 'Administrador').split('@')[0]) }}</span>
+                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="user-dropdown-menu" id="userDropdownMenu">
+                <a href="{{ url_for('admin_bp.perfil_usuario') }}" class="dropdown-item">
+                    <i class="fas fa-user"></i>
+                    <span>Mi Perfil</span>
+                </a>
+                <!-- Funcionalidad "Cambiar Contraseña" removida temporalmente -->
+                <a href="{{ url_for('admin_bp.admin') }}" class="dropdown-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <hr class="dropdown-divider">
+                <a href="{{ url_for('auth_bp.cerrar_sesion') }}" class="dropdown-item logout-item" onclick="return confirm('¿Cerrar sesión?');">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="capa"></div>
+
+<input type="checkbox" id="btn-menu">
+<div class="container-menu">
+    <div class="cont-menu">
+        <center>
+            <nav>
+                <div class="ellipse-div">
+                    <label for="btn-menu">❮</label>
+                </div>
+<!-- Enlace directo a la página principal del panel -->
+<div class="menu-item">
+    <div class="menu-header">
+        <a href="{{ url_for('admin_bp.admin') }}"><i class="fas fa-home"></i><span class="text">Inicio</span></a>
+    </div>
+</div>
+                
+                <div class="menu-item collapsible">
+                    <div class="menu-header">
+                        <a href="#"><i class="fas fa-users"></i><span class="text">Gestión de usuarios</span></a>
+                        <i class="fas fa-chevron-right toggle-icon"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="{{ url_for('admin_bp.ver_usuarios_admin') }}"><i class="fas fa-eye"></i><span class="text">Ver Usuarios</span></a></li>
+                        <li><a href="{{ url_for('admin_bp.crear_usuario_admin') }}"><i class="fas fa-user-plus"></i><span class="text">Crear Nuevo Usuario</span></a></li>
+                    </ul>
+                </div>
+
+                <!-- ========== GESTIÓN DE ESTUDIANTES - MEJORADO 30/09/2025 ========== -->
+                <div class="menu-item collapsible">
+                    <div class="menu-header">
+                        <a href="#"><i class="fas fa-user-graduate"></i><span class="text">Gestión de Estudiantes</span></a>
+                        <i class="fas fa-chevron-right toggle-icon"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="{{ url_for('admin_bp.listar_estudiantes') }}"><i class="fas fa-list"></i><span class="text">Ver Todos los Estudiantes</span></a></li>
+                        <li><a href="{{ url_for('admin_bp.crear_estudiante') }}"><i class="fas fa-plus"></i><span class="text">Crear Nuevo Estudiante</span></a></li>
+                    </ul>
+                </div>
+
+
+                <!-- ========== REPORTES Y AUDITORÍA ========== -->
+                <div class="menu-item collapsible">
+                    <div class="menu-header">
+                        <a href="#"><i class="fas fa-chart-bar"></i><span class="text">Reportes y Auditoría</span></a>
+                        <i class="fas fa-chevron-right toggle-icon"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="{{ url_for('admin_bp.ver_sesiones') }}"><i class="fas fa-clock"></i><span class="text">Bitácora de Sesiones</span></a></li>
+                        <li><a href="{{ url_for('admin_bp.ver_auditoria') }}"><i class="fas fa-clipboard-list"></i><span class="text">Auditoría de Usuarios</span></a></li>
+                        <li><a href="{{ url_for('admin_bp.auditoria_completa') }}"><i class="fas fa-chart-line"></i><span class="text">Auditoría Completa</span></a></li>
+                    </ul>
+                </div>
+                
+                <!-- ========== CERRAR SESIÓN ========== -->
+                <div class="menu-item logout-item">
+                    <div class="menu-header">
+                        <a href="{{ url_for('auth_bp.cerrar_sesion') }}" id="logout-link" onclick="return confirm('¿Cerrar sesión?');"><i class="fas fa-sign-out-alt"></i><span class="text">Cerrar Sesión</span></a>
+                    </div>
+                </div>
+            <br>
+        </center>
+    </div>
+</div>
+
+<main class="admin-main-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {# Usamos un contenedor para que los alerts aparezcan en la parte superior derecha si usas ese CSS #}
+            {# Si no, simplemente puedes usar el ul.flashes como lo tienes #}
+            <div class="alert-container"> 
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message | safe }}</li> {# Añadimos | safe por si el mensaje tiene HTML #}
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const collapsibleItems = document.querySelectorAll('.menu-item.collapsible');
+        
+        // ---- Animación escalonada de aparición para ítems del sidebar ----
+        const menuCheckbox = document.getElementById('btn-menu');
+        const allSidebarItems = document.querySelectorAll('.cont-menu .menu-item, .cont-menu .logout-item');
+
+        // Confirmación antes de cerrar sesión
+        const logoutLink = document.getElementById('logout-link');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function(ev) {
+                ev.preventDefault(); // Detenemos la navegación por defecto
+                const seguro = confirm('¿Estás seguro de que deseas cerrar sesión?');
+                if (seguro) {
+                    window.location.href = logoutLink.href; // Redirige manualmente
+                }
+            });
+        }
+
+        // Aplica transición base a cada item
+        allSidebarItems.forEach(it => {
+            it.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
+        });
+
+        function animateSidebarItems(open) {
+            allSidebarItems.forEach((item, idx) => {
+                const delay = idx * 70; // 70ms de diferencia entre elementos
+                if (open) {
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateX(0)';
+                    }, delay);
+                } else {
+                    // Al cerrar los ocultamos sincrónicamente (o podrías escalonar)
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(-25px)';
+                }
+            });
+        }
+
+        // Lanzar animación al cambiar el checkbox
+        menuCheckbox.addEventListener('change', () => {
+            animateSidebarItems(menuCheckbox.checked);
+        });
+
+        // Asegurar estado inicial (por si se recarga con menú abierto en desktop)
+        animateSidebarItems(menuCheckbox.checked);
+
+        collapsibleItems.forEach(item => {
+            const header = item.querySelector('.menu-header');
+            const submenu = item.querySelector('.submenu');
+            const toggleIcon = item.querySelector('.toggle-icon');
+
+            // Cierra todos los submenús al cargar la página excepto si el submenú actual está activo
+            submenu.style.maxHeight = '0';
+            item.classList.remove('active'); // Asegura que no estén activos al inicio
+
+            header.addEventListener('click', function(event) {
+                event.preventDefault(); // Previene que el enlace de cabecera navegue si lo tuviera
+
+                // Si este menú ya está abierto, ciérralo
+                if (item.classList.contains('active')) {
+                    submenu.style.maxHeight = '0';
+                    item.classList.remove('active');
+                } else {
+                    // Cierra todos los demás submenús abiertos antes de abrir el actual
+                    collapsibleItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('active')) {
+                            const otherSubmenu = otherItem.querySelector('.submenu');
+                            otherSubmenu.style.maxHeight = '0';
+                            otherItem.classList.remove('active');
+                        }
+                    });
+
+                    // Abre el submenú actual
+                    submenu.style.maxHeight = submenu.scrollHeight + 'px'; // Ajusta la altura dinámicamente
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Opcional: Cerrar mensajes flash automáticamente después de unos segundos
+        const flashMessages = document.querySelectorAll('.flashes li');
+        flashMessages.forEach(message => {
+            setTimeout(() => {
+                message.style.opacity = '0';
+                message.style.transition = 'opacity 0.5s ease-out';
+                setTimeout(() => message.remove(), 500); // Eliminar después de la transición
+            }, 5000); // 5 segundos
+        });
+        
+        // Manejo del dropdown de perfil de usuario
+        const userProfileBtn = document.getElementById('userProfileBtn');
+        const userDropdownMenu = document.getElementById('userDropdownMenu');
+        
+        if (userProfileBtn && userDropdownMenu) {
+            userProfileBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                userDropdownMenu.classList.toggle('show');
+            });
+            
+            // Cerrar dropdown al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (!userProfileBtn.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                    userDropdownMenu.classList.remove('show');
+                }
+            });
+            
+            // Cerrar dropdown al presionar Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    userDropdownMenu.classList.remove('show');
+                }
+            });
+        }
+    });
+</script>
+
+    <script>
+        // Cerrar mensajes flash al hacer clic en la "x"
+        document.addEventListener('click', function(e){
+            if(e.target && e.target.parentElement && e.target.parentElement.classList.contains('flashes')){
+                e.target.parentElement.remove();
+            }
+        });
+    </script>
+</body>
+</html>

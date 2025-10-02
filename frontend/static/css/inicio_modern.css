@@ -1,0 +1,689 @@
+/* =======================================
+CSS MODERNO PARA PÁGINA DE INICIO
+Teaching Notes - Diseño Glass Moderno
+======================================= */
+
+/* Variables CSS para consistencia */
+:root {
+    --primary-gradient: linear-gradient(135deg, #1884d0 0%, #f6da63 100%);
+    --primary-gradient-hover: linear-gradient(135deg, #f6da63 0%, #1884d0 100%);
+    --glass-bg: rgba(255, 255, 255, 0.92);
+    --glass-border: rgba(0,0,0,0.08);
+    --text-primary: #1a1a1a;
+    --text-secondary: #2d3748;
+    --text-light: #4a5568;
+    --text-white: #333333;
+    --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+    --shadow-button: 0 4px 15px rgba(110, 142, 251, 0.3);
+    --border-radius: 20px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =======================================
+CONTENEDOR PRINCIPAL
+======================================= */
+
+.content-area {
+    padding-top: 140px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 60px;
+    position: relative;
+    z-index: 2;
+    min-height: calc(100vh - 100px);
+}
+
+/* =======================================
+TÍTULOS Y TEXTOS
+======================================= */
+
+.modern-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #1884d0;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+    animation: slideInDown 0.8s ease-out forwards;
+}
+
+.modern-subtitle {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #1884d0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 48px;
+    line-height: 1.5;
+    opacity: 0;
+    animation: slideInUp 0.8s ease-out 0.2s forwards;
+}
+
+/* =======================================
+SECCIÓN DE INFORMACIÓN
+======================================= */
+
+.info-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start; /* Evita estirado vertical */
+    gap: 32px;
+    margin-top: 40px;
+    width: 90%;
+    max-width: 1200px;
+    opacity: 0;
+    animation: slideInUp 0.8s ease-out 0.4s forwards;
+}
+
+/* =======================================
+TARJETAS GLASS MODERNAS
+======================================= */
+
+.glass-card {
+    flex: 0 1 350px; /* ancho flexible, altura auto */
+    min-width: 350px;
+    max-width: 450px;
+    border-radius: var(--border-radius);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: var(--shadow-glass);
+    border: 1.5px solid var(--glass-border);
+    transition: var(--transition);
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    min-height: 80px;
+    padding: 24px 28px;
+    opacity: 0;
+    animation: slideInUp 0.8s ease-out 0.6s forwards;
+}
+
+.glass-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(110, 142, 251, 0.3);
+    border-color: rgba(110, 142, 251, 0.5);
+}
+
+.glass-card h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1884d0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+}
+
+.glass-card .modern-subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #1884d0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    line-height: 1.6;
+    text-align: left;
+    margin-bottom: 0;
+    opacity: 0.9;
+}
+
+/* =======================================
+CONTENIDO DE TARJETAS
+======================================= */
+
+.card-content {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
+    margin-top: 0;
+}
+
+.card-content.expanded {
+    max-height: 400px;
+    opacity: 1;
+    padding: 16px 0 8px 0;
+    margin-top: 16px;
+}
+
+/* =======================================
+BOTÓN MODERNO
+======================================= */
+
+.modern-btn {
+    color: #1884d0;
+    border-radius: 16px;
+    padding: 16px 32px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-button);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.02em;
+    position: relative;
+    overflow: hidden;
+    margin-top: 48px;
+    opacity: 0;
+    animation: slideInUp 0.8s ease-out 0.8s forwards;
+}
+
+.modern-btn:hover {
+    background: var(--primary-gradient-hover);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(110, 142, 251, 0.4);
+    text-decoration: none;
+    color: #1884d0;
+}
+
+.modern-btn:active {
+    transform: translateY(-1px) scale(0.98);
+    box-shadow: 0 4px 15px rgba(110, 142, 251, 0.3);
+}
+
+/* Efecto de brillo en hover */
+.modern-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.modern-btn:hover::before {
+    left: 100%;
+}
+
+/* =======================================
+ANIMACIONES
+======================================= */
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =======================================
+ENTRY ANIMATIONS
+======================================= */
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.fade-init { opacity: 0; }
+.fade-in { animation: fadeUp 0.8s ease-out forwards; }
+
+/* =======================================
+ESTADOS DE TARJETAS
+======================================= */
+
+.glass-card.expanded {
+    background: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 16px 40px rgba(110, 142, 251, 0.3);
+    border-color: rgba(110, 142, 251, 0.6);
+    transform: translateY(-4px) scale(1.03);
+    min-height: 250px;
+}
+
+.glass-card.expanded h2 {
+    color: #1884d0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* =======================================
+RESPONSIVE DESIGN
+======================================= */
+
+@media (max-width: 768px) {
+    .content-area {
+        padding-top: 120px;
+        padding-bottom: 40px;
+    }
+
+    .modern-title {
+        font-size: 2.8rem;
+        margin-bottom: 12px;
+    }
+
+    .modern-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 32px;
+    }
+
+    .info-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 24px;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 24px;
+        padding: 0 8px;
+    }
+
+    .glass-card {
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+        padding: 20px 14px;
+        margin: 0 auto;
+        border-radius: 18px;
+        box-sizing: border-box;
+    }
+
+    .glass-card h2 {
+        font-size: 1.2rem;
+    }
+
+    .glass-card .modern-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .modern-btn {
+        padding: 14px 28px;
+        font-size: 1rem;
+        margin-top: 32px;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-area {
+        padding-top: 100px;
+        padding-bottom: 30px;
+    }
+
+    .modern-title {
+        font-size: 2.2rem;
+    }
+
+    .modern-subtitle {
+        font-size: 1rem;
+        margin-bottom: 24px;
+    }
+
+    .info-section {
+        width: 100%;
+        gap: 16px;
+        padding: 0 2px;
+    }
+
+    .glass-card {
+        padding: 14px 6px;
+        min-height: 70px;
+        border-radius: 14px;
+    }
+
+    .glass-card h2 {
+        font-size: 1.1rem;
+    }
+
+    .glass-card .modern-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .modern-btn {
+        padding: 12px 24px;
+        font-size: 0.95rem;
+        margin-top: 24px;
+    }
+}
+
+/* Visibilidad reforzada para título y subtítulo */
+.modern-title, .modern-subtitle {
+    color: #004e89 !important; /* Azul más oscuro */
+    text-shadow: 0 2px 4px rgba(255,255,255,0.6);
+}
+
+/* =======================================
+MEJORAS DE ACCESIBILIDAD
+======================================= */
+
+/* Focus visible para navegación por teclado */
+.glass-card:focus-visible,
+.modern-btn:focus-visible {
+    outline: 2px solid var(--text-white);
+    outline-offset: 2px;
+}
+
+/* Mejora del contraste para texto */
+.glass-card h2,
+.glass-card .modern-subtitle {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Scrollbar personalizado */
+.content-area::-webkit-scrollbar {
+    width: 8px;
+}
+
+.content-area::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.content-area::-webkit-scrollbar-thumb {
+    background: rgba(110, 142, 251, 0.3);
+    border-radius: 4px;
+}
+
+.content-area::-webkit-scrollbar-thumb:hover {
+    background: rgba(110, 142, 251, 0.5);
+}
+
+/* =======================================
+ESTILOS ADICIONALES PARA MEJORAR UX
+======================================= */
+
+/* Efecto de hover mejorado en tarjetas */
+.glass-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 16px 40px rgba(110, 142, 251, 0.35);
+}
+
+/* Animación de entrada mejorada */
+.glass-card {
+    animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
+}
+
+/* Efecto de active en botón */
+.modern-btn:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+/* Mejora en responsive */
+@media (max-width: 768px) {
+    .glass-card:hover {
+        transform: translateY(-4px) scale(1.02);
+    }
+    
+    .modern-btn:hover {
+        transform: translateY(-2px) scale(1.01);
+    }
+} 
+
+/* =======================================
+CTA PRINCIPAL
+======================================= */
+
+.cta-primary {
+    display: inline-block;
+    margin: 32px 0 24px 0;
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1884d0;
+    background: var(--primary-gradient);
+    border-radius: 30px;
+    box-shadow: var(--shadow-button);
+    transition: var(--transition);
+}
+
+.cta-primary:hover {
+    background: var(--primary-gradient-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(110, 142, 251, 0.4);
+}
+
+/* =======================================
+SECCIÓN BENEFICIOS
+======================================= */
+
+.benefits-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    margin: 60px auto 20px auto;
+    max-width: 1100px;
+}
+
+.benefit-card {
+    flex: 0 1 280px;
+    background: rgba(255, 255, 255, 0.425); /* casi transparente */ /* Glass muy transparente */
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1.5px solid var(--glass-border);
+    border-radius: var(--border-radius);
+    padding: 28px 20px;
+    text-align: center;
+    box-shadow: var(--shadow-glass);
+    transition: var(--transition);
+}
+
+.benefit-card i {
+    font-size: 2rem;
+    color: #1884d0;
+    margin-bottom: 12px;
+}
+
+.benefit-card h3 {
+    font-size: 1.2rem;
+    color: #1884d0;
+    margin-bottom: 8px;
+}
+
+.benefit-card p {
+    font-size: 0.95rem;
+    color: #1884d0;
+    opacity: 0.85;
+}
+
+.benefit-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 14px 38px rgba(110, 142, 251, 0.35);
+}
+
+/* =======================================
+CONTADORES
+======================================= */
+
+.counters-section {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin: 60px 0;
+}
+
+.counter-box {
+    text-align: center;
+}
+
+.counter-box .counter {
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: transparent;
+    color: #1884d0;
+    /* eliminado gradiente clip */
+    
+}
+
+.counter-box p {
+    font-size: 1rem;
+    color: #1884d0;
+}
+
+/* =======================================
+TESTIMONIOS
+======================================= */
+
+.testimonials-section {
+    position: relative;
+    max-width: 900px;
+    margin: 40px auto 80px auto;
+    overflow: hidden;
+}
+
+.testimonial {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    text-align: center;
+    padding: 0 24px;
+}
+
+.testimonial.active {
+    opacity: 1;
+}
+
+.testimonial p {
+    font-size: 1.1rem;
+    color: #1884d0;
+    margin-bottom: 12px;
+}
+
+.testimonial h4 {
+    font-size: 1rem;
+    color: #1884d0;
+    opacity: 0.8;
+}
+
+/* =======================================
+FOOTER
+======================================= */
+
+.main-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 24px 16px;
+    text-align: center;
+    color: #1884d0;
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: blur(10px);
+}
+
+.footer-links {
+    margin-top: 8px;
+}
+
+.footer-links a {
+    color: #1884d0;
+    margin: 0 8px;
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .benefits-section { flex-direction: column; align-items: center; }
+    .counters-section { flex-direction: column; gap: 24px; }
+}
+
+/* =======================================
+WAVE DIVIDER
+======================================= */
+.wave-divider {
+    display: block;
+    width: 100%;
+    margin: 0;
+}
+
+/* =======================================
+FAQ SECTION
+======================================= */
+.faq-section {
+    max-width: 900px;
+    margin: 60px auto;
+}
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1884d0;
+    text-align: center;
+    margin-bottom: 32px;
+}
+.faq-item {
+    margin-bottom: 12px;
+    border-radius: var(--border-radius);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+}
+.faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    color: #1884d0;
+    padding: 18px 24px;
+    font-size: 1.1rem;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.faq-question .icon { transition: transform 0.3s; }
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 24px;
+    color: #1884d0;
+    transition: all 0.4s ease;
+}
+.faq-item.open .faq-answer { max-height: 200px; padding: 16px 24px; }
+.faq-item.open .faq-question .icon { transform: rotate(45deg); }
+
+/* =======================================
+NEWSLETTER
+======================================= */
+.newsletter-section {
+    text-align: center;
+    margin: 60px auto 80px auto;
+    max-width: 480px; /* más estrecho y centrado */
+}
+.newsletter-form {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+.newsletter-form input[type="email"] {
+    padding: 12px 16px;
+    border-radius: 30px;
+    border: none;
+    width: 220px; /* más pequeño */
+    background: var(--glass-bg);
+    color: #1884d0;
+}
+
+/* =======================================
+PARTICLES BACKGROUND
+======================================= */
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.content-area { position: relative; z-index: 2; }

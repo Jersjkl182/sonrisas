@@ -1,0 +1,130 @@
+/* =======================================
+   BASE / GLOBAL STYLES – Teaching Notes
+   Variables, resets y utilidades compartidas
+   ======================================= */
+
+html, body {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+/* -------- VARIABLES GLOBALES -------- */
+:root {
+  /* Colores principales (derivados de la imagen de referencia) */
+  --primary: #1884d0;
+  --primary-light: #4fb5ff;
+  --success: #27ae60;
+  --warning: #d4ac0d;
+  --danger: #c0392b;
+  --accent-yellow: #f6da63;
+  --pastel-blue-header: rgba(163, 215, 255, 0.9);
+
+  /* Fondos / glass */
+  --glass-bg: rgba(255,255,255,0.18);
+  --glass-border: rgba(255,255,255,0.25);
+
+  /* Texto */
+  --text-main: #333;
+  --text-muted: #555;
+  --text-white: #ffffff;
+
+  /* Otros */
+  --radius: 10px;
+  --transition: 0.3s ease;
+}
+
+/* -------- UTILIDADES -------- */
+.glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  backdrop-filter: blur(10px) saturate(140%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+}
+
+.text-center { text-align: center; }
+.text-right  { text-align: right;  }
+.text-left   { text-align: left;   }
+
+.mt-1 { margin-top: .5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+
+/* ------ ANIMACIONES COMPARTIDAS ------ */
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* =======================================
+   HEADER Y NAVEGACIÓN PÚBLICA (Estilo Minimalista)
+   ======================================= */
+
+.header {
+    background: #ffffff;
+    border-bottom: 1px solid #eaeaea;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 70px;
+}
+
+.logo-img {
+    height: 90px;
+}
+
+.header .menu a {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 0.2rem;
+    margin: 0 1rem;
+    position: relative;
+    transition: color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header .menu a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--primary);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+}
+
+.header .menu a:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.header .menu a:hover {
+    color: var(--text-main);
+}
+
+.header .menu a.active {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.header .menu a.active::after {
+    transform: scaleX(1);
+    background-color: var(--primary);
+}
+

@@ -1,0 +1,404 @@
+/* =======================================
+RESET Y ESTILOS GENERALES
+======================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* Consistente con el proyecto, manteniendo Montserrat Alternates como base */
+    font-family: 'Montserrat Alternates', sans-serif;
+}
+
+body {
+    background: transparent;
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Decorative animated blobs */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(800px at 10% 20%, rgba(246, 218, 99, 0.45) 0%, transparent 70%),
+        radial-gradient(800px at 90% 80%, rgba(24, 132, 208, 0.45) 0%, transparent 70%);
+    animation: moveBlobs 20s ease-in-out infinite alternate;
+}
+
+@keyframes moveBlobs {
+    0%   { transform: scale(1) translate(0,0); }
+    100% { transform: scale(1.2) translate(-50px, -30px); }
+}
+
+/* Fondo difuminado de toda la página (para aplicar detrás del contenido principal) */
+.blur-fondo2 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Asegura que esté detrás del contenido principal */
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: transparent;
+}
+
+/* =======================================
+HEADER Y NAVEGACIÓN (COMÚN PARA TODAS LAS PÁGINAS - SIN ANIMACIÓN DE APARICIÓN)
+======================================= */
+.header {
+    width: 100%;
+    height: 90px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+.header .header-container { /* Recordatorio: Cambiado a header-container en base.html */
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 0; /* Eliminar padding genérico del .container */
+}
+
+.logo h1 {
+    color: #fff;
+    font-weight: 700;
+    font-size: 2.2rem;
+    letter-spacing: -1px;
+    transition: transform 0.2s, text-shadow 0.2s;
+    text-shadow: 0 2px 12px #1884d044;
+}
+.logo h1:hover {
+    transform: scale(1.07) rotate(-2deg);
+    text-shadow: 0 0 18px #4fb5ffcc;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+}
+
+.menu a {
+    display: inline-block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+    font-size: 16px;
+    margin-left: 15px;
+    font-family: 'Inter', sans-serif;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1.1em;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    border-radius: 6px;
+    padding: 10px 18px;
+    margin-left: 10px;
+    transition: background 0.2s, color 0.2s, border-bottom 0.2s;
+    position: relative;
+    z-index: 1;
+}
+
+.menu a:hover, .menu a.active {
+    background: rgba(255,255,255,0.13);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: blur(4px);
+    color: #6e8efb;
+    border-bottom: 2px solid #6e8efb;
+    box-shadow: none;
+}
+
+.menu a i {
+    margin-right: 5px;
+}
+
+/* Estilos para el menú lateral (Hamburguesa) - COMÚN */
+.container-menu {
+    position: fixed;
+    background: #f6da63 url('/static/img/fondo.png') center/cover fixed no-repeat;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    transition: all 500ms ease;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 200;
+}
+
+#btn-menu:checked ~ .container-menu {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cont-menu {
+    width: 100%;
+    max-width: 250px;
+    background: #1c1c1c; /* Fondo oscuro para el menú */
+    height: 100vh;
+    position: relative;
+    transition: all 500ms ease;
+    transform: translateX(-100%);
+}
+
+/* Botón de cierre para el menú lateral (móvil) */
+.close-menu {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 32px;
+    color: #ffffff;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.close-menu:hover {
+    color: #f6da63;
+
+}
+
+#btn-menu:checked ~ .container-menu .cont-menu {
+    transform: translateX(0%);
+}
+
+.cont-menu nav {
+    padding: 20px 0;
+}
+
+.cont-menu nav a {
+    display: block;
+    text-decoration: none;
+    padding: 15px 20px;
+    color: #c0c0c0;
+    border-left: 5px solid transparent;
+    transition: all 400ms ease;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.cont-menu nav a i {
+    margin-right: 10px;
+}
+
+.cont-menu nav a:hover {
+    border-left: 5px solid #1884d0;
+    background: #2b2b2b;
+    color: #ffffff;
+}
+
+.cont-menu label, .close-menu {
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 25px;
+    padding: 5px 10px;
+}
+
+.ellipse-div {
+    width: 60px; /* Ajusta el tamaño de la elipse */
+    height: 60px;
+    background: #f6da63 url('/static/img/fondo.png') center/cover fixed no-repeat;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.ellipse-div label {
+    font-size: 35px;
+    color: white;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* =======================================
+ANIMACIONES GLOBALES (COMÚN PARA TODAS LAS PÁGINAS)
+======================================= */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Animación de "flotar" (útil si la aplicas en alguna tarjeta o elemento flotante) */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Spinner para botones de envío */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.logo-img {
+    height: 90px;
+    width: auto;
+}
+
+/* Ocultar blobs decorativos */
+body::before { display:none !important; }
+
+/* Fondo ilustrado amarillo */
+body {
+    background: #f6da63 url('../img/fondo.png') center/cover fixed no-repeat !important;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Header azul pastel claro */
+.header {
+    background: rgba(163, 215, 255, 0.9) !important;
+}
+
+/* Mejora contraste enlaces header */
+.header .menu a {
+    color: #0d3c61;
+    text-shadow: none;
+}
+.header .menu a:hover,
+.header .menu a.active {
+    color: #004d9c;
+    background: rgba(255,255,255,0.2);
+}
+
+/* Ajuste logo en header para móviles */
+@media (max-width: 768px) {
+    .header .logo-img {
+        height: 70px;
+    }
+}
+
+/* Estilo botón cerrar menú */
+.close-menu {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 30px;
+    color: #ffffff;
+    cursor: pointer;
+}
+.close-menu:hover {
+    color: #f6da63;
+}
+.header {
+    background: rgba(163, 215, 255, 0.9) !important;
+}
+
+/* =======================================
+RESPONSIVE (Ajustes comunes para header y menú hamburguesa)
+======================================= */
+@media (max-width: 768px) {
+    .header {
+        height: auto; /* Altura automática en móviles */
+        padding: 15px 0; /* Un poco de padding */
+    }
+
+    .header .header-container { /* Recordatorio: Cambiado a header-container en base.html */
+        flex-direction: column; /* Apila logo y menú */
+        height: auto;
+    }
+
+    .logo {
+        margin-bottom: 15px;
+    }
+
+    .logo h1 {
+        font-size: 28px;
+    }
+
+    .menu {
+        width: 100%;
+        justify-content: center; /* Centra los elementos del menú */
+        flex-wrap: wrap; /* Permite que los enlaces se envuelvan */
+    }
+
+    .menu a {
+        margin: 5px 8px; /* Ajusta los márgenes entre enlaces */
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 10px 0;
+    }
+    .logo h1 {
+        font-size: 25px;
+    }
+    .menu a {
+        padding: 6px 8px;
+        font-size: 12px;
+        margin: 3px;
+    }
+    .menu a i {
+        margin-right: 3px;
+    }
+}

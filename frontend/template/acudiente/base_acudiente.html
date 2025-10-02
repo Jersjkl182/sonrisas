@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es" class="acudiente-html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}Panel Acudiente - Teaching Notes{% endblock %}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat+Alternates:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/acudiente/acudiente_modern.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="acudiente-body">
+<header class="header">
+    <div class="container">
+        <div class="user-profile-dropdown">
+            <div class="user-profile-link" id="userProfileToggle">
+                <span>Hola, {{ session.get('nombre', 'Acudiente') }}</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="user-dropdown-menu" id="userDropdownMenu">
+                <a href="{{ url_for('main_bp.perfil_acudiente') }}" class="dropdown-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Mi Perfil</span>
+                </a>
+                <a href="{{ url_for('auth_bp.cerrar_sesion') }}" class="dropdown-item" onclick="return confirm('¿Cerrar sesión?');">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">
+                        {% if category == 'success' %}
+                            <i class="fas fa-check-circle"></i>
+                        {% elif category == 'danger' %}
+                            <i class="fas fa-exclamation-triangle"></i>
+                        {% elif category == 'warning' %}
+                            <i class="fas fa-exclamation-circle"></i>
+                        {% elif category == 'info' %}
+                            <i class="fas fa-info-circle"></i>
+                        {% endif %}
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle del dropdown del usuario - Versión mejorada
+    const userProfileToggle = document.getElementById('userProfileToggle');
+    const userDropdownMenu = document.getElementById('userDropdownMenu');
+    
+    if (userProfileToggle && userDropdownMenu) {
+        // Variable para controlar el estado del dropdown
+        let dropdownOpen = false;
+        let clickInProgress = false;
+        
+        // Función para abrir dropdown
+        function openDropdown() {
+            dropdownOpen = true;
+            userDropdownMenu.classList.add('show');
+            const icon = userProfileToggle.querySelector('.fa-chevron-down');
+            if (icon) {
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+        
+        // Función para cerrar dropdown
+        function closeDropdown() {
+            dropdownOpen = false;
+            userDropdownMenu.classList.remove('show');
+            const icon = userProfileToggle.querySelector('.fa-chevron-down');
+            if (icon) {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        // Click en el toggle
+        userProfileToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            clickInProgress = true;
+            
+            if (dropdownOpen) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
+            
+            // Reset flag después de un breve delay
+            setTimeout(() => {
+                clickInProgress = false;
+            }, 50);
+        });
+        
+        // Evitar que clicks dentro del dropdown lo cierren
+        userDropdownMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        // Cerrar dropdown al hacer click fuera (con delay para evitar conflictos)
+        document.addEventListener('click', function(e) {
+            // Solo procesar si no hay un click en progreso
+            if (!clickInProgress && dropdownOpen) {
+                // Verificar que el click no sea en el toggle o el menu
+                if (!userProfileToggle.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                    closeDropdown();
+                }
+            }
+        });
+        
+        // Cerrar dropdown al presionar Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && dropdownOpen) {
+                closeDropdown();
+            }
+        });
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Bitácora de Sesiones - Teaching Notes{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/administrador/admin_sessions_simple.css') }}">
+<div class="session-logs-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-history"></i>
+            </div>
+            <div class="header-text">
+                <h1 class="page-title">Bitácora de Sesiones</h1>
+                <p class="page-subtitle">Monitoreo de actividad de usuarios en el sistema</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-refresh" onclick="location.reload()">
+                <i class="fas fa-sync-alt"></i>
+                Actualizar
+            </button>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ logs|length if logs else 0 }}</div>
+                <div class="stat-label">Total Registros</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon active">
+                <i class="fas fa-user-clock"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ logs|selectattr('logout_time', 'none')|list|length if logs else 0 }}</div>
+                <div class="stat-label">Sesiones Activas</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon completed">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ logs|rejectattr('logout_time', 'none')|list|length if logs else 0 }}</div>
+                <div class="stat-label">Sesiones Cerradas</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon users">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ logs|map(attribute='usuario_correo')|unique|list|length if logs else 0 }}</div>
+                <div class="stat-label">Usuarios Únicos</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters-card">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="fas fa-filter"></i>
+            </div>
+            <h3 class="card-title">Filtros de Búsqueda</h3>
+        </div>
+        
+        <div class="filters-content">
+            <div class="filter-group">
+                <label for="userFilter">
+                    <i class="fas fa-user"></i>
+                    Usuario
+                </label>
+                <input type="text" id="userFilter" placeholder="Buscar por correo..." class="filter-input">
+            </div>
+            
+            <div class="filter-group">
+                <label for="statusFilter">
+                    <i class="fas fa-toggle-on"></i>
+                    Estado
+                </label>
+                <select id="statusFilter" class="filter-input">
+                    <option value="">Todos los estados</option>
+                    <option value="active">Sesiones Activas</option>
+                    <option value="closed">Sesiones Cerradas</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="dateFilter">
+                    <i class="fas fa-calendar"></i>
+                    Fecha
+                </label>
+                <input type="date" id="dateFilter" class="filter-input">
+            </div>
+            
+            <div class="filter-actions">
+                <button class="btn-filter" onclick="applyFilters()">
+                    <i class="fas fa-search"></i>
+                    Filtrar
+                </button>
+                <button class="btn-clear" onclick="clearFilters()">
+                    <i class="fas fa-times"></i>
+                    Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {% if logs %}
+    <!-- Tabla de sesiones -->
+    <div class="sessions-table-container">
+        <div class="table-header">
+            <h3>
+                <i class="fas fa-table"></i>
+                Registros de Sesiones
+            </h3>
+            <span class="record-count">{{ logs|length }} registros</span>
+        </div>
+        
+        <table class="sessions-table" id="sessionsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Inicio de Sesión</th>
+                    <th>Cierre de Sesión</th>
+                    <th>Duración</th>
+                    <th>IP Address</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr class="session-row" data-user="{{ log.usuario_correo }}" data-status="{% if log.logout_time %}closed{% else %}active{% endif %}">
+                    <td>
+                        <span class="session-id">#{{ log.id }}</span>
+                    </td>
+                    <td>
+                        <div class="user-info">
+                            <i class="fas fa-user-circle"></i>
+                            <span>{{ log.usuario_correo }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="datetime-info">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <div>
+                                <div class="date">{{ log.login_time.strftime('%d/%m/%Y') if log.login_time else '—' }}</div>
+                                <div class="time">{{ log.login_time.strftime('%H:%M:%S') if log.login_time else '—' }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {% if log.logout_time %}
+                        <div class="datetime-info">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <div>
+                                <div class="date">{{ log.logout_time.strftime('%d/%m/%Y') }}</div>
+                                <div class="time">{{ log.logout_time.strftime('%H:%M:%S') }}</div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <span class="no-data">
+                            <i class="fas fa-minus"></i>
+                            Sesión activa
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if log.logout_time and log.login_time %}
+                        <div class="duration-info">
+                            <i class="fas fa-clock"></i>
+                            {% set duration = log.logout_time - log.login_time %}
+                            {% set hours = duration.total_seconds() // 3600 %}
+                            {% set minutes = (duration.total_seconds() % 3600) // 60 %}
+                            <span>{{ '%02d:%02d'|format(hours|int, minutes|int) }}</span>
+                        </div>
+                        {% else %}
+                        <span class="no-data">
+                            <i class="fas fa-hourglass-half"></i>
+                            En curso
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="ip-info">
+                            <i class="fas fa-globe"></i>
+                            <span>{{ log.ip_address if log.ip_address else 'No disponible' }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        {% if log.logout_time %}
+                        <span class="status-badge closed">
+                            <i class="fas fa-check-circle"></i>
+                            Cerrada
+                        </span>
+                        {% else %}
+                        <span class="status-badge active">
+                            <i class="fas fa-circle"></i>
+                            Activa
+                        </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">
+            <i class="fas fa-history"></i>
+        </div>
+        <h3>No hay registros de sesiones</h3>
+        <p>Los registros aparecerán cuando los usuarios inicien sesión en el sistema</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Funciones de filtrado
+    window.applyFilters = function() {
+        const userFilter = document.getElementById('userFilter').value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+        const dateFilter = document.getElementById('dateFilter').value;
+        const rows = document.querySelectorAll('.session-row');
+        
+        rows.forEach(row => {
+            const user = row.dataset.user.toLowerCase();
+            const status = row.dataset.status;
+            const loginDate = row.querySelector('.date').textContent;
+            
+            let showRow = true;
+            
+            // Filtro por usuario
+            if (userFilter && !user.includes(userFilter)) {
+                showRow = false;
+            }
+            
+            // Filtro por estado
+            if (statusFilter && status !== statusFilter) {
+                showRow = false;
+            }
+            
+            // Filtro por fecha (básico)
+            if (dateFilter && loginDate !== '—') {
+                const filterDate = new Date(dateFilter).toLocaleDateString('es-ES');
+                if (!loginDate.includes(filterDate.split('/').reverse().join('/'))) {
+                    showRow = false;
+                }
+            }
+            
+            row.style.display = showRow ? '' : 'none';
+        });
+        
+        updateRecordCount();
+    };
+    
+    window.clearFilters = function() {
+        document.getElementById('userFilter').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.getElementById('dateFilter').value = '';
+        
+        const rows = document.querySelectorAll('.session-row');
+        rows.forEach(row => {
+            row.style.display = '';
+        });
+        
+        updateRecordCount();
+    };
+    
+    function updateRecordCount() {
+        const visibleRows = document.querySelectorAll('.session-row:not([style*="display: none"])');
+        const countElement = document.querySelector('.record-count');
+        if (countElement) {
+            countElement.textContent = `${visibleRows.length} registros`;
+        }
+    }
+    
+    // Filtrado en tiempo real para el campo de usuario
+    document.getElementById('userFilter')?.addEventListener('input', function() {
+        setTimeout(applyFilters, 300);
+    });
+});
+</script>
+{% endblock %}

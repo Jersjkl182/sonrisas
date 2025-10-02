@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Teaching Notes{% endblock %}</title>
+    <!-- CSS COMÚN -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <!-- Tema moderno complementario -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public.css') }}">
+    <!-- FUENTES E ÍCONOS (pueden ir en common.css si solo se usan en header) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat+Alternates:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Bloque para CSS específico de cada página (opcional) -->
+    {% block head_css %}{% endblock %} 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public_modern.css') }}">
+</head>
+<body>
+    <!-- Fondo difuminado que cubre toda la página -->
+    <div class="blur-fondo2"></div>
+
+    <header class="header">
+        <div class="header-container"> {# Changed to header-container to avoid conflict with generic .container style #}
+            <div class="logo">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Teaching Notes" class="logo-img">
+            </div>
+            <div class="btn-menu">
+                <label for="btn-menu"><i class="fas fa-bars"></i></label>
+            </div>
+            <nav class="menu" style="gap:1.2rem;display:flex;align-items:center;">
+                {# CORREGIDO: Añadido 'main_bp.' a las rutas #}
+                <a href="{{ url_for('main_bp.home') }}" {% if request.endpoint == 'main_bp.home' %}class="active"{% endif %}><i class="fas fa-home"></i> Inicio</a>
+                
+                <a href="{{ url_for('main_bp.inicio_sesion') }}" {% if request.endpoint == 'main_bp.inicio_sesion' %}class="active"{% endif %}><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <input type="checkbox" id="btn-menu">
+    <div class="container-menu">
+        <div class="cont-menu">
+            <nav>
+                <center>
+                    <br>
+                    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Teaching Notes" class="logo-img">
+                    <br>
+                    {# CORREGIDO: Añadido 'main_bp.' a las rutas #}
+                    <a href="{{ url_for('main_bp.home') }}"><i class="fas fa-home"></i> Inicio</a>
+                    
+                    <a href="{{ url_for('main_bp.registro') }}"><i class="fas fa-user-plus"></i> Registrarse</a>
+                    <a href="{{ url_for('main_bp.inicio_sesion') }}"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
+                    <label for="btn-menu" class="close-menu"><i class="fas fa-times"></i></label>
+                </center>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Contenido específico de cada página se insertará aquí -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Bloque para scripts específicos de cada página (opcional) -->
+    {% block scripts %}{% endblock %}
+    <script>
+        // Cerrar mensajes flash al hacer clic en la "x"
+        document.addEventListener('click', function(e){
+            if(e.target && e.target.parentElement && e.target.parentElement.classList.contains('flashes')){
+                e.target.parentElement.remove();
+            }
+        });
+    </script>
+</body>
+</html>

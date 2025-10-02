@@ -1,0 +1,314 @@
+{% extends 'profesor/base_profesor.html' %}
+
+{% block title %}
+    {% if modo == 'crear' %}Nuevo Estudiante{% else %}Editar Estudiante{% endif %} - Panel de Profesor
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="header-text">
+                <h1>{% if modo == 'crear' %}Nuevo Estudiante{% else %}Editar Estudiante{% endif %}</h1>
+                <p>{% if modo == 'crear' %}Registra un nuevo estudiante en tu clase{% else %}Actualiza la información del estudiante{% endif %}</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('obs_bp.listar_estudiantes_profesor') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="form-content">
+        <form method="POST" class="student-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="form-section">
+                <h3>
+                    <i class="fas fa-user"></i>
+                    Información Personal
+                </h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre *</label>
+                        <input type="text" id="nombre" name="nombre" 
+                               value="{{ estudiante.nombre if estudiante else '' }}" 
+                               required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="apellido">Apellido *</label>
+                        <input type="text" id="apellido" name="apellido" 
+                               value="{{ estudiante.apellido if estudiante else '' }}" 
+                               required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fecha_nacimiento">Fecha de Nacimiento *</label>
+                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" 
+                               value="{{ estudiante.fecha_nacimiento.strftime('%Y-%m-%d') if estudiante and estudiante.fecha_nacimiento else '' }}" 
+                               required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="grado">Grado *</label>
+                        <select id="grado" name="grado" required>
+                            <option value="">Seleccionar grado</option>
+                            <option value="Preescolar" {{ 'selected' if estudiante and estudiante.grado == 'Preescolar' else '' }}>Preescolar</option>
+                            <option value="1° Básico" {{ 'selected' if estudiante and estudiante.grado == '1° Básico' else '' }}>1° Básico</option>
+                            <option value="2° Básico" {{ 'selected' if estudiante and estudiante.grado == '2° Básico' else '' }}>2° Básico</option>
+                            <option value="3° Básico" {{ 'selected' if estudiante and estudiante.grado == '3° Básico' else '' }}>3° Básico</option>
+                            <option value="4° Básico" {{ 'selected' if estudiante and estudiante.grado == '4° Básico' else '' }}>4° Básico</option>
+                            <option value="5° Básico" {{ 'selected' if estudiante and estudiante.grado == '5° Básico' else '' }}>5° Básico</option>
+                            <option value="6° Básico" {{ 'selected' if estudiante and estudiante.grado == '6° Básico' else '' }}>6° Básico</option>
+                            <option value="7° Básico" {{ 'selected' if estudiante and estudiante.grado == '7° Básico' else '' }}>7° Básico</option>
+                            <option value="8° Básico" {{ 'selected' if estudiante and estudiante.grado == '8° Básico' else '' }}>8° Básico</option>
+                            <option value="1° Medio" {{ 'selected' if estudiante and estudiante.grado == '1° Medio' else '' }}>1° Medio</option>
+                            <option value="2° Medio" {{ 'selected' if estudiante and estudiante.grado == '2° Medio' else '' }}>2° Medio</option>
+                            <option value="3° Medio" {{ 'selected' if estudiante and estudiante.grado == '3° Medio' else '' }}>3° Medio</option>
+                            <option value="4° Medio" {{ 'selected' if estudiante and estudiante.grado == '4° Medio' else '' }}>4° Medio</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="cancel-btn" onclick="window.history.back()">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i>
+                    {% if modo == 'crear' %}Crear Estudiante{% else %}Actualizar Estudiante{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Estilos específicos para el formulario de estudiante */
+.form-container {
+    padding: 30px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-header {
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 4px 15px rgba(116, 185, 255, 0.3);
+}
+
+.header-text h1 {
+    margin: 0 0 5px 0;
+    color: #2d3436;
+    font-size: 1.8em;
+    font-weight: 600;
+}
+
+.header-text p {
+    margin: 0;
+    color: #636e72;
+    font-size: 1em;
+}
+
+.back-btn {
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.back-btn:hover {
+    background: rgba(108, 117, 125, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+}
+
+.form-content {
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.student-form {
+    display: grid;
+    gap: 30px;
+}
+
+.form-section {
+    display: grid;
+    gap: 20px;
+}
+
+.form-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 15px 0;
+    color: #2d3436;
+    font-size: 1.2em;
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(116, 185, 255, 0.3);
+}
+
+.form-section h3 i {
+    color: #74b9ff;
+    font-size: 1.1em;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: #636e72;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    color: #2d3436;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #74b9ff;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 0 3px rgba(116, 185, 255, 0.2);
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.cancel-btn,
+.submit-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn {
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.cancel-btn:hover {
+    background: rgba(108, 117, 125, 0.2);
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    color: white;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(116, 185, 255, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px 15px;
+    }
+    
+    .form-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px 20px;
+    }
+    
+    .form-content {
+        padding: 30px 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

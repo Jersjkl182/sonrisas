@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Teaching Notes{% endblock %}
+
+{% block head_css %}
+    <!-- Enlace al CSS moderno para la página de inicio -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/inicio_modern.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="content-area">
+        <h1 class="modern-title fade-in" style="animation-delay:0s">Jardin Infantil Sonrisas :)</h1>
+        <div class="modern-subtitle fade-in" style="animation-delay:0.1s">Aprendiendo y Sonriendo</div>
+
+        <!-- CTA PRINCIPAL -->
+
+        <div class="info-section">
+            <div class="glass-card info-toggle-card" data-card="1">
+                <h2>Misión</h2>
+                <div class="card-content">
+                  <div class="modern-subtitle">Guiar a los niños y niñas a través de una educación integral; basada en el amor, la tolerancia, la participación y el respeto hacia los demás.</div>
+                </div>
+            </div>
+            <div class="glass-card info-toggle-card" data-card="2">
+                <h2>Visión</h2>
+                <div class="card-content">
+                  <div class="modern-subtitle">En el año 2028 el Jardín Infantil Sonrisas de Valledupar será un jardín en el que se brindará educación de calidad, con exigencia a nivel cultural y social de la primera infancia, que favorezca el aprendizaje y el desarrollo de niños y niñas.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN BENEFICIOS -->
+        <section class="benefits-section">
+            <div class="benefit-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Seguimiento en tiempo real</h3>
+                <p>Visualiza el observador de tu hijo al instante.</p>
+            </div>
+            <div class="benefit-card">
+                <i class="fas fa-file-alt"></i>
+                <h3>Reportes automáticos</h3>
+                <p>Genera informes detallados con un clic.</p>
+            </div>
+            <div class="benefit-card">
+                <i class="fas fa-comments"></i>
+                <h3>Comunicación fluida</h3>
+                <p>Mantén a docentes y padres siempre conectados.</p>
+            </div>
+        </section>
+
+        <!-- FAQ SECTION -->
+        <section class="faq-section">
+            <h2 class="section-title">Preguntas Frecuentes</h2>
+            <div class="faq-item">
+                <button class="faq-question">¿Tiene costo la plataforma?<span class="icon">+</span></button>
+                <div class="faq-answer">Es totalmente gratis su uso</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">¿Puedo exportar los reportes?<span class="icon">+</span></button>
+                <div class="faq-answer">Sí, los reportes pueden exportarse en PDF o Excel con un clic.</div>
+            </div>
+        </section>
+        <!-- PARTICLES BACKGROUND -->
+        <div id="particles-js"></div>
+    </div>
+    <script src="{{ url_for('static', filename='js/inicio_cards_modern.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/inicio_extra.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/inicio_particles.js') }}"></script>
+{% endblock %}

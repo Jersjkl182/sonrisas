@@ -1,0 +1,261 @@
+{% extends 'administrador/base_admin.html' %}
+
+{% block title %}
+    {% if modo == 'crear' %}Nuevo Estudiante{% else %}Editar Estudiante{% endif %} - Panel Administrativo
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/administrador/admin_estudiante_form.css') }}">
+<style>
+/* Fondo de imagen con Flask URL */
+body {
+    background: url("{{ url_for('static', filename='img/fondo.png') }}") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const naCheckbox = document.getElementById('no_aplica');
+    const otherCheckboxes = document.querySelectorAll('input[name="condiciones[]"]:not(#no_aplica)');
+    const otraCondicionInput = document.getElementById('otra_condicion');
+    
+    // Cuando se selecciona N/A, deseleccionar todas las demás
+    naCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            otherCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            if (otraCondicionInput) {
+                otraCondicionInput.value = '';
+            }
+        }
+    });
+    
+    // Cuando se selecciona cualquier otra condición, deseleccionar N/A
+    otherCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                naCheckbox.checked = false;
+            }
+        });
+    });
+    
+    // Cuando se escribe en "otra condición", deseleccionar N/A
+    if (otraCondicionInput) {
+        otraCondicionInput.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+                naCheckbox.checked = false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="header-text">
+                <h1>{% if modo == 'crear' %}Nuevo Estudiante{% else %}Editar Estudiante{% endif %}</h1>
+                <p>{% if modo == 'crear' %}Registra un nuevo estudiante en el jardín infantil{% else %}Actualiza la información del estudiante{% endif %}</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_bp.listar_estudiantes') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="form-content">
+        <form method="POST" class="student-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-user"></i>
+                    Información Personal
+                </h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre *</label>
+                        <input type="text" id="nombre" name="nombre" 
+                               value="{{ estudiante.nombre if estudiante else '' }}" 
+                               required maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido">Apellido *</label>
+                        <input type="text" id="apellido" name="apellido" 
+                               value="{{ estudiante.apellido if estudiante else '' }}" 
+                               required maxlength="100">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fecha_nacimiento">Fecha de Nacimiento *</label>
+                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" 
+                               value="{{ estudiante.fecha_nacimiento.strftime('%Y-%m-%d') if estudiante and estudiante.fecha_nacimiento else '' }}" 
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="grado">Grado *</label>
+                        <select id="grado" name="grado" required>
+                            <option value="">Seleccionar grado</option>
+                            <option value="Párvulos" {{ 'selected' if estudiante and estudiante.grado == 'Párvulos' else '' }}>Párvulos</option>
+                            <option value="Pre-jardín" {{ 'selected' if estudiante and estudiante.grado == 'Pre-jardín' else '' }}>Pre-jardín</option>
+                            <option value="Jardín" {{ 'selected' if estudiante and estudiante.grado == 'Jardín' else '' }}>Jardín</option>
+                            <option value="Transición" {{ 'selected' if estudiante and estudiante.grado == 'Transición' else '' }}>Transición</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    Asignación Académica
+                </h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="profesor_id">Profesor Asignado *</label>
+                        <select id="profesor_id" name="profesor_id" required>
+                            <option value="">Seleccionar profesor</option>
+                            {% for profesor in profesores %}
+                                <option value="{{ profesor.id }}" 
+                                        {{ 'selected' if estudiante and estudiante.profesor_id == profesor.id else '' }}>
+                                    {{ profesor.nombre }} {{ profesor.apellido }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_matricula">Fecha de Matrícula *</label>
+                        <input type="date" id="fecha_matricula" name="fecha_matricula" 
+                               value="{{ estudiante.fecha_matricula.strftime('%Y-%m-%d') if estudiante and estudiante.fecha_matricula else '' }}" 
+                               required>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-medkit"></i>
+                    Información Médica y Especial
+                </h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eps">EPS</label>
+                        <input type="text" id="eps" name="eps" 
+                               value="{{ estudiante.eps if estudiante else '' }}" 
+                               maxlength="100" placeholder="Nombre de la EPS">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Condiciones Especiales</label>
+                        <div class="conditions-grid">
+                            <div class="condition-item na-option">
+                                <input type="checkbox" id="no_aplica" name="condiciones[]" value="N/A - Sin condiciones especiales"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'N/A' in estudiante.condicion_especiales else '' }}>
+                                <label for="no_aplica">✅ N/A - Sin condiciones especiales</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="alergia_alimentos" name="condiciones[]" value="Alergia a alimentos"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Alergia a alimentos' in estudiante.condicion_especiales else '' }}>
+                                <label for="alergia_alimentos">🍎 Alergia a alimentos</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="alergia_medicamentos" name="condiciones[]" value="Alergia a medicamentos"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Alergia a medicamentos' in estudiante.condicion_especiales else '' }}>
+                                <label for="alergia_medicamentos">💊 Alergia a medicamentos</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="asma" name="condiciones[]" value="Asma"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Asma' in estudiante.condicion_especiales else '' }}>
+                                <label for="asma">🫁 Asma</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="diabetes" name="condiciones[]" value="Diabetes"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Diabetes' in estudiante.condicion_especiales else '' }}>
+                                <label for="diabetes">🩸 Diabetes</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="epilepsia" name="condiciones[]" value="Epilepsia"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Epilepsia' in estudiante.condicion_especiales else '' }}>
+                                <label for="epilepsia">🧠 Epilepsia</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="deficit_atencion" name="condiciones[]" value="Déficit de atención"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Déficit de atención' in estudiante.condicion_especiales else '' }}>
+                                <label for="deficit_atencion">🎯 Déficit de atención</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="autismo" name="condiciones[]" value="Trastorno del espectro autista"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Trastorno del espectro autista' in estudiante.condicion_especiales else '' }}>
+                                <label for="autismo">🧩 Trastorno del espectro autista</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="discapacidad_visual" name="condiciones[]" value="Discapacidad visual"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Discapacidad visual' in estudiante.condicion_especiales else '' }}>
+                                <label for="discapacidad_visual">👓 Discapacidad visual</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="discapacidad_auditiva" name="condiciones[]" value="Discapacidad auditiva"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Discapacidad auditiva' in estudiante.condicion_especiales else '' }}>
+                                <label for="discapacidad_auditiva">👂 Discapacidad auditiva</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="discapacidad_motora" name="condiciones[]" value="Discapacidad motora"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Discapacidad motora' in estudiante.condicion_especiales else '' }}>
+                                <label for="discapacidad_motora">🦽 Discapacidad motora</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="medicacion_diaria" name="condiciones[]" value="Requiere medicación diaria"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Requiere medicación diaria' in estudiante.condicion_especiales else '' }}>
+                                <label for="medicacion_diaria">💉 Requiere medicación diaria</label>
+                            </div>
+                            <div class="condition-item">
+                                <input type="checkbox" id="dieta_especial" name="condiciones[]" value="Dieta especial"
+                                       {{ 'checked' if estudiante and estudiante.condicion_especiales and 'Dieta especial' in estudiante.condicion_especiales else '' }}>
+                                <label for="dieta_especial">🥗 Dieta especial</label>
+                            </div>
+                        </div>
+                        
+                        <div class="other-condition">
+                            <label for="otra_condicion">Otra condición (especificar):</label>
+                            <input type="text" id="otra_condicion" name="otra_condicion" 
+                                   placeholder="Especifica otra condición no listada..." maxlength="200">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ url_for('admin_bp.listar_estudiantes') }}" class="btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </a>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i>
+                    {% if modo == 'crear' %}Crear Estudiante{% else %}Actualizar Estudiante{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

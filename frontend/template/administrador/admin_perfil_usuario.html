@@ -1,0 +1,217 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Mi Perfil - Teaching Notes{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Header Principal -->
+    <div class="profile-main-header">
+        <div class="profile-avatar-section">
+            <div class="profile-avatar">
+                <i class="fas fa-user-shield"></i>
+                <div class="online-indicator"></div>
+            </div>
+        </div>
+        <div class="profile-info-section">
+            <h1 class="profile-name">{{ user.nombre }} {{ user.apellido }}</h1>
+            <div class="profile-role-badge">
+                <i class="fas fa-crown"></i>
+                {{ user.rol_nombre }}
+            </div>
+            <p class="profile-description" style="color: black;">Administrador de Sistema Sonrisas</p>
+            <div class="profile-meta">
+                <span class="meta-item"><i class="fas fa-id-badge"></i> ID: {{ user.id }}</span>
+                <span class="meta-item"><i class="fas fa-envelope"></i> {{ user.correo }}</span>
+            </div>
+        </div>
+        <div class="profile-actions-section">
+            <a href="{{ url_for('admin_bp.editar_usuario_admin', user_id=user.id) }}" class="action-btn primary">
+                <i class="fas fa-edit"></i>
+                Editar Perfil
+            </a>
+            <button class="action-btn secondary" onclick="showChangePasswordModal()">
+                <i class="fas fa-key"></i>
+                Cambiar Contraseña
+            </button>
+        </div>
+    </div>
+
+    <!-- Estadísticas Rápidas -->
+    <div class="stats-grid">
+        <div class="stat-card login-stats">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <div class="stat-trend up">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ total_logins }}</div>
+                <div class="stat-label">Inicios de Sesión</div>
+                <div class="stat-sublabel">Total de accesos al sistema</div>
+            </div>
+        </div>
+        
+        <div class="stat-card users-stats">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-trend stable">
+                    <i class="fas fa-minus"></i>
+                </div>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ users_created }}</div>
+                <div class="stat-label">Usuarios Gestionados</div>
+                <div class="stat-sublabel">Creados y modificados</div>
+            </div>
+        </div>
+        
+        <div class="stat-card sessions-stats">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-trend stable">
+                    <i class="fas fa-minus"></i>
+                </div>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ active_sessions }}</div>
+                <div class="stat-label">Sesiones Activas</div>
+                <div class="stat-sublabel">Usuarios conectados ahora</div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="profile-grid">
+        <!-- Información Personal -->
+        <div class="profile-card-info">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-user"></i> Información Personal</h3>
+            </div>
+            <div class="profile-details">
+                <div class="detail-item">
+                    <span class="detail-label">Nombre Completo</span>
+                    <span class="detail-value">{{ user.nombre }} {{ user.apellido }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Correo Electrónico</span>
+                    <span class="detail-value">{{ user.correo }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Rol del Sistema</span>
+                    <span class="detail-badge admin">{{ user.rol_nombre }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Estado de la Cuenta</span>
+                    <span class="detail-badge {% if user.is_active %}active{% else %}inactive{% endif %}">
+                        {% if user.is_active %}Activa{% else %}Inactiva{% endif %}
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">ID de Usuario</span>
+                    <span class="detail-value">#{{ user.id }}</span>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <a href="{{ url_for('admin_bp.editar_usuario_admin', user_id=user.id) }}" class="btn-primary">
+                    <i class="fas fa-edit"></i> Editar Perfil
+                </a>
+                <a href="#" class="btn-secondary" onclick="showChangePasswordModal()">
+                    <i class="fas fa-key"></i> Cambiar Contraseña
+                </a>
+            </div>
+        </div>
+
+
+
+        <!-- Estadísticas Detalladas -->
+        <div class="profile-card-detailed-stats">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-chart-bar"></i> Estadísticas Detalladas</h3>
+            </div>
+            <div class="stats-detailed">
+                <div class="stat-row">
+                    <div class="stat-label">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Días Activo</span>
+                    </div>
+                    <div class="stat-value">{{ days_active or 0 }}</div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-label">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Usuarios Creados</span>
+                    </div>
+                    <div class="stat-value">{{ users_created or 0 }}</div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-label">
+                        <i class="fas fa-edit"></i>
+                        <span>Modificaciones</span>
+                    </div>
+                    <div class="stat-value">{{ total_modifications or 0 }}</div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-label">
+                        <i class="fas fa-eye"></i>
+                        <span>Observaciones Revisadas</span>
+                    </div>
+                    <div class="stat-value">{{ observations_reviewed or 0 }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Cambiar Contraseña -->
+<div id="changePasswordModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-key"></i> Cambiar Contraseña</h3>
+            <span class="close" onclick="closeChangePasswordModal()">&times;</span>
+        </div>
+        <form class="modal-form">
+            <div class="input-group">
+                <label>Contraseña Actual</label>
+                <input type="password" placeholder="Ingresa tu contraseña actual" required>
+            </div>
+            <div class="input-group">
+                <label>Nueva Contraseña</label>
+                <input type="password" placeholder="Ingresa tu nueva contraseña" required>
+            </div>
+            <div class="input-group">
+                <label>Confirmar Nueva Contraseña</label>
+                <input type="password" placeholder="Confirma tu nueva contraseña" required>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeChangePasswordModal()">Cancelar</button>
+                <button type="submit" class="btn-primary">Cambiar Contraseña</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function showChangePasswordModal() {
+    document.getElementById('changePasswordModal').style.display = 'flex';
+}
+
+function closeChangePasswordModal() {
+    document.getElementById('changePasswordModal').style.display = 'none';
+}
+
+// Cerrar modal al hacer clic fuera
+window.onclick = function(event) {
+    const modal = document.getElementById('changePasswordModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

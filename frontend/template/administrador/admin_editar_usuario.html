@@ -1,0 +1,407 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Editar Usuario - Sistema Sonrisas{% endblock %}
+
+{% block extra_css %}
+<style>
+.optional-label {
+    font-size: 0.8em;
+    color: #6c757d;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.field-help {
+    display: block;
+    font-size: 0.75em;
+    color: #6c757d;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+.input-feedback.success {
+    color: #28a745;
+    font-size: 0.8em;
+    margin-top: 4px;
+}
+
+.input-feedback.error {
+    color: #dc3545;
+    font-size: 0.8em;
+    margin-top: 4px;
+}
+
+.form-input.success {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.form-input.error {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Estilos para el selector de documento */
+#documento-container {
+    transition: all 0.3s ease;
+}
+
+#documento-container.show {
+    display: block !important;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos para el select */
+.form-input select,
+select.form-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-user-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-user-edit"></i>
+            </div>
+            <div class="header-text">
+                <h1 class="page-title">Editar Usuario</h1>
+                <p class="page-subtitle">Modificar información del usuario ID: {{ user.id }}</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_bp.ver_usuarios_admin') }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Volver a Lista
+            </a>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="edit-form-wrapper">
+        <!-- Información del usuario -->
+        <div class="user-info-card">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-details">
+                <h3>{{ user.nombre }} {{ user.apellido }}</h3>
+                <p>{{ user.correo }}</p>
+                <span class="user-role">
+                    {% if user.id_rol == 1 %}
+                        <i class="fas fa-crown"></i> Administrador
+                    {% elif user.id_rol == 2 %}
+                        <i class="fas fa-chalkboard-teacher"></i> Profesor
+                    {% elif user.id_rol == 4 %}
+                        <i class="fas fa-user-friends"></i> Acudiente
+                    {% else %}
+                        <i class="fas fa-user"></i> Usuario
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Formulario de edición -->
+        <div class="edit-form-card">
+            <div class="card-header">
+                <h3><i class="fas fa-edit"></i> Datos del Usuario</h3>
+            </div>
+            
+            <form action="{{ url_for('admin_bp.editar_usuario_admin', user_id=user.id) }}" method="POST" class="edit-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="nombre">
+                            <i class="fas fa-user"></i>
+                            Nombre
+                        </label>
+                        <input type="text" id="nombre" name="nombre" value="{{ user.nombre }}" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="apellido">
+                            <i class="fas fa-user"></i>
+                            Apellido
+                        </label>
+                        <input type="text" id="apellido" name="apellido" value="{{ user.apellido }}" required>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="correo">
+                        <i class="fas fa-envelope"></i>
+                        Correo Electrónico
+                    </label>
+                    <input type="email" id="correo" name="correo" value="{{ user.correo }}" required>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="tipo_documento">
+                            <i class="fas fa-id-badge"></i>
+                            Tipo de Documento
+                            <span class="optional-label">(Opcional)</span>
+                        </label>
+                        <select id="tipo_documento" name="tipo_documento" class="form-input">
+                            <option value="">Sin documento adicional</option>
+                            <option value="cedula" {% if user.cedula %}selected{% endif %}>
+                                <i class="fas fa-id-card"></i> Cédula de Ciudadanía
+                            </option>
+                            <option value="ppt" {% if user.ppt %}selected{% endif %}>
+                                <i class="fas fa-passport"></i> PPT (Permiso de Protección Temporal)
+                            </option>
+                        </select>
+                        <div class="input-feedback"></div>
+                    </div>
+                    
+                    <div class="input-group" id="documento-container" style="display: {% if user.cedula or user.ppt %}block{% else %}none{% endif %};">
+                        <label for="numero_documento" id="documento-label">
+                            <i class="fas fa-{% if user.cedula %}id-card{% elif user.ppt %}passport{% else %}hashtag{% endif %}" id="documento-icon"></i>
+                            <span id="documento-text">
+                                {% if user.cedula %}Número de Cédula{% elif user.ppt %}Número de PPT{% else %}Número de Documento{% endif %}
+                            </span>
+                        </label>
+                        <input type="text" id="numero_documento" name="numero_documento" class="form-input" 
+                               value="{{ user.cedula or user.ppt or '' }}" 
+                               placeholder="Ingrese el número" maxlength="15">
+                        <div class="input-feedback"></div>
+                        <small class="field-help" id="documento-help">
+                            {% if user.cedula %}Solo números, 6-10 dígitos{% elif user.ppt %}Formato: PPT seguido de 9-12 números{% else %}Seleccione un tipo de documento{% endif %}
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="contrasena">
+                        <i class="fas fa-lock"></i>
+                        Nueva Contraseña
+                        <span class="optional">(opcional)</span>
+                    </label>
+                    <input type="password" id="contrasena" name="contrasena" placeholder="Dejar en blanco para no cambiar">
+                </div>
+                
+                <div class="input-group">
+                    <label for="id_rol">
+                        <i class="fas fa-user-tag"></i>
+                        Rol del Usuario
+                    </label>
+                    <select id="id_rol" name="id_rol" required>
+                        <option value="">Seleccione un rol</option>
+                        <option value="1" {% if user.id_rol == 1 %}selected{% endif %}>Administrador</option>
+                        <option value="2" {% if user.id_rol == 2 %}selected{% endif %}>Profesor</option>
+                        <option value="4" {% if user.id_rol == 4 %}selected{% endif %}>Acudiente</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        Guardar Cambios
+                    </button>
+                    <a href="{{ url_for('admin_bp.ver_usuarios_admin') }}" class="btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Acciones adicionales -->
+        <div class="additional-actions-card">
+            <div class="card-header">
+                <h3><i class="fas fa-tools"></i> Acciones Adicionales</h3>
+            </div>
+            
+            <div class="actions-grid">
+                <form action="{{ url_for('admin_bp.restablecer_contrasena_admin', user_id=user.id) }}" method="POST" 
+                      onsubmit="return confirm('¿Seguro que deseas restablecer la contraseña de este usuario?');" 
+                      class="action-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn-warning">
+                        <i class="fas fa-key"></i>
+                        Restablecer Contraseña
+                    </button>
+                    <p class="action-description">Genera una nueva contraseña temporal para el usuario</p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.edit-form');
+    const inputs = form.querySelectorAll('.form-input');
+    
+    // Validación en tiempo real
+    inputs.forEach(input => {
+        input.addEventListener('blur', validateInput);
+        input.addEventListener('input', clearValidation);
+    });
+    
+    // Manejo del selector de tipo de documento
+    const tipoDocumento = document.getElementById('tipo_documento');
+    const documentoContainer = document.getElementById('documento-container');
+    const numeroDocumento = document.getElementById('numero_documento');
+    const documentoLabel = document.getElementById('documento-label');
+    const documentoIcon = document.getElementById('documento-icon');
+    const documentoText = document.getElementById('documento-text');
+    const documentoHelp = document.getElementById('documento-help');
+    
+    tipoDocumento.addEventListener('change', function() {
+        const selectedType = this.value;
+        
+        if (selectedType === '') {
+            // Sin documento
+            documentoContainer.classList.remove('show');
+            setTimeout(() => {
+                documentoContainer.style.display = 'none';
+            }, 300);
+            numeroDocumento.value = '';
+            numeroDocumento.removeAttribute('required');
+        } else {
+            // Mostrar campo de documento
+            documentoContainer.style.display = 'block';
+            setTimeout(() => {
+                documentoContainer.classList.add('show');
+            }, 10);
+            
+            if (selectedType === 'cedula') {
+                // Configurar para cédula
+                documentoIcon.className = 'fas fa-id-card';
+                documentoText.textContent = 'Número de Cédula';
+                numeroDocumento.placeholder = '12345678';
+                numeroDocumento.maxLength = 10;
+                documentoHelp.textContent = 'Solo números, 6-10 dígitos';
+                
+                // Solo números para cédula
+                numeroDocumento.oninput = function(e) {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                };
+                
+            } else if (selectedType === 'ppt') {
+                // Configurar para PPT
+                documentoIcon.className = 'fas fa-passport';
+                documentoText.textContent = 'Número de PPT';
+                numeroDocumento.placeholder = 'PPT123456789';
+                numeroDocumento.maxLength = 15;
+                documentoHelp.textContent = 'Formato: PPT seguido de 9-12 números';
+                
+                // Auto-formateo para PPT
+                numeroDocumento.oninput = function(e) {
+                    let value = e.target.value.toUpperCase();
+                    if (value && !value.startsWith('PPT')) {
+                        if (/^[0-9]/.test(value)) {
+                            e.target.value = 'PPT' + value;
+                        }
+                    }
+                };
+            }
+        }
+        
+        // Limpiar validación anterior
+        numeroDocumento.classList.remove('error', 'success');
+        const feedback = numeroDocumento.nextElementSibling;
+        feedback.textContent = '';
+        feedback.className = 'input-feedback';
+    });
+    
+    function validateInput(e) {
+        const input = e.target;
+        const feedback = input.nextElementSibling;
+        
+        // Validaciones específicas por campo
+        let isValid = true;
+        let errorMessage = '';
+        
+        if (input.value.trim() !== '') {
+            if (input.type === 'email' && !input.validity.valid) {
+                isValid = false;
+                errorMessage = '<i class="fas fa-times"></i> Ingrese un correo válido';
+            } else if (input.type === 'password' && input.value.length < 6) {
+                isValid = false;
+                errorMessage = '<i class="fas fa-times"></i> La contraseña debe tener al menos 6 caracteres';
+            } else if (input.id === 'numero_documento') {
+                const tipoDoc = document.getElementById('tipo_documento').value;
+                if (tipoDoc === 'cedula') {
+                    const cedulaPattern = /^[0-9]{6,10}$/;
+                    if (!cedulaPattern.test(input.value)) {
+                        isValid = false;
+                        errorMessage = '<i class="fas fa-times"></i> La cédula debe tener entre 6 y 10 números';
+                    }
+                } else if (tipoDoc === 'ppt') {
+                    const pptPattern = /^PPT[0-9]{9,12}$/i;
+                    if (!pptPattern.test(input.value)) {
+                        isValid = false;
+                        errorMessage = '<i class="fas fa-times"></i> Formato: PPT seguido de 9-12 números';
+                    }
+                }
+            }
+        } else if (input.required) {
+            isValid = false;
+            errorMessage = '<i class="fas fa-times"></i> Este campo es obligatorio';
+        }
+        
+        if (isValid && input.value.trim() !== '') {
+            input.classList.add('success');
+            input.classList.remove('error');
+            feedback.textContent = '';
+            feedback.className = 'input-feedback success';
+            feedback.innerHTML = '<i class="fas fa-check"></i> Campo válido';
+        } else if (!isValid) {
+            input.classList.add('error');
+            input.classList.remove('success');
+            feedback.className = 'input-feedback error';
+            feedback.innerHTML = errorMessage;
+        }
+    }
+    
+    function clearValidation(e) {
+        const input = e.target;
+        const feedback = input.nextElementSibling;
+        
+        if (input.classList.contains('error') || input.classList.contains('success')) {
+            input.classList.remove('error', 'success');
+            feedback.textContent = '';
+            feedback.className = 'input-feedback';
+        }
+    }
+    
+    // Validación del formulario completo
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        inputs.forEach(input => {
+            if (!input.validity.valid || (input.required && input.value.trim() === '')) {
+                isValid = false;
+                input.dispatchEvent(new Event('blur'));
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Por favor, corrija los errores en el formulario antes de continuar.');
+        }
+    });
+});
+</script>
+{% endblock %}

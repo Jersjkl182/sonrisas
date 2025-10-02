@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar Sesión - Teaching Notes{% endblock %}
+
+{% block head_css %}
+    <!-- Enlace al CSS moderno para autenticación -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth_modern.css') }}">
+    <!-- NOTA: Las fuentes e íconos ahora se cargan en base.html -->
+{% endblock %}
+
+{% block content %}
+    <div class="login-page-wrapper">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <div class="contact-form">
+            <h2>Iniciar Sesión</h2>
+            <p class="form-subtitle">Accede a tu cuenta para continuar con Teaching Notes</p>
+            {# CORREGIDO: Todo el contenido del formulario debe ir DENTRO de las etiquetas <form> y </form> #}
+            <form action="{{ url_for('auth_bp.login') }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <!-- Selector de método de autenticación -->
+                <div class="input-group">
+                    <label for="login_method"><i class="fas fa-user-check"></i> Método de acceso</label>
+                    <select class="form-control" id="login_method" name="login_method" onchange="updateLoginFields()" required>
+                        <option value="correo">Correo electrónico</option>
+                        <option value="cedula">Cédula de ciudadanía</option>
+                        <option value="ppt">PPT (Permiso de Protección Temporal)</option>
+                    </select>
+                </div>
+                
+                <!-- Campo dinámico para usuario -->
+                <div class="input-group">
+                    <label for="usuario" id="usuario_label">
+                        <i class="fas fa-envelope" id="usuario_icon"></i> 
+                        <span id="usuario_text">Correo electrónico</span>
+                    </label>
+                    <input type="text" class="form-control" id="usuario" name="usuario" 
+                           placeholder="ejemplo@correo.com" required 
+                           autocomplete="username">
+                </div>
+                
+                <div class="input-group">
+                    <label for="exampleInputPassword1"><i class="fas fa-lock"></i> Contraseña</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1" 
+                           placeholder="Ingresa tu contraseña" name="contrasena" required
+                           autocomplete="current-password">
+                </div>
+
+                <div class="btn-area">
+                    <button type="submit" class="btn2">
+                        <span>Iniciar Sesión</span>
+                    </button>
+                </div>
+                <p class="rem">
+                  <label>
+                    <input type="checkbox" id="remember-me" name="remember_me">
+                    Mantenerme conectado en este dispositivo
+                  </label>
+                </p>
+                <div class="login-footer">
+                    <a href="#" class="text-decoration-none">¿Olvidaste tu contraseña?</a>
+                </div>
+            </form> {# Etiqueta de cierre de formulario #}
+        </div>
+    </div>
+
+    <!-- PARTICLES BACKGROUND -->
+    <div id="particles-js"></div>
+{% endblock %}
+
+{% block scripts %}
+    <!-- Scripts específicos de esta página -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/inicio_particles.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth_modern.js') }}"></script>
+    
+    <style>
+    /* Estilos para el selector de método de login */
+    .form-control {
+        transition: all 0.3s ease;
+        border: 2px solid #e1e8ed;
+        border-radius: 15px;
+        padding: 12px 15px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: rgba(255, 255, 255, 0.95);
+        outline: none;
+    }
+    
+    .form-control.invalid {
+        border-color: #e74c3c !important;
+        background-color: #fdf2f2 !important;
+        animation: shake 0.5s ease-in-out;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+    
+    .input-group label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 8px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .input-group label i {
+        font-size: 16px;
+        color: #667eea;
+        transition: color 0.3s ease;
+    }
+    
+    /* Estilos específicos para el selector */
+    #login_method {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        font-weight: 600;
+        cursor: pointer;
+    }
+    
+    #login_method:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+    }
+    
+    /* Tooltip para validación */
+    .input-group {
+        position: relative;
+    }
+    
+    .validation-tooltip {
+        position: absolute;
+        bottom: -25px;
+        left: 0;
+        background: #e74c3c;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+        z-index: 1000;
+    }
+    
+    .validation-tooltip.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .validation-tooltip::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: 15px;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-bottom: 5px solid #e74c3c;
+    }
+    
+    /* Animación para cambio de método */
+    .input-group.changing {
+        animation: fadeInUp 0.3s ease;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0.7;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .form-control {
+            padding: 15px;
+            font-size: 16px; /* Evita zoom en iOS */
+        }
+        
+        .input-group label {
+            font-size: 16px;
+        }
+    }
+    </style>
+    
+    <script>
+    function updateLoginFields() {
+        const loginMethod = document.getElementById('login_method').value;
+        const usuarioInput = document.getElementById('usuario');
+        const usuarioIcon = document.getElementById('usuario_icon');
+        const usuarioText = document.getElementById('usuario_text');
+        
+        switch(loginMethod) {
+            case 'correo':
+                usuarioIcon.className = 'fas fa-envelope';
+                usuarioText.textContent = 'Correo electrónico';
+                usuarioInput.placeholder = 'ejemplo@correo.com';
+                usuarioInput.type = 'email';
+                usuarioInput.pattern = '';
+                usuarioInput.title = 'Ingresa un correo electrónico válido';
+                break;
+                
+            case 'cedula':
+                usuarioIcon.className = 'fas fa-id-card';
+                usuarioText.textContent = 'Cédula de ciudadanía';
+                usuarioInput.placeholder = '12345678';
+                usuarioInput.type = 'text';
+                usuarioInput.pattern = '[0-9]{6,10}';
+                usuarioInput.title = 'Ingresa una cédula válida (6-10 dígitos)';
+                break;
+                
+            case 'ppt':
+                usuarioIcon.className = 'fas fa-passport';
+                usuarioText.textContent = 'PPT (Permiso de Protección Temporal)';
+                usuarioInput.placeholder = 'PPT123456789';
+                usuarioInput.type = 'text';
+                usuarioInput.pattern = 'PPT[0-9]{9,12}';
+                usuarioInput.title = 'Ingresa un PPT válido (PPT seguido de 9-12 dígitos)';
+                break;
+        }
+        
+        // Limpiar el campo cuando se cambia el método
+        usuarioInput.value = '';
+    }
+    
+    // Validación en tiempo real
+    document.getElementById('usuario').addEventListener('input', function() {
+        const loginMethod = document.getElementById('login_method').value;
+        const value = this.value;
+        let isValid = false;
+        
+        switch(loginMethod) {
+            case 'correo':
+                isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                break;
+            case 'cedula':
+                isValid = /^[0-9]{6,10}$/.test(value);
+                break;
+            case 'ppt':
+                isValid = /^PPT[0-9]{9,12}$/i.test(value);
+                break;
+        }
+        
+        if (value && !isValid) {
+            this.style.borderColor = '#e74c3c';
+            this.style.backgroundColor = '#fdf2f2';
+        } else {
+            this.style.borderColor = '';
+            this.style.backgroundColor = '';
+        }
+    });
+    
+    // Auto-formatear PPT
+    document.getElementById('usuario').addEventListener('input', function() {
+        const loginMethod = document.getElementById('login_method').value;
+        if (loginMethod === 'ppt') {
+            let value = this.value.toUpperCase();
+            if (value && !value.startsWith('PPT')) {
+                // Si el usuario empieza a escribir números, agregar PPT automáticamente
+                if (/^[0-9]/.test(value)) {
+                    value = 'PPT' + value;
+                    this.value = value;
+                }
+            }
+        }
+    });
+    </script>
+{% endblock %}

@@ -1,0 +1,704 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Reportes del Sistema - Administrador{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== ESTILOS PARA REPORTES DEL SISTEMA - INLINE ===== */
+body .container-fluid,
+html .container-fluid {
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    padding: 20px !important;
+}
+
+body .reports-header,
+html .reports-header {
+    background: linear-gradient(135deg, #ab47bc, #8e24aa) !important;
+    color: white !important;
+    padding: 30px !important;
+    border-radius: 20px !important;
+    margin-bottom: 30px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+body .d-flex,
+html .d-flex {
+    display: flex !important;
+}
+
+body .justify-content-between,
+html .justify-content-between {
+    justify-content: space-between !important;
+}
+
+body .align-items-center,
+html .align-items-center {
+    align-items: center !important;
+}
+
+body .mb-4,
+html .mb-4 {
+    margin-bottom: 2rem !important;
+}
+
+body .h3,
+html .h3 {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    margin: 0 0 8px 0 !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+    color: white !important;
+}
+
+body .text-muted,
+html .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+}
+
+body .btn,
+html .btn {
+    padding: 12px 20px !important;
+    border-radius: 25px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: all 0.3s ease !important;
+    border: 2px solid transparent !important;
+    cursor: pointer !important;
+}
+
+body .btn-outline-primary,
+html .btn-outline-primary {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+body .btn-outline-primary:hover,
+html .btn-outline-primary:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-2px) !important;
+    text-decoration: none !important;
+    color: white !important;
+}
+
+body .btn-outline-secondary,
+html .btn-outline-secondary {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+body .btn-outline-secondary:hover,
+html .btn-outline-secondary:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-2px) !important;
+    text-decoration: none !important;
+/* Cards de estadísticas */
+body .card,
+html .card {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 25px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 30px !important;
+    transition: all 0.3s ease !important;
+}
+
+body .card:hover,
+html .card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+body .card-header,
+html .card-header {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+body .stat-content small,
+html .stat-content small {
+    color: #495057 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    opacity: 0.8 !important;
+}
+
+/* Iconos de estadísticas */
+body .stat-icon,
+html .stat-icon {
+    font-size: 2.5rem !important;
+    opacity: 0.7 !important;
+    color: #667eea !important;
+}
+
+body .card-title,
+html .card-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #2c3e50 !important;
+    margin: 0 !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+}
+
+/* Estadísticas destacadas */
+body .stat-highlight,
+html .stat-highlight {
+    background: linear-gradient(135deg, #ab47bc, #8e24aa) !important;
+    color: white !important;
+    padding: 20px !important;
+    border-radius: 15px !important;
+    text-align: center !important;
+    margin-bottom: 20px !important;
+}
+
+body .stat-number,
+html .stat-number {
+    font-size: 36px !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+}
+
+body .stat-label,
+html .stat-label {
+    font-size: 14px !important;
+    opacity: 0.9 !important;
+    margin: 5px 0 0 0 !important;
+}
+
+/* Gráficos y charts */
+body .chart-container,
+html .chart-container {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px) !important;
+    border-radius: 20px !important;
+    padding: 25px !important;
+    margin-bottom: 30px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Grid responsive */
+body .row,
+html .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    margin: 0 -15px !important;
+}
+
+body .col-12,
+    padding: 0 15px !important;
+}
+
+/* Contenedores de gráficas con tamaño controlado */
+body .card-body:has(canvas),
+html .card-body:has(canvas) {
+    padding: 20px !important;
+    overflow: hidden !important;
+    max-height: 400px !important;
+}
+
+body canvas,
+html canvas {
+    max-width: 100% !important;
+    max-height: 300px !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body .d-flex,
+    html .d-flex {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    
+    body .col-md-6,
+    body .col-md-4,
+    body .col-md-3,
+    html .col-md-6,
+    html .col-md-4,
+    html .col-md-3 {
+        flex: 0 0 25% !important;
+        max-width: 25% !important;
+        padding: 0 20px !important;
+        margin-bottom: 30px !important;
+    }
+    
+    body .chart-container,
+    html .chart-container {
+        height: 250px !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="h3 mb-1">📊 Reportes del Sistema</h2>
+                    <p class="text-muted mb-0">Estadísticas y análisis del Jardín Infantil Sonrisas</p>
+                </div>
+                <div>
+                    <button class="btn btn-outline-primary" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i> Actualizar Datos
+                    </button>
+                    <a href="{{ url_for('admin_bp.admin') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="row mb-5" style="margin-bottom: 40px !important;">
+                <div class="col-md-3">
+                    <div class="card bg-gradient-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Total Estudiantes</h6>
+                                    <h3 class="mb-0" id="totalEstudiantes">{{ total_estudiantes }}</h3>
+                                    <small>Registrados en el sistema</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-graduation-cap fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-gradient-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Total Observaciones</h6>
+                                    <h3 class="mb-0" id="totalObservaciones">{{ total_observaciones }}</h3>
+                                    <small>Creadas por profesores</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-clipboard-list fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-gradient-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Archivos Multimedia</h6>
+                                    <h3 class="mb-0" id="totalMultimedia">{{ total_multimedia }}</h3>
+                                    <small>Fotos y videos subidos</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-images fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-gradient-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Total Usuarios</h6>
+                                    <h3 class="mb-0" id="totalUsuarios">{{ total_profesores + total_acudientes + 1 }}</h3>
+                                    <small>Activos en el sistema</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-users fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Statistics -->
+            <div class="row mb-5" style="margin-bottom: 40px !important;">
+                <!-- Users by Role -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-user-friends"></i> Usuarios por Rol
+                            </h5>
+                        </div>
+                        <div class="card-body" style="max-height: 350px; overflow: hidden;">
+                            <canvas id="usersChart" width="400" height="200" style="max-width: 100%; max-height: 250px;"></canvas>
+                            <div class="mt-3">
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <h5 class="text-primary">{{ total_profesores }}</h5>
+                                        <small class="text-muted">Profesores</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5 class="text-success">{{ total_acudientes }}</h5>
+                                        <small class="text-muted">Acudientes</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5 class="text-warning">1</h5>
+                                        <small class="text-muted">Administradores</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Links Status -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-link"></i> Estado de Enlaces
+                            </h5>
+                        </div>
+                        <div class="card-body" style="max-height: 350px; overflow: hidden;">
+                            <canvas id="linksChart" width="400" height="200" style="max-width: 100%; max-height: 250px;"></canvas>
+                            <div class="mt-3">
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <h5 class="text-success">{{ estudiantes_con_profesor }}</h5>
+                                        <small class="text-muted">Con Profesor</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5 class="text-info">{{ estudiantes_con_acudiente }}</h5>
+                                        <small class="text-muted">Con Acudiente</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5 class="text-warning">{{ total_estudiantes - estudiantes_con_acudiente }}</h5>
+                                        <small class="text-muted">Sin Acudiente</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multimedia Statistics -->
+            <div class="row mb-5" style="margin-bottom: 40px !important;">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-chart-bar"></i> Estadísticas de Multimedia
+                            </h5>
+                        </div>
+                        <div class="card-body" style="max-height: 350px; overflow: hidden;">
+                            {% if multimedia_stats.type_stats %}
+                                <canvas id="multimediaChart" width="400" height="200" style="max-width: 100%; max-height: 250px;"></canvas>
+                                <div class="mt-3">
+                                    <div class="row text-center">
+                                        {% for stat in multimedia_stats.type_stats %}
+                                        <div class="col-6">
+                                            <h5 class="{% if stat.file_type == 'image' %}text-primary{% else %}text-success{% endif %}">
+                                                {{ stat.count }}
+                                            </h5>
+                                            <small class="text-muted">
+                                                {% if stat.file_type == 'image' %}
+                                                    <i class="fas fa-image"></i> Imágenes
+                                                {% else %}
+                                                    <i class="fas fa-video"></i> Videos
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">No hay archivos multimedia</h6>
+                                    <p class="text-muted small">Los gráficos aparecerán cuando se suban archivos.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-hdd"></i> Almacenamiento
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <div class="mb-3">
+                                    <i class="fas fa-database fa-3x text-info"></i>
+                                </div>
+                                <h4 class="text-info">
+                                    {{ "%.2f"|format(multimedia_stats.total_size / (1024*1024)) }} MB
+                                </h4>
+                                <p class="text-muted">Espacio utilizado</p>
+                                
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-info" 
+                                         role="progressbar" 
+                                         style="width: {{ (multimedia_stats.total_size / (1024*1024*1024)) * 100 }}%"
+                                         aria-valuenow="{{ multimedia_stats.total_size }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="1073741824">
+                                    </div>
+                                </div>
+                                
+                                <small class="text-muted">
+                                    {{ total_multimedia }} archivos almacenados
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-bolt"></i> Acciones Rápidas
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <a href="{{ url_for('admin_bp.listar_estudiantes') }}" class="btn btn-outline-primary btn-block">
+                                        <i class="fas fa-users"></i><br>
+                                        Gestionar Estudiantes
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="{{ url_for('admin_bp.gestionar_enlaces') }}" class="btn btn-outline-success btn-block">
+                                        <i class="fas fa-link"></i><br>
+                                        Gestionar Enlaces
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="{{ url_for('admin_bp.ver_usuarios_admin') }}" class="btn btn-outline-info btn-block">
+                                        <i class="fas fa-user-cog"></i><br>
+                                        Gestionar Usuarios
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="{{ url_for('admin_bp.auditoria_completa') }}" class="btn btn-outline-warning btn-block">
+                                        <i class="fas fa-clipboard-check"></i><br>
+                                        Ver Auditorías
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(45deg, #28a745, #1e7e34);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(45deg, #17a2b8, #117a8b);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(45deg, #ffc107, #d39e00);
+}
+
+.opacity-75 {
+    opacity: 0.75;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.btn-block {
+    padding: 1rem;
+    height: auto;
+}
+
+.progress {
+    height: 8px;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Users Chart
+    const usersCtx = document.getElementById('usersChart').getContext('2d');
+    new Chart(usersCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Profesores', 'Acudientes', 'Administradores'],
+            datasets: [{
+                data: [{{ total_profesores }}, {{ total_acudientes }}, 1],
+                backgroundColor: ['#007bff', '#28a745', '#ffc107'],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Links Chart
+    const linksCtx = document.getElementById('linksChart').getContext('2d');
+    new Chart(linksCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Con Profesor', 'Con Acudiente', 'Sin Acudiente'],
+            datasets: [{
+                label: 'Estudiantes',
+                data: [{{ estudiantes_con_profesor }}, {{ estudiantes_con_acudiente }}, {{ total_estudiantes - estudiantes_con_acudiente }}],
+                backgroundColor: ['#28a745', '#17a2b8', '#ffc107'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+
+    // Multimedia Chart
+    {% if multimedia_stats.type_stats %}
+    const multimediaCtx = document.getElementById('multimediaChart').getContext('2d');
+    new Chart(multimediaCtx, {
+        type: 'pie',
+        data: {
+            labels: [
+                {% for stat in multimedia_stats.type_stats %}
+                '{% if stat.file_type == "image" %}Imágenes{% else %}Videos{% endif %}'{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ],
+            datasets: [{
+                data: [
+                    {% for stat in multimedia_stats.type_stats %}
+                    {{ stat.count }}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                backgroundColor: ['#007bff', '#28a745'],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+    {% endif %}
+});
+
+function refreshData() {
+    // Show loading state
+    const refreshBtn = document.querySelector('[onclick="refreshData()"]');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+    refreshBtn.disabled = true;
+
+    // Fetch updated data
+    fetch('{{ url_for("admin_bp.api_datos_reportes") }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update statistics
+                document.getElementById('totalEstudiantes').textContent = data.data.estudiantes.total;
+                document.getElementById('totalObservaciones').textContent = data.data.observaciones.total;
+                document.getElementById('totalMultimedia').textContent = data.data.multimedia.total;
+                document.getElementById('totalUsuarios').textContent = data.data.usuarios.profesores + data.data.usuarios.acudientes + 1;
+                
+                // Show success message
+                showAlert('success', 'Datos actualizados exitosamente');
+            } else {
+                showAlert('danger', 'Error al actualizar datos: ' + data.error);
+            }
+        })
+        .catch(error => {
+            showAlert('danger', 'Error de conexión: ' + error.message);
+        })
+        .finally(() => {
+            // Restore button
+            refreshBtn.innerHTML = originalText;
+            refreshBtn.disabled = false;
+        });
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    `;
+    
+    document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.row'));
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

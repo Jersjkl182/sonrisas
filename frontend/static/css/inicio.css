@@ -1,0 +1,267 @@
+/* =======================================
+ESTILOS GENERALES DE LA PÁGINA DE INICIO (Teaching Notes)
+======================================= */
+/* NOTA: Los estilos de 'body' (como background, font-family, etc.)
+   NO DEBEN ESTAR AQUÍ si se manejan en un CSS global de base.html.
+   Solo incluye estilos específicos de esta página. */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    color: #23272f;
+}
+
+.content-area {
+    padding-top: 140px; /* Espacio para el header */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: #e5ff00; /* Color de texto para el contenido principal */
+    padding-bottom: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.text1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #23272f;
+    text-shadow: none;
+    margin-bottom: 8px;
+}
+
+.subtext-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.subtext {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #e0e0e0;
+    margin-bottom: 24px;
+    text-shadow: none;
+}
+
+.line {
+    text-decoration: underline;
+    text-decoration-color: #6e8efb;
+    text-underline-offset: 8px;
+}
+
+.info-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+    width: 90%;
+    max-width: 1200px;
+}
+
+/* Estilos de las tarjetas base (container2 y container3) */
+.info-card { /* Clase base para ambas tarjetas */
+    flex: 1;
+    min-width: 300px;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px 0 rgba(110, 142, 251, 0.08);
+    background: rgba(255,255,255,0.82);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(110, 142, 251, 0.10);
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+    max-height: 100px;
+    padding: 24px 28px;
+    opacity: 0;
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+.info-card, .info-card .text3, .info-card .text-content {
+    color: #fff;
+}
+
+.subtext {
+    color: #e0e0e0;
+}
+
+/* Animación delays, si estas animaciones están en otro CSS, elimínalas de aquí */
+.container2 { animation-delay: 0.7s; }
+.container3 { animation-delay: 1.0s; }
+
+
+.info-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 6px 18px 0 rgba(110, 142, 251, 0.13);
+    border: 1.5px solid #6e8efb;
+}
+
+.text3 {
+    font-size: 35px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.text-content {
+    font-size: 17px;
+    line-height: 1.6;
+    color: #f0f0f0;
+    text-align: justify;
+    max-width: 100%;
+    margin-top: 15px; /* Espacio entre el encabezado y el texto del contenido cuando está visible */
+}
+
+/* =======================================
+ESTILOS PARA LAS TARJETAS DESPLEGABLES (NUEVO ENFOQUE CON JS)
+======================================= */
+
+/* Encabezado clicable de la tarjeta */
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding-bottom: 15px; /* Espacio debajo del título */
+    position: relative;
+    z-index: 1;
+}
+
+.info-header h1.text3 {
+    margin: 0;
+    padding-right: 15px;
+}
+
+/* Icono de flecha */
+.info-header .icon {
+    font-size: 1.7em;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), color 0.3s cubic-bezier(0.4,0,0.2,1);
+    color: #6e8efb;
+    flex-shrink: 0;
+}
+
+.info-header .icon:hover {
+    color: #a777e3;
+}
+
+/* Estado de rotación del icono */
+.info-header .icon.rotated {
+    transform: rotate(180deg);
+}
+
+/* Contenido de la tarjeta - OCULTO POR DEFECTO (usando visibility/opacity para transición) */
+.info-content {
+    visibility: hidden; /* Oculta el contenido, pero mantiene el espacio */
+    opacity: 0;        /* Hace el contenido invisible */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Transición para la visibilidad y opacidad */
+    
+    /* Asegurarse de que el contenido interno no tenga márgenes/paddings residuales */
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* ESTADO: Tarjeta activa (abierta) */
+.info-card.active {
+    max-height: 600px; /* Altura máxima de la tarjeta expandida (ajustar si hay mucho contenido) */
+    padding-bottom: 20px; /* Padding inferior de la tarjeta expandida */
+}
+
+/* ESTADO: Contenido visible cuando la tarjeta padre está activa */
+.info-card.active .info-content {
+    visibility: visible; /* Hace el contenido visible */
+    opacity: 1;          /* Muestra el contenido */
+}
+/* Asegurarse de que el margin-top del texto dentro del info-content se aplique cuando visible */
+.info-card.active .text-content {
+    margin-top: 15px; /* Aplica el margen superior al texto cuando la tarjeta está activa */
+}
+
+/* Botón de acción estilo Uiverse (si se agrega en el futuro) */
+.uiverse-btn {
+    background: linear-gradient(90deg, #6e8efb 0%, #a777e3 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 28px;
+    font-size: 1em;
+    font-weight: 600;
+    box-shadow: none;
+    transition: background 0.2s, transform 0.15s;
+    cursor: pointer;
+    outline: none;
+    margin-top: 14px;
+    letter-spacing: 0.2px;
+}
+.uiverse-btn:hover {
+    background: linear-gradient(90deg, #a777e3 0%, #6e8efb 100%);
+    transform: translateY(-1px) scale(1.02);
+}
+
+
+/* =======================================
+RESPONSIVE
+======================================= */
+@media (max-width: 768px) {
+    .content-area {
+        padding-top: 150px;
+    }
+
+    .text1 {
+        font-size: 60px;
+    }
+
+    .subtext {
+        font-size: 20px;
+        padding: 0 10px;
+    }
+
+    .info-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 95%;
+    }
+
+    .info-card {
+        padding: 25px; /* Ajusta padding en móviles */
+        min-width: unset;
+        max-height: 120px; /* Altura colapsada en móviles (ajustar) */
+    }
+
+    .info-card.active {
+        max-height: 800px; /* Altura expandida en móviles (ajustar) */
+    }
+
+    .info-header h1.text3 {
+        font-size: 30px;
+    }
+
+    .text-content {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .text1 {
+        font-size: 45px;
+    }
+    .subtext {
+        font-size: 18px;
+    }
+    .info-card {
+        padding: 20px;
+    }
+    .info-header h1.text3 {
+        font-size: 26px;
+    }
+    .text-content {
+        font-size: 15px;
+    }
+}

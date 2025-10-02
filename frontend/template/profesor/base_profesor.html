@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}Panel Profesor - Teaching Notes{% endblock %}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat+Alternates:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profesor/profesor.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="btn-menu">
+            <label for="btn-menu"><i class="fa-solid fa-bars"></i></label>
+        </div>
+        <div class="user-profile-dropdown">
+            <div class="user-profile-link" id="userProfileToggle">
+                <span>Hola, {{ session.get('nombre', session.get('correo', 'Profesor').split('@')[0]) }}</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="user-dropdown-menu" id="userDropdownMenu">
+                <a href="{{ url_for('obs_bp.perfil_profesor') }}" class="dropdown-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Mi Perfil</span>
+                </a>
+                <a href="{{ url_for('auth_bp.cerrar_sesion') }}" class="dropdown-item" onclick="return confirm('¿Cerrar sesión?');">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="capa"></div>
+
+<input type="checkbox" id="btn-menu">
+<div class="container-menu">
+    <div class="cont-menu">
+        <center>
+            <nav>
+                <div class="ellipse-div">
+                    <label for="btn-menu">❮</label>
+                </div>
+                <br>
+                <br>
+
+                <!-- Enlace directo a la página principal del panel -->
+                <div class="menu-item">
+                    <div class="menu-header">
+                        <a href="{{ url_for('obs_bp.listar_observaciones_profesor') }}"><i class="fas fa-home"></i><span class="text">Inicio</span></a>
+                    </div>
+                </div>
+                <br>
+                
+                <div class="menu-item collapsible">
+                    <div class="menu-header">
+                        <a href="#"><i class="fas fa-eye"></i><span class="text">Mis Observaciones</span></a>
+                        <i class="fas fa-chevron-right toggle-icon"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="{{ url_for('obs_bp.listar_observaciones_profesor') }}"><i class="fas fa-list"></i><span class="text">Ver Todas</span></a></li>
+                        <li><a href="{{ url_for('obs_bp.crear_observacion') }}"><i class="fas fa-plus"></i><span class="text">Nueva Observación</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-item collapsible">
+                    <div class="menu-header">
+                        <a href="#"><i class="fas fa-users"></i><span class="text">Estudiantes</span></a>
+                        <i class="fas fa-chevron-right toggle-icon"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="{{ url_for('obs_bp.listar_estudiantes_profesor') }}"><i class="fas fa-user-graduate"></i><span class="text">Mis Estudiantes</span></a></li>
+                        <li><a href="{{ url_for('obs_bp.progreso_profesor') }}"><i class="fas fa-chart-line"></i><span class="text">Progreso</span></a></li>
+                    </ul>
+                </div>
+
+
+                <div class="menu-item collapsible">
+                    <div class="menu-header">
+                        <a href="#"><i class="fas fa-cog"></i><span class="text">Configuración</span></a>
+                        <i class="fas fa-chevron-right toggle-icon"></i>
+                    </div>
+                    <ul class="submenu">
+                                                <li><a href="{{ url_for('obs_bp.perfil_profesor') }}#cambiar"><i class="fas fa-key"></i><span class="text">Cambiar Contraseña</span></a></li>
+                    </ul>
+                </div>
+                
+                <div class="logout-item">
+                    <a id="logout-link" href="{{ url_for('auth_bp.cerrar_sesion') }}" onclick="return confirm('¿Estás seguro de que deseas cerrar sesión?');"><i class="fas fa-sign-out-alt"></i><span class="text">Cerrar Sesión</span></a>
+                </div>
+            </nav>
+            <br>
+        </center>
+    </div>
+</div>
+
+<main class="prof-main-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert-container"> 
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message | safe }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const collapsibleItems = document.querySelectorAll('.menu-item.collapsible');
+        
+        // ---- Animación escalonada de aparición para ítems del sidebar ----
+        const menuCheckbox = document.getElementById('btn-menu');
+        const allSidebarItems = document.querySelectorAll('.cont-menu .menu-item, .cont-menu .logout-item');
+
+        // Confirmación antes de cerrar sesión
+        const logoutLink = document.getElementById('logout-link');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function(ev) {
+                ev.preventDefault(); // Detenemos la navegación por defecto
+                const seguro = confirm('¿Estás seguro de que deseas cerrar sesión?');
+                if (seguro) {
+                    window.location.href = logoutLink.href; // Redirige manualmente
+                }
+            });
+        }
+
+        // Aplica transición base a cada item
+        allSidebarItems.forEach(it => {
+            it.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
+        });
+
+        function animateSidebarItems(open) {
+            allSidebarItems.forEach((item, idx) => {
+                const delay = idx * 70; // 70ms de diferencia entre elementos
+                if (open) {
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateX(0)';
+                    }, delay);
+                } else {
+                    // Al cerrar los ocultamos sincrónicamente (o podrías escalonar)
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(-25px)';
+                }
+            });
+        }
+
+        // Lanzar animación al cambiar el checkbox
+        menuCheckbox.addEventListener('change', () => {
+            animateSidebarItems(menuCheckbox.checked);
+        });
+
+        // Asegurar estado inicial (por si se recarga con menú abierto en desktop)
+        animateSidebarItems(menuCheckbox.checked);
+
+        collapsibleItems.forEach(item => {
+            const header = item.querySelector('.menu-header');
+            const submenu = item.querySelector('.submenu');
+            const toggleIcon = item.querySelector('.toggle-icon');
+
+            // Cierra todos los submenús al cargar la página excepto si el submenú actual está activo
+            submenu.style.maxHeight = '0';
+            item.classList.remove('active'); // Asegura que no estén activos al inicio
+
+            header.addEventListener('click', function(event) {
+                event.preventDefault(); // Previene que el enlace de cabecera navegue si lo tuviera
+
+                // Si este menú ya está abierto, ciérralo
+                if (item.classList.contains('active')) {
+                    submenu.style.maxHeight = '0';
+                    item.classList.remove('active');
+                } else {
+                    // Cierra todos los demás submenús abiertos antes de abrir el actual
+                    collapsibleItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('active')) {
+                            const otherSubmenu = otherItem.querySelector('.submenu');
+                            otherSubmenu.style.maxHeight = '0';
+                            otherItem.classList.remove('active');
+                        }
+                    });
+
+                    // Abre el submenú actual
+                    submenu.style.maxHeight = submenu.scrollHeight + 'px'; // Ajusta la altura dinámicamente
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Opcional: Cerrar mensajes flash automáticamente después de unos segundos
+        const flashMessages = document.querySelectorAll('.flashes li');
+        flashMessages.forEach(message => {
+            setTimeout(() => {
+                message.style.opacity = '0';
+                message.style.transition = 'opacity 0.5s ease-out';
+                setTimeout(() => message.remove(), 500); // Eliminar después de la transición
+            }, 5000); // 5 segundos
+        });
+
+        // Toggle del dropdown del usuario
+        const userProfileToggle = document.getElementById('userProfileToggle');
+        const userDropdownMenu = document.getElementById('userDropdownMenu');
+        
+        if (userProfileToggle && userDropdownMenu) {
+            userProfileToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                const isOpen = userDropdownMenu.classList.contains('show');
+                userDropdownMenu.classList.toggle('show', !isOpen);
+                
+                // Rotar el ícono
+                const icon = this.querySelector('i');
+                icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+            });
+            
+            // Cerrar dropdown al hacer click fuera
+            document.addEventListener('click', function(e) {
+                if (!userProfileToggle.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                    userDropdownMenu.classList.remove('show');
+                    const icon = userProfileToggle.querySelector('i');
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+    // Cerrar mensajes flash al hacer clic en la "x"
+    document.addEventListener('click', function(e){
+        if(e.target && e.target.parentElement && e.target.parentElement.classList.contains('flashes')){
+            e.target.parentElement.remove();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Crear Usuario - Teaching Notes{% endblock %}
+
+{% block extra_css %}
+<style>
+.optional-label {
+    font-size: 0.8em;
+    color: #6c757d;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.field-help {
+    display: block;
+    font-size: 0.75em;
+    color: #6c757d;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.input-feedback.success {
+    color: #28a745;
+    font-size: 0.8em;
+    margin-top: 4px;
+}
+
+.input-feedback.error {
+    color: #dc3545;
+    font-size: 0.8em;
+    margin-top: 4px;
+}
+
+.form-input.success {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.form-input.error {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Estilos para el selector de documento */
+#documento-container {
+    transition: all 0.3s ease;
+}
+
+#documento-container.show {
+    display: block !important;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos para el select */
+.form-input select,
+select.form-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="create-user-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="header-text">
+                <h1 class="page-title">Crear Nuevo Usuario</h1>
+                <p class="page-subtitle">Añade un nuevo usuario al sistema</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_bp.ver_usuarios_admin') }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Volver a Lista
+            </a>
+        </div>
+    </div>
+
+    <!-- Formulario de creación -->
+    <div class="create-form-card">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="fas fa-user-edit"></i>
+            </div>
+            <h3 class="card-title">Información del Usuario</h3>
+        </div>
+        
+        <form action="{{ url_for('admin_bp.crear_usuario_admin') }}" method="POST" class="create-form" id="createUserForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="nombre">
+                        <i class="fas fa-user"></i>
+                        Nombre
+                    </label>
+                    <input type="text" id="nombre" name="nombre" class="form-input" required 
+                           placeholder="Ingrese el nombre">
+                    <div class="input-feedback"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="apellido">
+                        <i class="fas fa-user"></i>
+                        Apellido
+                    </label>
+                    <input type="text" id="apellido" name="apellido" class="form-input" required 
+                           placeholder="Ingrese el apellido">
+                    <div class="input-feedback"></div>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="correo">
+                    <i class="fas fa-envelope"></i>
+                    Correo Electrónico
+                </label>
+                <input type="email" id="correo" name="correo" class="form-input" required 
+                       placeholder="usuario@ejemplo.com">
+                <div class="input-feedback"></div>
+            </div>
+            
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="tipo_documento">
+                        <i class="fas fa-id-badge"></i>
+                        Tipo de Documento
+                        <span class="optional-label">(Opcional)</span>
+                    </label>
+                    <select id="tipo_documento" name="tipo_documento" class="form-input">
+                        <option value="">Sin documento adicional</option>
+                        <option value="cedula">
+                            <i class="fas fa-id-card"></i> Cédula de Ciudadanía
+                        </option>
+                        <option value="ppt">
+                            <i class="fas fa-passport"></i> PPT (Permiso de Protección Temporal)
+                        </option>
+                    </select>
+                    <div class="input-feedback"></div>
+                </div>
+                
+                <div class="input-group" id="documento-container" style="display: none;">
+                    <label for="numero_documento" id="documento-label">
+                        <i class="fas fa-hashtag" id="documento-icon"></i>
+                        <span id="documento-text">Número de Documento</span>
+                    </label>
+                    <input type="text" id="numero_documento" name="numero_documento" class="form-input" 
+                           placeholder="Ingrese el número" maxlength="15">
+                    <div class="input-feedback"></div>
+                    <small class="field-help" id="documento-help">Seleccione un tipo de documento</small>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="contrasena">
+                    <i class="fas fa-lock"></i>
+                    Contraseña
+                </label>
+                <input type="password" id="contrasena" name="contrasena" class="form-input" required 
+                       placeholder="Mínimo 6 caracteres" minlength="6">
+                <div class="input-feedback"></div>
+            </div>
+            
+            <div class="input-group">
+                <label for="id_rol">
+                    <i class="fas fa-user-tag"></i>
+                    Rol del Usuario
+                </label>
+                <select id="id_rol" name="id_rol" class="form-input" required>
+                    <option value="">Seleccione un rol</option>
+                    <option value="1">
+                        <i class="fas fa-crown"></i> Administrador
+                    </option>
+                    <option value="2">
+                        <i class="fas fa-chalkboard-teacher"></i> Profesor
+                    </option>
+                    <option value="4">
+                        <i class="fas fa-user-friends"></i> Acudiente
+                    </option>
+                </select>
+                <div class="input-feedback"></div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i>
+                    Crear Usuario
+                </button>
+                <a href="{{ url_for('admin_bp.ver_usuarios_admin') }}" class="btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="info-card">
+        <div class="card-header">
+            <div class="card-icon info">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <h3 class="card-title">Información Importante</h3>
+        </div>
+        
+        <div class="info-content">
+            <div class="info-item">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <strong>Seguridad:</strong>
+                    <p>Las contraseñas se encriptan automáticamente para garantizar la seguridad.</p>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <i class="fas fa-envelope"></i>
+                <div>
+                    <strong>Notificación:</strong>
+                    <p>El usuario recibirá un correo con sus credenciales de acceso.</p>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <i class="fas fa-users-cog"></i>
+                <div>
+                    <strong>Roles:</strong>
+                    <p>Cada rol tiene permisos específicos dentro del sistema.</p>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <i class="fas fa-id-card"></i>
+                <div>
+                    <strong>Documento de Identidad:</strong>
+                    <p>Opcional. Permite al usuario hacer login con cédula o PPT además del correo.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('createUserForm');
+    const inputs = form.querySelectorAll('.form-input');
+    
+    // Validación en tiempo real
+    inputs.forEach(input => {
+        input.addEventListener('blur', validateInput);
+        input.addEventListener('input', clearValidation);
+    });
+    
+    // Manejo del selector de tipo de documento
+    const tipoDocumento = document.getElementById('tipo_documento');
+    const documentoContainer = document.getElementById('documento-container');
+    const numeroDocumento = document.getElementById('numero_documento');
+    const documentoLabel = document.getElementById('documento-label');
+    const documentoIcon = document.getElementById('documento-icon');
+    const documentoText = document.getElementById('documento-text');
+    const documentoHelp = document.getElementById('documento-help');
+    
+    tipoDocumento.addEventListener('change', function() {
+        const selectedType = this.value;
+        
+        if (selectedType === '') {
+            // Sin documento
+            documentoContainer.classList.remove('show');
+            setTimeout(() => {
+                documentoContainer.style.display = 'none';
+            }, 300);
+            numeroDocumento.value = '';
+            numeroDocumento.removeAttribute('required');
+        } else {
+            // Mostrar campo de documento
+            documentoContainer.style.display = 'block';
+            setTimeout(() => {
+                documentoContainer.classList.add('show');
+            }, 10);
+            numeroDocumento.setAttribute('required', 'required');
+            
+            if (selectedType === 'cedula') {
+                // Configurar para cédula
+                documentoIcon.className = 'fas fa-id-card';
+                documentoText.textContent = 'Número de Cédula';
+                numeroDocumento.placeholder = '12345678';
+                numeroDocumento.maxLength = 10;
+                documentoHelp.textContent = 'Solo números, 6-10 dígitos';
+                
+                // Solo números para cédula
+                numeroDocumento.oninput = function(e) {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                };
+                
+            } else if (selectedType === 'ppt') {
+                // Configurar para PPT
+                documentoIcon.className = 'fas fa-passport';
+                documentoText.textContent = 'Número de PPT';
+                numeroDocumento.placeholder = 'PPT123456789';
+                numeroDocumento.maxLength = 15;
+                documentoHelp.textContent = 'Formato: PPT seguido de 9-12 números';
+                
+                // Auto-formateo para PPT
+                numeroDocumento.oninput = function(e) {
+                    let value = e.target.value.toUpperCase();
+                    if (value && !value.startsWith('PPT')) {
+                        if (/^[0-9]/.test(value)) {
+                            e.target.value = 'PPT' + value;
+                        }
+                    }
+                };
+            }
+        }
+        
+        // Limpiar validación anterior
+        numeroDocumento.classList.remove('error', 'success');
+        const feedback = numeroDocumento.nextElementSibling;
+        feedback.textContent = '';
+        feedback.className = 'input-feedback';
+    });
+    
+    function validateInput(e) {
+        const input = e.target;
+        const feedback = input.nextElementSibling;
+        
+        // Validaciones específicas por campo
+        let isValid = true;
+        let errorMessage = '';
+        
+        if (input.value.trim() !== '') {
+            if (input.type === 'email' && !input.validity.valid) {
+                isValid = false;
+                errorMessage = '<i class="fas fa-times"></i> Ingrese un correo válido';
+            } else if (input.type === 'password' && input.value.length < 6) {
+                isValid = false;
+                errorMessage = '<i class="fas fa-times"></i> La contraseña debe tener al menos 6 caracteres';
+            } else if (input.id === 'numero_documento') {
+                const tipoDoc = document.getElementById('tipo_documento').value;
+                if (tipoDoc === 'cedula') {
+                    const cedulaPattern = /^[0-9]{6,10}$/;
+                    if (!cedulaPattern.test(input.value)) {
+                        isValid = false;
+                        errorMessage = '<i class="fas fa-times"></i> La cédula debe tener entre 6 y 10 números';
+                    }
+                } else if (tipoDoc === 'ppt') {
+                    const pptPattern = /^PPT[0-9]{9,12}$/i;
+                    if (!pptPattern.test(input.value)) {
+                        isValid = false;
+                        errorMessage = '<i class="fas fa-times"></i> Formato: PPT seguido de 9-12 números';
+                    }
+                }
+            }
+        } else if (input.required) {
+            isValid = false;
+            errorMessage = '<i class="fas fa-times"></i> Este campo es obligatorio';
+        }
+        
+        if (isValid && input.value.trim() !== '') {
+            input.classList.add('success');
+            input.classList.remove('error');
+            feedback.textContent = '';
+            feedback.className = 'input-feedback success';
+            feedback.innerHTML = '<i class="fas fa-check"></i> Campo válido';
+        } else if (!isValid) {
+            input.classList.add('error');
+            input.classList.remove('success');
+            feedback.className = 'input-feedback error';
+            feedback.innerHTML = errorMessage;
+        }
+    }
+    
+    function clearValidation(e) {
+        const input = e.target;
+        const feedback = input.nextElementSibling;
+        
+        if (input.classList.contains('error') || input.classList.contains('success')) {
+            input.classList.remove('error', 'success');
+            feedback.textContent = '';
+            feedback.className = 'input-feedback';
+        }
+    }
+    
+    // Validación del formulario completo
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        inputs.forEach(input => {
+            if (!input.validity.valid || (input.required && input.value.trim() === '')) {
+                isValid = false;
+                input.dispatchEvent(new Event('blur'));
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Por favor, corrija los errores en el formulario antes de continuar.');
+        }
+    });
+});
+</script>
+{% endblock %}

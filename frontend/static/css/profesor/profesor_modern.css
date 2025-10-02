@@ -1,0 +1,881 @@
+/* =======================================
+    PANEL DE PROFESOR MODERNO - GLASSMORPHISM
+    Diseño profesional con tema azul
+    ======================================= */
+
+/* =======================================
+    RESET Y CONFIGURACIÓN BASE
+    ======================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Asegurar que los íconos FontAwesome se vean correctamente */
+.fas, .far, .fab {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 5 Free", "Font Awesome 5 Pro" !important;
+    font-weight: 900 !important;
+    display: inline-block !important;
+}
+
+i.fas, i.far, i.fab {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* =======================================
+    CONFIGURACIÓN DEL BODY
+    ======================================= */
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #3498db url(../../img/fondo.png) center/cover fixed no-repeat;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    color: #2c3e50;
+    overflow-x: hidden;
+    min-height: 100vh;
+    
+    /* Gradiente overlay para mejor legibilidad */
+    background-image: 
+        linear-gradient(135deg, rgba(52, 152, 219, 0.8), rgba(41, 128, 185, 0.6)),
+        url(../../img/fondo.png);
+    background-blend-mode: overlay;
+}
+
+/* Textura sutil para profundidad */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+    background-size: 30px 30px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* =======================================
+    HEADER MODERNIZADO
+    ======================================= */
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: 70px;
+    
+    /* Glassmorphism avanzado */
+    background: rgba(52, 152, 219, 0.9);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    
+    /* Sombra elegante */
+    box-shadow: 0 8px 32px rgba(52, 152, 219, 0.3);
+    
+    /* Transiciones suaves */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Logo y título */
+.header .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+}
+
+.header .logo i {
+    font-size: 24px;
+    color: #ecf0f1;
+}
+
+/* Botón de menú */
+.btn-menu {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-menu:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn-menu label {
+    cursor: pointer;
+    color: white;
+    font-size: 18px;
+}
+
+/* Dropdown de usuario modernizado */
+.user-profile-dropdown {
+    position: relative;
+    z-index: 1100;
+}
+
+.user-profile-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    
+    /* Glassmorphism */
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    
+    /* Efectos */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    
+    /* Tipografía */
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    text-decoration: none;
+}
+
+.user-profile-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.user-profile-link i {
+    font-size: 16px;
+    color: #ecf0f1;
+    transition: transform 0.3s ease;
+}
+
+/* Dropdown menu */
+.user-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 200px;
+    
+    /* Glassmorphism */
+    background: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    
+    /* Efectos */
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+    
+    /* Estados */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.user-dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    
+    /* Tipografía */
+    font-size: 14px;
+    color: #2c3e50;
+    text-decoration: none;
+    
+    /* Transiciones */
+    transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background: rgba(52, 152, 219, 0.3);
+    color: #3498db;
+}
+
+.dropdown-item:first-child {
+    border-radius: 16px 16px 0 0;
+}
+
+.dropdown-item:last-child {
+    border-radius: 0 0 16px 16px;
+}
+
+.dropdown-item i {
+    font-size: 16px;
+    color: #3498db;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-item:hover i {
+    transform: scale(1.1);
+}
+
+/* =======================================
+    SIDEBAR MODERNO
+    ======================================= */
+
+#btn-menu {
+    display: none;
+}
+
+.container-menu {
+    position: fixed;
+    background: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    width: 280px;
+    height: 100vh;
+    top: 0;
+    left: -280px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999;
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+}
+
+#btn-menu:checked ~ .container-menu {
+    left: 0;
+}
+
+.cont-menu {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.ellipse-div {
+    text-align: right;
+    margin-bottom: 30px;
+    padding-top: 20px;
+}
+
+.ellipse-div label {
+    font-size: 24px;
+    color: #3498db;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    background: rgba(52, 152, 219, 0.1);
+    transition: all 0.3s ease;
+}
+
+.ellipse-div label:hover {
+    background: rgba(52, 152, 219, 0.2);
+    transform: scale(1.1);
+}
+
+/* Items del menú */
+.menu-item {
+    margin-bottom: 8px;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 12px;
+}
+
+.menu-header:hover {
+    background: rgba(52, 152, 219, 0.1);
+}
+
+.menu-header a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 500;
+    flex: 1;
+}
+
+.menu-header i {
+    font-size: 18px;
+    color: #3498db;
+    width: 20px;
+}
+
+.toggle-icon {
+    font-size: 14px;
+    color: #7f8c8d;
+    transition: transform 0.3s ease;
+}
+
+.menu-item.active .toggle-icon {
+    transform: rotate(90deg);
+}
+
+.menu-item.active .menu-header {
+    background: rgba(52, 152, 219, 0.15);
+    color: #3498db;
+}
+
+/* Submenú */
+.submenu {
+    list-style: none;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: rgba(52, 152, 219, 0.05);
+    margin: 0;
+    padding: 0;
+}
+
+.submenu li {
+    border-bottom: 1px solid rgba(52, 152, 219, 0.1);
+}
+
+.submenu li:last-child {
+    border-bottom: none;
+}
+
+.submenu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px 12px 52px;
+    text-decoration: none;
+    color: #7f8c8d;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.submenu a:hover {
+    background: rgba(52, 152, 219, 0.1);
+    color: #3498db;
+    padding-left: 56px;
+}
+
+.submenu i {
+    font-size: 14px;
+    color: #3498db;
+    width: 16px;
+}
+
+/* Logout item */
+.logout-item {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(52, 152, 219, 0.2);
+}
+
+.logout-item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    text-decoration: none;
+    color: #e74c3c;
+    font-weight: 500;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.logout-item a:hover {
+    background: rgba(231, 76, 60, 0.1);
+    transform: translateX(4px);
+}
+
+.logout-item i {
+    font-size: 18px;
+    width: 20px;
+}
+
+/* Capa overlay */
+.capa {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+#btn-menu:checked ~ .capa {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* =======================================
+    CONTENIDO PRINCIPAL
+    ======================================= */
+
+.prof-main-content {
+    margin-top: 70px;
+    margin-left: 0;
+    padding: 32px 24px;
+    min-height: calc(100vh - 70px);
+    position: relative;
+    z-index: 2;
+    transition: margin-left 0.3s ease;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* =======================================
+    HERO SECTION PARA PROFESOR
+    ======================================= */
+
+.hero-section-profesor {
+    margin-bottom: 40px;
+    padding: 40px 32px;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.05));
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.hero-section-profesor::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 25% 25%, rgba(52, 152, 219, 0.1) 2px, transparent 2px);
+    background-size: 30px 30px;
+    pointer-events: none;
+}
+
+.hero-content-profesor {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-icon-profesor {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 32px rgba(52, 152, 219, 0.3);
+    position: relative;
+}
+
+.hero-icon-profesor::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.3;
+    animation: pulse 2s infinite;
+}
+
+.hero-icon-profesor i {
+    font-size: 32px;
+    color: white;
+}
+
+.hero-title-profesor {
+    font-size: 36px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle-profesor {
+    font-size: 18px;
+    color: #7f8c8d;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* =======================================
+    ESTADÍSTICAS MODERNIZADAS
+    ======================================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 32px 24px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #3498db, #2980b9);
+}
+
+.stat-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card.observaciones::before {
+    background: linear-gradient(180deg, #3498db, #2980b9);
+}
+
+.stat-card.recientes::before {
+    background: linear-gradient(180deg, #27ae60, #229954);
+}
+
+.stat-card.estudiantes::before {
+    background: linear-gradient(180deg, #f39c12, #e67e22);
+}
+
+.stat-card i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.stat-card.observaciones i {
+    color: #3498db;
+}
+
+.stat-card.recientes i {
+    color: #27ae60;
+}
+
+.stat-card.estudiantes i {
+    color: #f39c12;
+}
+
+.stat-card h3 {
+    font-size: 48px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+.stat-card p {
+    font-size: 16px;
+    color: #7f8c8d;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* =======================================
+    SECCIONES ADICIONALES
+    ======================================= */
+
+.section-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-title i {
+    color: #3498db;
+    font-size: 24px;
+}
+
+/* Cards de acciones rápidas */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.action-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    border-color: rgba(52, 152, 219, 0.3);
+}
+
+.action-card .card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.action-card.observaciones .card-icon {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.action-card.estudiantes .card-icon {
+    background: linear-gradient(135deg, #27ae60, #229954);
+}
+
+.action-card.reportes .card-icon {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.action-card.configuracion .card-icon {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+}
+
+.card-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.card-content p {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* =======================================
+    ALERTAS Y MENSAJES
+    ======================================= */
+
+.alert-container {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    z-index: 1001;
+    max-width: 400px;
+}
+
+.flashes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.flashes li {
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    font-weight: 500;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    animation: slideInRight 0.3s ease;
+}
+
+.flashes li.success {
+    background: rgba(39, 174, 96, 0.9);
+    color: white;
+    border-left: 4px solid #27ae60;
+}
+
+.flashes li.error {
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    border-left: 4px solid #e74c3c;
+}
+
+.flashes li.warning {
+    background: rgba(243, 156, 18, 0.9);
+    color: white;
+    border-left: 4px solid #f39c12;
+}
+
+.flashes li.info {
+    background: rgba(52, 152, 219, 0.9);
+    color: white;
+    border-left: 4px solid #3498db;
+}
+
+/* =======================================
+    ANIMACIONES
+    ======================================= */
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =======================================
+    RESPONSIVE DESIGN
+    ======================================= */
+
+@media (max-width: 768px) {
+    .header .container {
+        padding: 0 16px;
+    }
+    
+    .prof-main-content {
+        padding: 20px 16px;
+    }
+    
+    .hero-section-profesor {
+        padding: 24px 20px;
+    }
+    
+    .hero-title-profesor {
+        font-size: 28px;
+    }
+    
+    .hero-subtitle-profesor {
+        font-size: 16px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .stat-card {
+        padding: 24px 20px;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-card {
+        padding: 20px;
+    }
+    
+    .container-menu {
+        width: 260px;
+        left: -260px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title-profesor {
+        font-size: 24px;
+    }
+    
+    .hero-subtitle-profesor {
+        font-size: 14px;
+    }
+    
+    .stat-card h3 {
+        font-size: 36px;
+    }
+    
+    .stat-card i {
+        font-size: 36px;
+    }
+    
+    .action-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .action-card .card-icon {
+        margin: 0 auto;
+    }
+}

@@ -1,0 +1,108 @@
+@import url('../base.css');
+
+/* ================================
+   ESTILOS GENERALES - ACUDIENTE
+   Inspirados en admin.css para coherencia visual
+   ================================ */
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f6da63 url(../../img/fondo.png) center/cover fixed no-repeat;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    color: #ecf0f1;
+    margin: 0;
+}
+
+/* ---------------- HEADER ------------- */
+.acu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: rgba(163, 215, 255, 0.9);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    color:#1884d0;
+    color: #fff;
+}
+
+.acu-header .logo {
+    margin: 0;
+    font-size: 20px;
+}
+
+.acu-header nav a {
+    color: #fff;
+    margin-left: 15px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* ---------------- MAIN CONTAINER ------------- */
+/* ---------------- MAIN CONTAINER ------------- */
+.container {
+    max-width: 1100px;
+    margin: 20px auto;
+    background: rgba(255,255,255,0.75);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    color:#333;
+}
+
+/* ---------------- TABLAS ------------- */
+
+/* ---------------- BOTÓN HAMBURGUESA ------------- */
+.acu-header .btn-menu{
+    display:block !important; /* Anula display:none global */
+}
+
+.acu-header .btn-menu label{
+    color:#1884d0; /* Visibilidad en fondo claro */
+    font-size:32px;
+    cursor:pointer;
+    padding:6px 12px;
+    border-radius:8px;
+    background:rgba(255,255,255,0.55);
+    -webkit-backdrop-filter:blur(8px);
+    backdrop-filter:blur(8px);
+    transition:background-color 0.3s ease,color 0.3s ease;
+}
+
+.acu-header .btn-menu label:hover{
+    background:#1884d0;
+    color:#fff;
+}
+
+/* Fallback si FontAwesome no carga */
+.acu-header .btn-menu label::before{
+    content:"\2630"; /* símbolo Unicode de barras */
+    font-size:inherit;
+}
+
+/* Icono dentro del label */
+.acu-header .btn-menu label i{
+    color:#1884d0;
+    pointer-events:none;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    color:#555;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+}
+
+.table th {
+    color:#1884d0;
+    background-color: #e8f5e9;
+}

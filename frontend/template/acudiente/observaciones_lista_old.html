@@ -1,0 +1,385 @@
+{% extends 'acudiente/base_acudiente.html' %}
+{% block title %}Observaciones de mi Hijo/a{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/acudiente/acudiente_observaciones.css') }}">
+
+<div class="observations-container">
+    <!-- Header de la sección -->
+    <div class="observations-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="header-text">
+                <h1 class="observations-title">Observaciones de mi Hijo/a</h1>
+                <p class="observations-subtitle">Revisa el progreso y comportamiento de tu hijo/a en el colegio</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="parent-badge">
+                <i class="fas fa-user-friends"></i>
+                <span>Panel de Acudiente</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información simple -->
+    <div class="simple-info">
+        <div class="info-card">
+            <div class="info-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="info-content">
+                <div class="info-number">{{ notas|length }}</div>
+                <div class="info-label">Observaciones de tu hijo/a</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de observaciones -->
+    <div class="observations-table-section">
+        <h2 class="section-title">
+            <i class="fas fa-list"></i>
+            Lista de Observaciones
+        </h2>
+        
+        <div class="table-container">
+            {% if notas %}
+            <table class="observations-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <i class="fas fa-eye"></i>
+                            Estado
+                        </th>
+                        <th>
+                            <i class="fas fa-calendar-alt"></i>
+                            Fecha
+                        </th>
+                        <th>
+                            <i class="fas fa-user-graduate"></i>
+                            Estudiante
+                        </th>
+                        <th>
+                            <i class="fas fa-file-alt"></i>
+                            Observación
+                        </th>
+                        <th>
+                            <i class="fas fa-photo-video"></i>
+                            Multimedia
+                        </th>
+                        <th>
+                            <i class="fas fa-cog"></i>
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for nota in notas %}
+                    <tr class="observation-row {{ 'read' if nota.is_read else 'unread' }}">
+                        <td class="status-cell">
+                            <div class="status-badge {{ 'read' if nota.is_read else 'unread' }}">
+                                {% if nota.is_read %}
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Leída</span>
+                                    <small>{{ nota.read_at.strftime('%d/%m/%Y %H:%M') if nota.read_at else '' }}</small>
+                                {% else %}
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span>No leída</span>
+                                    <small>Nueva</small>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="date-cell">
+                            <div class="date-badge">
+                                <i class="fas fa-clock"></i>
+                                <span>{{ nota.fecha.strftime('%d/%m/%Y') if nota.fecha else '-' }}</span>
+                            </div>
+                        </td>
+                        <td class="student-cell">
+                            <div class="student-info">
+                                <i class="fas fa-heart"></i>
+                                <span>{{ nota.estudiante_nombre if nota.estudiante_nombre else nota.hijo }}</span>
+                            </div>
+                        </td>
+                        <td class="observation-cell">
+                            <div class="observation-text">
+                                <strong>{{ nota.titulo if nota.titulo else 'Sin título' }}</strong><br>
+                                {{ nota.descripcion[:150] if nota.descripcion else 'Sin descripción' }}{{ '...' if (nota.descripcion and nota.descripcion|length > 150) else '' }}
+                            </div>
+                        </td>
+                        <td class="multimedia-cell">
+                            <div class="multimedia-buttons">
+                                <!-- Botón para ver multimedia del estudiante -->
+                                <a href="{{ url_for('obs_bp.ver_multimedia_estudiante', student_id=nota.id_estudiante) }}" 
+                                   class="media-btn multimedia" 
+                                   title="Ver fotos y videos">
+                                    <i class="fas fa-images"></i>
+                                    <span>Ver Multimedia</span>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="actions-cell">
+                            <div class="action-buttons">
+                                {% if not nota.is_read %}
+                                    <form method="POST" action="{{ url_for('obs_bp.marcar_observacion_leida', obs_id=nota.id) }}" style="display: inline;">
+                                        <button type="submit" class="action-btn mark-read" title="Marcar como leída">
+                                            <i class="fas fa-eye"></i>
+                                            Marcar leída
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <span class="read-indicator">
+                                        <i class="fas fa-check"></i>
+                                        Ya leída
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <!-- Estado vacío -->
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 class="empty-title">¡Aún no hay observaciones!</h3>
+                <p class="empty-description">
+                    Los profesores aún no han registrado observaciones sobre tu hijo/a. 
+                    Las observaciones aparecerán aquí cuando estén disponibles.
+                </p>
+                <div class="empty-tip">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+<style>
+/* Estilos para estado de lectura */
+.status-cell {
+    text-align: center;
+    padding: 12px 8px;
+}
+
+.status-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.read {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.status-badge.unread {
+    background: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    animation: pulse 2s infinite;
+}
+
+.status-badge i {
+    font-size: 16px;
+    margin-bottom: 2px;
+}
+
+.status-badge small {
+    font-size: 10px;
+    opacity: 0.8;
+    font-weight: 400;
+    text-transform: none;
+}
+
+/* Animación para observaciones no leídas */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Estilos para filas según estado */
+.observation-row.unread {
+    background: rgba(255, 193, 7, 0.02);
+    border-left: 4px solid #ffc107;
+}
+
+.observation-row.read {
+    background: rgba(40, 167, 69, 0.02);
+    border-left: 4px solid #28a745;
+}
+
+/* Estilos para acciones */
+.actions-cell {
+    text-align: center;
+    padding: 12px 8px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.action-btn i {
+    font-size: 14px;
+}
+
+.read-indicator {
+    color: #28a745;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.read-indicator i {
+    font-size: 14px;
+}
+
+/* Mejorar el título en la observación */
+.observation-text strong {
+    color: #2c3e50;
+    font-size: 14px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .status-badge {
+        padding: 6px 8px;
+        font-size: 10px;
+    }
+    
+    .status-badge i {
+        font-size: 14px;
+    }
+    
+    .action-btn {
+        padding: 6px 12px;
+        font-size: 10px;
+    }
+    
+    .observation-row.unread,
+    .observation-row.read {
+        border-left-width: 2px;
+    }
+}
+</style>
+
+{% endblock %}
+    
+    // Simulación de fotos - aquí se haría una llamada AJAX real
+    modalBody.innerHTML = `
+        <div class="media-gallery">
+            <div class="media-item">
+                <img src="/static/img/placeholder-photo.jpg" alt="Foto 1" onclick="openFullscreen(this)">
+                <p>Foto 1 - Actividad en clase</p>
+            </div>
+            <div class="media-item">
+                <img src="/static/img/placeholder-photo.jpg" alt="Foto 2" onclick="openFullscreen(this)">
+                <p>Foto 2 - Trabajo realizado</p>
+            </div>
+            <div class="no-media">
+                <i class="fas fa-images"></i>
+                <p>No hay fotos disponibles para esta observación</p>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('multimediaModal').style.display = 'flex';
+}
+
+// Función para ver videos
+function viewVideos(observationId) {
+    document.getElementById('modalTitle').textContent = 'Videos de la Observación';
+    const modalBody = document.getElementById('modalBody');
+    
+    // Simulación de videos - aquí se haría una llamada AJAX real
+    modalBody.innerHTML = `
+        <div class="media-gallery">
+            <div class="media-item">
+                <video controls>
+                    <source src="/static/videos/placeholder-video.mp4" type="video/mp4">
+                    Tu navegador no soporta videos HTML5.
+                </video>
+                <p>Video 1 - Presentación del estudiante</p>
+            </div>
+            <div class="no-media">
+                <i class="fas fa-video"></i>
+                <p>No hay videos disponibles para esta observación</p>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('multimediaModal').style.display = 'flex';
+}
+
+// Función para cerrar el modal
+function closeMultimediaModal() {
+    document.getElementById('multimediaModal').style.display = 'none';
+}
+
+// Función para abrir imagen en pantalla completa
+function openFullscreen(img) {
+    const fullscreenDiv = document.createElement('div');
+    fullscreenDiv.className = 'fullscreen-image';
+    fullscreenDiv.innerHTML = `
+        <img src="${img.src}" alt="${img.alt}">
+        <button class="close-fullscreen" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    document.body.appendChild(fullscreenDiv);
+}
+
+// Cerrar modal al hacer clic fuera
+window.onclick = function(event) {
+    const modal = document.getElementById('multimediaModal');
+    if (event.target === modal) {
+        closeMultimediaModal();
+    }
+}
+</script>
+{% endblock %}

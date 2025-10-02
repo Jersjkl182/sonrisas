@@ -1,0 +1,415 @@
+/* =======================================
+CONTENEDOR PRINCIPAL DEL FORMULARIO DE LOGIN
+======================================= */
+.login-page-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column; /* Cambiado a column para apilar mensajes y formulario */
+    justify-content: center;
+    align-items: center;
+    /* Ajustado para que el formulario se centre verticalmente y respete la altura del header (100px) + margen */
+    min-height: calc(100vh - 100px);
+    padding-top: 130px; /* Aumentado ligeramente el padding-top para bajar el formulario */
+    padding-bottom: 40px; /* Un poco de padding inferior para buen aspecto */
+    position: relative;
+    z-index: 0;
+    overflow-y: auto; /* Para permitir scroll si el contenido es largo en móviles */
+    /* La imagen de fondo y el blur general se gestionan en common.css y base.html */
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-image: url('../img/FondoTeachingNotes2.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    color: #23272f;
+}
+
+
+/* =======================================
+ESTILOS DEL FORMULARIO DE LOGIN
+======================================= */
+.contact-form {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    padding: 44px 38px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.18);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    backdrop-filter: blur(18px) saturate(180%);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    z-index: 10;
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+/* Estilos para el avatar (si decides añadirlo) - Se mantiene el diseño anterior */
+.avatar {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    top: -45px;
+    left: calc(50% - 45px);
+    border: 5px solid #6e8efb;
+    box-shadow: 0 0 20px rgba(110, 142, 251, 0.5), 0 0 10px rgba(0,0,0,0.5);
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    color: #fff;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Título del formulario - Adaptado de .form-title de registro */
+.contact-form h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #23272f;
+    letter-spacing: 0;
+}
+
+/* Si quieres añadir un subtítulo al login, aquí el estilo */
+.form-subtitle {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Agrupación de inputs para mejor control de margen */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px; /* Espacio entre cada grupo de input */
+}
+
+.input-group label {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.input-group label i {
+    margin-right: 8px;
+    color: #555;
+}
+
+
+.contact-form input[type="email"],
+.contact-form input[type="password"] {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #bfc9e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    background: rgba(255,255,255,0.85);
+    color: #23272f;
+    outline: none;
+    box-shadow: none;
+}
+
+.contact-form input[type="email"]:focus,
+.contact-form input[type="password"]:focus {
+    outline: none;
+    border-color: #6e8efb;
+    box-shadow: 0 0 0 4px rgba(110, 142, 251, 0.18);
+    background: #fff;
+}
+
+.contact-form input::placeholder {
+    color: #aaa;
+}
+
+.btn-area {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 0;
+}
+
+.btn2 {
+    background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    width: 100%;
+    max-width: 250px;
+    box-shadow: none;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn2:hover {
+    background: linear-gradient(135deg, #a777e3 0%, #6e8efb 100%);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: none;
+}
+
+.btn2:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(107, 107, 207, 0.3);
+}
+
+.btn2:disabled {
+    background: linear-gradient(135deg, #a0b0f8 0%, #8ca0e9 100%);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Checkbox "Recordarme" */
+.rem {
+    text-align: center;
+    color: #555;
+    font-size: 15px;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rem input[type="checkbox"] {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.rem input[type="checkbox"]:checked {
+    background-color: #4a6bff;
+    border-color: #4a6bff;
+}
+
+.rem input[type="checkbox"]::after {
+    content: '';
+    position: absolute;
+    display: none;
+    left: 7px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+.rem input[type="checkbox"]:checked::after {
+    display: block;
+}
+
+/* Estilos para el pie del formulario (olvidaste contraseña) */
+.login-footer {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.login-footer a {
+    color: #555;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.login-footer a:hover {
+    color: #4a6bff;
+    text-decoration: underline;
+    text-shadow: none;
+}
+
+/* =======================================
+ESTILOS PARA MENSAJES FLASH
+======================================= */
+ul.flashes {
+    list-style-type: none;
+    padding: 0;
+    width: 480px; /* Mismo ancho que el formulario */
+    max-width: 95%;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #fff;
+    padding: 0 5px;
+}
+
+ul.flashes li {
+    padding: 15px 25px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    opacity: 0.98;
+    animation: fadeIn 0.5s ease forwards;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+ul.flashes li.success {
+    background-color: rgba(76, 175, 80, 0.85);
+    border-left: 6px solid #4CAF50;
+}
+
+ul.flashes li.danger {
+    background-color: rgba(244, 67, 54, 0.85);
+    border-left: 6px solid #F44336;
+}
+
+ul.flashes li.warning {
+    background-color: rgba(255, 152, 0, 0.85);
+    border-left: 6px solid #FF9800;
+    color: #222;
+}
+
+ul.flashes li.info {
+    background-color: rgba(23, 162, 184, 0.85);
+    border-left: 6px solid #17a2b8;
+}
+
+/* =======================================
+Responsive (Ajustes para pantallas pequeñas - ESPECÍFICOS DE LOGIN)
+======================================= */
+@media (max-width: 768px) {
+    .login-page-wrapper {
+        padding-top: 150px; /* Ajustado para móviles */
+        padding: 20px; /* Reducir padding en móviles */
+        min-height: calc(100vh - 150px); /* Ajuste para que se vea bien en móviles */
+    }
+
+    .contact-form {
+        width: 98%; /* Más ancho en pantallas pequeñas */
+        padding: 30px 20px; /* Reducir padding */
+    }
+
+    .contact-form h2 {
+        font-size: 24px;
+        padding-bottom: 15px;
+    }
+
+    .input-group {
+        margin-bottom: 15px;
+    }
+
+    .input-group label {
+        font-size: 14px;
+    }
+
+    .contact-form input[type="email"],
+    .contact-form input[type="password"] {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .btn-area {
+        margin-top: 20px;
+    }
+
+    .btn2 {
+        padding: 12px 20px;
+        font-size: 14px;
+        max-width: 200px;
+    }
+
+    .rem {
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    .rem input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+    }
+
+    .login-footer {
+        margin-top: 15px;
+    }
+
+    .login-footer a {
+        font-size: 13px;
+    }
+
+    ul.flashes {
+        width: 98%;
+        padding: 0 5px;
+    }
+
+    ul.flashes li {
+        font-size: 14px;
+        padding: 12px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-page-wrapper {
+        padding-top: 130px; /* Ajustado para móviles más pequeños */
+        padding: 15px;
+        min-height: calc(100vh - 130px);
+    }
+
+    .contact-form {
+        padding: 25px 15px;
+    }
+
+    .contact-form h2 {
+        font-size: 20px;
+    }
+
+    .form-subtitle {
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+
+    .input-group {
+        margin-bottom: 15px;
+    }
+
+    .input-group label {
+        font-size: 13px;
+    }
+
+    .contact-form input[type="email"],
+    .contact-form input[type="password"] {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .btn2 {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+}
+
+.contact-form, .contact-form h2, .contact-form label, .contact-form .btn2 {
+    color: #fff;
+}
+
+.contact-form .form-subtitle {
+    color: #e0e0e0;
+}

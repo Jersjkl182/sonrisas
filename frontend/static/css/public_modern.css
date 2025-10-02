@@ -1,0 +1,142 @@
+/* =======================================
+PUBLIC MODERN UI - Teaching Notes
+======================================= */
+
+:root {
+  --color-glass-bg: rgba(255,255,255,0.18);
+  --color-glass-border: rgba(110,142,251,0.18);
+  --color-glass-shadow: 0 8px 32px 0 rgba(110,142,251,0.18);
+  --color-accent: #6e8efb;
+  --color-accent2: #a777e3;
+  --color-text-main: #fff;
+  --color-text-dark: #23272f;
+  --color-text-secondary: #e0e0e0;
+  --radius-main: 20px;
+  --transition-main: 0.25s cubic-bezier(.4,0,.2,1);
+}
+
+body {
+  font-family: 'Inter', 'Montserrat Alternates', sans-serif;
+  color: var(--color-text-main);
+}
+
+/* GLASS CARD */
+.glass-card {
+  background: var(--color-glass-bg);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
+  border-radius: var(--radius-main);
+  border: 1.5px solid var(--color-glass-border);
+  box-shadow: var(--color-glass-shadow);
+  padding: 2.5rem 2rem;
+  color: var(--color-text-main);
+  transition: box-shadow var(--transition-main), transform var(--transition-main);
+  position: relative;
+  overflow: hidden;
+}
+.glass-card:hover {
+  box-shadow: 0 16px 40px 0 rgba(110,142,251,0.28);
+  transform: translateY(-6px) scale(1.03);
+}
+
+/* MODERN BUTTON */
+.modern-btn {
+  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent2) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 36px;
+  font-size: 1.1em;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 12px 0 rgba(110,142,251,0.10);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  cursor: pointer;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.modern-btn:hover, .modern-btn:focus {
+  background: linear-gradient(90deg, var(--color-accent2) 0%, var(--color-accent) 100%);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 32px 0 rgba(110,142,251,0.18);
+}
+
+/* MODERN INPUT */
+.modern-input {
+  background: rgba(255,255,255,0.85);
+  border: 1.5px solid var(--color-glass-border);
+  color: var(--color-text-dark);
+  border-radius: 10px;
+  font-size: 1em;
+  padding: 14px 18px;
+  margin-bottom: 1.2em;
+  box-shadow: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.modern-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(110,142,251,0.13);
+  outline: none;
+}
+::placeholder {
+  color: #bfc9e0;
+  opacity: 1;
+}
+
+/* MODERN TITLE */
+.modern-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1px;
+  margin-bottom: 0.5em;
+  text-shadow: 0 4px 24px rgba(110,142,251,0.18);
+}
+
+.modern-subtitle {
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+  margin-bottom: 2em;
+}
+
+/* ANIMACIONES */
+@keyframes glass-fade-in {
+  from { opacity: 0; transform: translateY(40px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.glass-card, .modern-title, .modern-btn {
+  animation: glass-fade-in 0.7s cubic-bezier(.4,0,.2,1);
+}
+
+/* MODERN FORM */
+.modern-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  align-items: stretch;
+}
+
+/* MODERN LINK */
+.modern-link {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.modern-link:hover {
+  color: var(--color-accent2);
+  text-decoration: underline;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .glass-card {
+    padding: 1.5rem 0.7rem;
+  }
+  .modern-title {
+    font-size: 1.5rem;
+  }
+} 

@@ -1,0 +1,420 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Gestión de Usuarios - Teaching Notes{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== ESTILOS GLASSMORPHISM PARA TABLA DE USUARIOS ===== */
+
+/* Contenedor de tabla con glassmorphism */
+body .users-table-container,
+html .users-table-container {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 25px !important;
+    overflow: hidden !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 30px !important;
+}
+
+/* Tabla de usuarios */
+body .users-table,
+html .users-table {
+    background: transparent !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
+}
+
+/* Headers de tabla con glassmorphism */
+body .users-table th,
+html .users-table th {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    padding: 15px !important;
+    text-align: left !important;
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+    font-size: 14px !important;
+}
+
+/* Celdas de datos */
+body .users-table td,
+html .users-table td {
+    padding: 15px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #2c3e50 !important;
+    background: transparent !important;
+}
+
+/* Estilos para información de documentos */
+body .document-info,
+html .document-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 13px !important;
+    color: #495057 !important;
+}
+
+body .document-info i,
+html .document-info i {
+    color: #6c757d !important;
+    font-size: 12px !important;
+}
+
+body .no-data,
+html .no-data {
+    color: #adb5bd !important;
+    font-style: italic !important;
+    font-size: 12px !important;
+}
+
+/* Hover effects en filas */
+body .users-table tr:hover,
+html .users-table tr:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+}
+
+body .users-table tr:hover td,
+html .users-table tr:hover td {
+    color: #2c3e50 !important;
+}
+
+/* Estilos para badges y elementos específicos */
+body .role-badge,
+html .role-badge {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 15px !important;
+    padding: 5px 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+body .status-badge,
+html .status-badge {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 15px !important;
+    padding: 5px 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+body .status-badge.active,
+html .status-badge.active {
+    color: #28a745 !important;
+    border-color: rgba(40, 167, 69, 0.3) !important;
+}
+
+body .status-badge.inactive,
+html .status-badge.inactive {
+    color: #dc3545 !important;
+    border-color: rgba(220, 53, 69, 0.3) !important;
+}
+
+/* Botones de acción con glassmorphism */
+body .btn-action,
+html .btn-action {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 10px !important;
+    padding: 8px 10px !important;
+    color: #2c3e50 !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+}
+
+body .btn-action:hover,
+html .btn-action:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+body .btn-action.edit:hover,
+html .btn-action.edit:hover {
+    color: #007bff !important;
+    border-color: rgba(0, 123, 255, 0.3) !important;
+}
+
+body .btn-action.delete:hover,
+html .btn-action.delete:hover {
+    color: #dc3545 !important;
+    border-color: rgba(220, 53, 69, 0.3) !important;
+}
+
+body .btn-action.activate:hover,
+html .btn-action.activate:hover {
+    color: #28a745 !important;
+    border-color: rgba(40, 167, 69, 0.3) !important;
+}
+
+body .btn-action.deactivate:hover,
+html .btn-action.deactivate:hover {
+    color: #ffc107 !important;
+    border-color: rgba(255, 193, 7, 0.3) !important;
+}
+
+/* Action buttons container */
+body .action-buttons,
+html .action-buttons {
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+}
+
+/* User email styling */
+body .user-email,
+html .user-email {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: #2c3e50 !important;
+}
+
+body .user-id,
+html .user-id {
+    font-weight: 600 !important;
+    color: #495057 !important;
+    font-family: 'Courier New', monospace !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="users-container">
+    <!-- Header de la página -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="header-text">
+                <h1 class="page-title">Gestión de Usuarios</h1>
+                <p class="page-subtitle">Administra todos los usuarios del sistema</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_bp.crear_usuario_admin') }}" class="btn-primary">
+                <i class="fas fa-user-plus"></i>
+                Crear Usuario
+            </a>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ users|length if users else 0 }}</div>
+                <div class="stat-label">Total Usuarios</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon active">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ users|selectattr('is_active')|list|length if users else 0 }}</div>
+                <div class="stat-label">Usuarios Activos</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon inactive">
+                <i class="fas fa-user-times"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ users|rejectattr('is_active')|list|length if users else 0 }}</div>
+                <div class="stat-label">Usuarios Inactivos</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon admin">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ users|selectattr('id_rol', 'equalto', 1)|list|length if users else 0 }}</div>
+                <div class="stat-label">Administradores</div>
+            </div>
+        </div>
+    </div>
+
+    {% if users %}
+    <div class="users-table-container"> 
+        <table class="users-table"> 
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Correo</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Cédula</th>
+                    <th>PPT</th>
+                    <th>Rol</th>
+                    <th>Estado</th> {# Cambiado de "Activo" a "Estado" para ser más genérico #}
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>
+                        <span class="user-id">#{{ user.id }}</span>
+                    </td>
+                    <td>
+                        <div class="user-email">
+                            <i class="fas fa-envelope"></i>
+                            {{ user.correo }}
+                        </div>
+                    </td>
+                    <td>{{ user.nombre if user.nombre else 'N/A' }}</td>
+                    <td>{{ user.apellido if user.apellido else 'N/A' }}</td>
+                    <td>
+                        {% if user.cedula %}
+                            <div class="document-info">
+                                <i class="fas fa-id-card"></i>
+                                {{ user.cedula }}
+                            </div>
+                        {% else %}
+                            <span class="no-data">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.ppt %}
+                            <div class="document-info">
+                                <i class="fas fa-passport"></i>
+                                {{ user.ppt }}
+                            </div>
+                        {% else %}
+                            <span class="no-data">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="role-badge role-{{ user.id_rol }}">
+                            {% if user.id_rol == 1 %}
+                                <i class="fas fa-crown"></i> Administrador
+                            {% elif user.id_rol == 2 %}
+                                <i class="fas fa-chalkboard-teacher"></i> Profesor
+                            {% elif user.id_rol == 4 %}
+                                <i class="fas fa-user-friends"></i> Acudiente
+                            {% else %}
+                                <i class="fas fa-user"></i> Usuario
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        {% if user.is_active %}
+                            <span class="status-badge active">
+                                <i class="fas fa-check-circle"></i> Activo
+                            </span>
+                        {% else %}
+                            <span class="status-badge inactive">
+                                <i class="fas fa-times-circle"></i> Inactivo
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{{ url_for('admin_bp.editar_usuario_admin', user_id=user.id) }}" 
+                               class="btn-action edit" title="Editar usuario">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            
+                            <form action="{{ url_for('admin_bp.toggle_user_active', user_id=user.id) }}" 
+                                  method="POST" class="inline-form toggle-user-form">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" 
+                                        class="btn-action {% if user.is_active %}deactivate{% else %}activate{% endif %}"
+                                        {% if user.id == session.get('id') and user.id_rol == 1 %}disabled{% endif %}
+                                        title="{% if user.is_active %}Desactivar{% else %}Activar{% endif %} usuario">
+                                    <i class="fas fa-{% if user.is_active %}toggle-off{% else %}toggle-on{% endif %}"></i>
+                                </button>
+                            </form>
+
+                            <form action="{{ url_for('admin_bp.eliminar_usuario_admin', user_id=user.id) }}" 
+                                  method="POST" class="inline-form" 
+                                  onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este usuario? Esta acción es irreversible.');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" 
+                                        class="btn-action delete"
+                                        {% if user.id == session.get('id') and user.id_rol == 1 %}disabled{% endif %}
+                                        title="Eliminar usuario">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <h3>No hay usuarios registrados</h3>
+        <p>Comienza creando el primer usuario del sistema</p>
+        <a href="{{ url_for('admin_bp.crear_usuario_admin') }}" class="btn-primary">
+            <i class="fas fa-user-plus"></i>
+            Crear Primer Usuario
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Selecciona todos los formularios con la clase 'toggle-user-form'
+        const forms = document.querySelectorAll('.toggle-user-form');
+
+        forms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                // Evita el envío predeterminado del formulario inmediatamente
+                event.preventDefault();
+
+                const button = this.querySelector('button');
+                const actionWord = button.classList.contains('reject') ? 'desactivar' : 'activar';
+                
+                const confirmMessage = `¿Estás seguro de que quieres ${actionWord} a este usuario?`;
+
+                if (confirm(confirmMessage)) {
+                    this.submit();
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,719 @@
+@import url('./base.css');
+
+/* =======================================
+CSS MODERNO PARA PÁGINAS DE AUTENTICACIÓN
+Registro e Inicio de Sesión
+======================================= */
+
+/* Variables CSS para consistencia */
+:root {
+    --primary-gradient: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+    --primary-gradient-hover: linear-gradient(135deg, #a777e3 0%, #6e8efb 100%);
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.25);
+    --text-primary: #1a1a1a;
+    --text-secondary: #2d3748;
+    --text-light: #4a5568;
+    --input-bg: rgba(255, 255, 255, 0.95);
+    --input-border: #bfc9e0;
+    --input-focus: #6e8efb;
+    --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+    --shadow-button: 0 4px 15px rgba(110, 142, 251, 0.3);
+    --border-radius: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    background: #f6da63 url('../img/fondo.png') center/cover fixed no-repeat; /* Fondo ilustrado amarillo igual al sitio público */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+/* =======================================
+CONTENEDORES PRINCIPALES
+======================================= */
+
+/* Contenedor principal para registro */
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px);
+    padding: 40px 20px;
+    position: relative;
+    z-index: 2;
+    flex-grow: 1;
+}
+
+/* Contenedor principal para login */
+.login-page-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px);
+    padding: 40px 20px;
+    position: relative;
+    z-index: 2;
+    overflow-y: auto;
+}
+
+/* =======================================
+FORMULARIOS GLASS
+======================================= */
+
+/* Formulario de registro */
+.blur-fondo {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    padding: 40px;
+    border-radius: var(--border-radius);
+    background: rgba(255, 255, 255, 0.507); /* vidrio ultra transparente para unificar estilo */
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: var(--shadow-glass);
+    border: 1.5px solid var(--glass-border);
+    z-index: 10;
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+/* Formulario de login */
+.contact-form {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    padding: 44px 38px;
+    border-radius: var(--border-radius);
+    background: rgba(255, 255, 255, 0.418); /* vidrio ultra transparente para unificar estilo */
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: var(--shadow-glass);
+    border: 1.5px solid var(--glass-border);
+    z-index: 10;
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+/* =======================================
+TÍTULOS Y TEXTOS
+======================================= */
+
+.form-title,
+.contact-form h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.form-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 32px;
+    line-height: 1.6;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* =======================================
+GRUPOS DE FORMULARIOS
+======================================= */
+
+.form-group,
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.form-group label,
+.input-group label {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.01em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.form-group label i,
+.input-group label i {
+    margin-right: 10px;
+    color: var(--input-focus);
+    font-size: 1rem;
+}
+
+/* =======================================
+INPUTS MODERNOS
+======================================= */
+
+.form-group input,
+.contact-form input[type="email"],
+.contact-form input[type="password"] {
+    width: 100%;
+    padding: 16px 20px;
+    border: 2px solid var(--input-border);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    outline: none;
+    box-shadow: none;
+    font-weight: 600;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.form-group input:focus,
+.contact-form input[type="email"]:focus,
+.contact-form input[type="password"]:focus {
+    outline: none;
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 4px rgba(110, 142, 251, 0.15);
+    background: #fff;
+    transform: translateY(-1px);
+}
+
+.form-group input::placeholder,
+.contact-form input::placeholder {
+    color: #666;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+/* =======================================
+BOTONES MODERNOS
+======================================= */
+
+.btn-registrar,
+.btn2 {
+    width: 100%;
+    padding: 16px 28px;
+    background: var(--primary-gradient);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-button);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-registrar:hover,
+.btn2:hover {
+    background: var(--primary-gradient-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(110, 142, 251, 0.4);
+}
+
+.btn-registrar:active,
+.btn2:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(110, 142, 251, 0.3);
+}
+
+.btn-registrar:disabled,
+.btn2:disabled {
+    background: linear-gradient(135deg, #a0b0f8 0%, #8ca0e9 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Efecto de brillo en hover */
+.btn-registrar::before,
+.btn2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-registrar:hover::before,
+.btn2:hover::before {
+    left: 100%;
+}
+
+/* =======================================
+ACCIONES DE FORMULARIO
+======================================= */
+
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 32px;
+}
+
+.btn-area {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+/* =======================================
+ENLACES Y FOOTER
+======================================= */
+
+.login-link {
+    margin-top: 24px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: var(--transition);
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.login-link:hover {
+    color: var(--input-focus);
+    text-decoration: underline;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-footer a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: var(--transition);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.login-footer a:hover {
+    color: var(--input-focus);
+    text-decoration: underline;
+}
+
+/* =======================================
+CHECKBOX MODERNO
+======================================= */
+
+.rem {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.rem input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    border-radius: 6px;
+    background-color: var(--input-bg);
+    border: 2px solid var(--input-border);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.rem input[type="checkbox"]:checked {
+    background: var(--primary-gradient);
+    border-color: var(--input-focus);
+    transform: scale(1.05);
+}
+
+.rem input[type="checkbox"]::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 2px;
+    transition: transform 0.2s ease;
+}
+
+.rem input[type="checkbox"]:checked::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* =======================================
+MENSAJES FLASH MEJORADOS
+======================================= */
+
+.flash-messages,
+ul.flashes {
+    margin-bottom: 24px;
+    padding: 0;
+    list-style: none;
+}
+
+.flash-messages .success,
+.flash-messages .error,
+.flash-messages .info,
+ul.flashes li {
+    padding: 16px 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid;
+    animation: slideInDown 0.4s ease-out;
+}
+
+.flash-messages .success,
+ul.flashes li.success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #166534;
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.flash-messages .error,
+ul.flashes li.danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.flash-messages .info,
+ul.flashes li.info {
+    background: rgba(59, 130, 246, 0.15);
+    color: #1d4ed8;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* =======================================
+GRID RESPONSIVO PARA REGISTRO
+======================================= */
+
+.registro-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 24px;
+}
+
+@media (min-width: 769px) {
+    .registro-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .registro-form .form-group:nth-child(1) {
+        grid-column: 1;
+    }
+
+    .registro-form .form-group:nth-child(2) {
+        grid-column: 2;
+    }
+
+    .registro-form .form-group:nth-child(3) {
+        grid-column: 1;
+    }
+
+    .registro-form .form-group:nth-child(4) {
+        grid-column: 2;
+    }
+
+    .registro-form .form-group:nth-child(5),
+    .form-actions {
+        grid-column: span 2;
+    }
+}
+
+/* =======================================
+ANIMACIONES
+======================================= */
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =======================================
+RESPONSIVE DESIGN
+======================================= */
+
+@media (max-width: 768px) {
+    .main-content,
+    .login-page-wrapper {
+        padding: 20px 15px;
+        padding-top: 100px;
+    }
+
+    .blur-fondo,
+    .contact-form {
+        max-width: 100%;
+        padding: 32px 24px;
+    }
+
+    .form-title,
+    .contact-form h2 {
+        font-size: 1.5rem;
+    }
+
+    .form-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 24px;
+    }
+
+    .form-group,
+    .input-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label,
+    .input-group label {
+        font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .contact-form input[type="email"],
+    .contact-form input[type="password"] {
+        padding: 14px 16px;
+        font-size: 0.95rem;
+    }
+
+    .btn-registrar,
+    .btn2 {
+        padding: 14px 24px;
+        font-size: 0.95rem;
+    }
+
+    .rem {
+        font-size: 0.85rem;
+    }
+
+    .rem input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content,
+    .login-page-wrapper {
+        padding: 15px 10px;
+        padding-top: 80px;
+    }
+
+    .blur-fondo,
+    .contact-form {
+        padding: 24px 20px;
+    }
+
+    .form-title,
+    .contact-form h2 {
+        font-size: 1.3rem;
+    }
+
+    .form-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .form-group input,
+    .contact-form input[type="email"],
+    .contact-form input[type="password"] {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+
+    .btn-registrar,
+    .btn2 {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+
+    .login-link,
+    .login-footer a {
+        font-size: 0.85rem;
+    }
+}
+
+/* =======================================
+MEJORAS DE ACCESIBILIDAD
+======================================= */
+
+/* Focus visible para navegación por teclado */
+.form-group input:focus-visible,
+.contact-form input:focus-visible,
+.btn-registrar:focus-visible,
+.btn2:focus-visible {
+    outline: 2px solid var(--input-focus);
+    outline-offset: 2px;
+}
+
+/* Mejora del contraste para texto */
+.form-group label,
+.input-group label {
+    color: var(--text-primary);
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Scrollbar personalizado */
+.blur-fondo::-webkit-scrollbar,
+.contact-form::-webkit-scrollbar {
+    width: 8px;
+}
+
+.blur-fondo::-webkit-scrollbar-track,
+.contact-form::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.blur-fondo::-webkit-scrollbar-thumb,
+.contact-form::-webkit-scrollbar-thumb {
+    background: rgba(110, 142, 251, 0.3);
+    border-radius: 4px;
+}
+
+.blur-fondo::-webkit-scrollbar-thumb:hover,
+.contact-form::-webkit-scrollbar-thumb:hover {
+    background: rgba(110, 142, 251, 0.5);
+}
+
+/* =======================================
+ESTILOS ADICIONALES PARA MEJORAR UX
+======================================= */
+
+/* Efecto de hover en inputs */
+.form-group:hover,
+.input-group:hover {
+    transform: translateY(-1px);
+    transition: var(--transition);
+}
+
+/* Efecto de focus mejorado */
+.form-group input:focus,
+.contact-form input[type="email"]:focus,
+.contact-form input[type="password"]:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(110, 142, 251, 0.25);
+}
+
+/* Efecto de hover en botones */
+.btn-registrar:hover,
+.btn2:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(110, 142, 251, 0.4);
+}
+
+/* Efecto de active en botones */
+.btn-registrar:active,
+.btn2:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+/* Mejora en enlaces */
+.login-link:hover,
+.login-footer a:hover {
+    transform: translateX(5px);
+    transition: var(--transition);
+}
+
+/* Efecto de hover en checkbox */
+.rem:hover {
+    transform: scale(1.02);
+    transition: var(--transition);
+}
+
+/* Mejora en mensajes flash */
+.flash-messages .success,
+.flash-messages .error,
+.flash-messages .info,
+ul.flashes li {
+    position: relative;
+    overflow: hidden;
+}
+
+.flash-messages .success::before,
+.flash-messages .error::before,
+.flash-messages .info::before,
+ul.flashes li::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.flash-messages .success:hover::before,
+.flash-messages .error:hover::before,
+.flash-messages .info:hover::before,
+ul.flashes li:hover::before {
+    left: 100%;
+}
+
+/* Animación de salida para mensajes */
+@keyframes slideOutUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* Mejora en responsive */
+@media (max-width: 768px) {
+    .blur-fondo,
+    .contact-form {
+        animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    
+    .btn-registrar:hover,
+    .btn2:hover {
+        transform: translateY(-2px) scale(1.01);
+    }
+} 

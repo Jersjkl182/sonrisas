@@ -1,0 +1,1172 @@
+{% extends "profesor/base_profesor.html" %}
+
+{% block title %}Archivos Multimedia - Observación{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="h3 mb-1">📸 Archivos Multimedia</h2>
+                    <p class="text-muted mb-0">
+                        Observación: {{ observacion.descripcion[:50] }}...
+                        <span class="badge badge-info">{{ observacion.tipo }}</span>
+                    </p>
+                </div>
+                <div>
+                    <a href="{{ url_for('obs_bp.listar_observaciones_profesor') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver a Observaciones
+                    </a>
+                </div>
+            </div>
+
+            <!-- Upload Section Mejorada -->
+            <div class="upload-section mb-4">
+                <div class="upload-card">
+                    <div class="upload-header">
+                        <h5 class="upload-title">
+                            <i class="fas fa-cloud-upload-alt"></i> Subir Archivos Multimedia
+                        </h5>
+                        <p class="upload-subtitle">Arrastra archivos aquí o haz clic para seleccionar</p>
+                    </div>
+                    
+                    <form id="uploadForm" action="{{ url_for('obs_bp.subir_multimedia', obs_id=observacion.id) }}" 
+                          method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        
+                        <!-- Zona de Drag & Drop -->
+                        <div class="drop-zone" id="dropZone">
+                            <div class="drop-zone-content">
+                                <i class="fas fa-cloud-upload-alt drop-icon"></i>
+                                <h4>Arrastra archivos aquí</h4>
+                                <p>o</p>
+                                <button type="button" class="btn-select-files" onclick="document.getElementById('files').click()">
+                                    <i class="fas fa-folder-open"></i> Seleccionar Archivos
+                                </button>
+                                <input type="file" 
+                                       id="files" 
+                                       name="files" 
+                                       multiple 
+                                       accept="image/*,video/*"
+                                       style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <!-- Preview de archivos seleccionados -->
+                        <div class="files-preview" id="filesPreview" style="display: none;">
+                            <h6><i class="fas fa-eye"></i> Archivos Seleccionados:</h6>
+                            <div class="preview-grid" id="previewGrid"></div>
+                        </div>
+                        
+                        <!-- Información de formatos -->
+                        <div class="upload-info">
+                            <div class="info-item">
+                                <i class="fas fa-images text-primary"></i>
+                                <span>Imágenes: JPG, PNG, GIF, WEBP</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-video text-danger"></i>
+                                <span>Videos: MP4, AVI, MOV, WEBM</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-weight text-warning"></i>
+                                <span>Máximo: 500MB por archivo</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Botones de acción -->
+                        <div class="upload-actions" id="uploadActions" style="display: none;">
+                            <button type="submit" class="btn-upload" id="uploadBtn">
+                                <i class="fas fa-upload"></i> 
+                                <span>Subir <span id="fileCount">0</span> archivo(s)</span>
+                            </button>
+                            <button type="button" class="btn-clear" onclick="clearFiles()">
+                                <i class="fas fa-times"></i> Limpiar
+                            </button>
+                        </div>
+                        
+                        <!-- Barra de progreso -->
+                        <div class="upload-progress" id="uploadProgress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="progress-text" id="progressText">Subiendo archivos...</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Files List -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-folder-open"></i> Archivos Subidos
+                        <span class="badge badge-secondary">{{ archivos|length }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if archivos %}
+                        <div class="row">
+                            {% for archivo in archivos %}
+                            <div class="col-md-4 col-lg-3 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        {% if archivo.is_image %}
+                                            <div class="mb-3">
+                                                <img src="{{ archivo.url }}" 
+                                                     class="img-fluid rounded" 
+                                                     style="max-height: 150px; object-fit: cover;"
+                                                     alt="{{ archivo.filename }}">
+                                            </div>
+                                        {% elif archivo.is_video %}
+                                            <div class="mb-3">
+                                                <video controls 
+                                                       class="img-fluid rounded" 
+                                                       style="max-height: 150px;">
+                                                    <source src="{{ archivo.url }}" type="video/mp4">
+                                                    Tu navegador no soporta videos.
+                                                </video>
+                                            </div>
+                                        {% else %}
+                                            <div class="mb-3">
+                                                <i class="fas fa-file fa-4x text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <h6 class="card-title text-truncate" title="{{ archivo.filename }}">
+                                            {{ archivo.filename }}
+                                        </h6>
+                                        
+                                        <p class="card-text small text-muted">
+                                            <i class="fas fa-calendar"></i> {{ archivo.upload_date.strftime('%d/%m/%Y %H:%M') }}<br>
+                                            <i class="fas fa-weight"></i> {{ archivo.formatted_size }}<br>
+                                            <i class="fas fa-user"></i> {{ archivo.uploader_name }} {{ archivo.uploader_surname }}
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="card-footer">
+                                        <div class="btn-group w-100" role="group">
+                                            {% if archivo.is_image %}
+                                                <button onclick="openImageModal('{{ archivo.url }}', '{{ archivo.filename }}')" 
+                                                        class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i> Ver
+                                                </button>
+                                            {% else %}
+                                                <a href="{{ archivo.url }}" 
+                                                   class="btn btn-sm btn-outline-primary" 
+                                                   target="_blank">
+                                                    <i class="fas fa-play"></i> Reproducir
+                                                </a>
+                                            {% endif %}
+                                            
+                                            <form method="post" 
+                                                  action="{{ url_for('obs_bp.eliminar_multimedia', multimedia_id=archivo.id) }}"
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('¿Estás seguro de eliminar este archivo?')">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                                <input type="hidden" name="obs_id" value="{{ observacion.id }}"/>
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i> Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay archivos multimedia</h5>
+                            <p class="text-muted">Sube fotos o videos para documentar esta observación.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para vista de imagen -->
+<div id="imageModal" class="image-modal" style="display: none;">
+    <div class="image-modal-content">
+        <div class="image-modal-header">
+            <h3 id="imageModalTitle">Vista de Imagen</h3>
+            <button class="close-modal" onclick="closeImageModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="image-modal-body">
+            <img id="modalImage" src="" alt="Imagen" />
+        </div>
+        <div class="image-modal-footer">
+            <button class="btn-modal-action" onclick="downloadImage()">
+                <i class="fas fa-download"></i> Descargar
+            </button>
+            <button class="btn-modal-action" onclick="closeImageModal()">
+                <i class="fas fa-times"></i> Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ===== ESTILOS MODERNOS PARA MULTIMEDIA ===== */
+.upload-section {
+    margin-bottom: 2rem;
+}
+
+.upload-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 25px;
+    padding: 0;
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4), 0 8px 16px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.upload-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(102, 126, 234, 0.5), 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.upload-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    z-index: 1;
+}
+
+.upload-header {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem 2rem 1rem;
+    color: white;
+}
+
+.upload-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.upload-subtitle {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+.drop-zone {
+    position: relative;
+    z-index: 2;
+    margin: 0 2rem 2rem;
+    border: 3px dashed rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    cursor: pointer;
+}
+
+.drop-zone::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+    border-radius: 17px;
+}
+
+.drop-zone:hover::before {
+    transform: translateX(100%);
+}
+
+.drop-zone.dragover {
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.2);
+    transform: scale(1.03);
+    box-shadow: 0 0 30px rgba(46, 204, 113, 0.3);
+}
+
+.drop-zone-content {
+    color: white;
+}
+
+.drop-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+    animation: float 3s ease-in-out infinite;
+    position: relative;
+    z-index: 3;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.drop-zone h4 {
+    margin: 1rem 0 0.5rem 0;
+    font-weight: 500;
+}
+
+.drop-zone p {
+    margin: 0.5rem 0 1.5rem 0;
+    opacity: 0.8;
+}
+
+.btn-select-files {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-select-files:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.files-preview {
+    position: relative;
+    z-index: 2;
+    margin: 0 2rem 1rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.files-preview h6 {
+    color: white;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.preview-item {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+
+.preview-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.preview-item .file-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.preview-item .file-name {
+    font-size: 0.8rem;
+    color: white;
+    word-break: break-word;
+    margin-bottom: 0.25rem;
+}
+
+.preview-item .file-size {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.preview-item .remove-file {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-info {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-around;
+    margin: 0 2rem 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.upload-actions {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 0 2rem 2rem;
+    flex-wrap: wrap;
+}
+
+.btn-upload {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+    font-size: 1rem;
+}
+
+.btn-upload:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(46, 204, 113, 0.5);
+    background: linear-gradient(135deg, #27ae60, #229954);
+}
+
+.upload-progress {
+    position: relative;
+    z-index: 2;
+    margin: 0 2rem 2rem;
+}
+
+.progress-bar {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, #2ecc71, #27ae60);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.progress-text {
+    text-align: center;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* ===== ESTILOS PARA ARCHIVOS EXISTENTES ===== */
+.card {
+    transition: transform 0.2s;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.img-fluid {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+video {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===== ESTILOS MODERNOS PARA CARDS DE ARCHIVOS ===== */
+.card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card-body {
+    padding: 1.5rem;
+    position: relative;
+}
+
+.card-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 20px 20px 0 0;
+}
+
+.card-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.card-text {
+    color: #7f8c8d;
+    line-height: 1.6;
+}
+
+.card-footer {
+    background: rgba(102, 126, 234, 0.05);
+    border-top: 1px solid rgba(102, 126, 234, 0.1);
+    padding: 1rem 1.5rem;
+}
+
+.btn-outline-primary {
+    border: 2px solid #667eea;
+    color: #667eea;
+    font-weight: 600;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-outline-danger {
+    border: 2px solid #e74c3c;
+    color: #e74c3c;
+    font-weight: 600;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-danger:hover {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border-color: #e74c3c;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+}
+
+.img-fluid {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.img-fluid:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+video {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.fa-4x {
+    color: #667eea !important;
+    opacity: 0.7;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .upload-info {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .upload-actions {
+        flex-direction: column;
+    }
+    
+    .btn-upload,
+    .btn-clear {
+        width: 100%;
+    }
+    
+    .preview-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .drop-zone {
+        margin: 0 1rem 1rem;
+        padding: 2rem 1rem;
+    }
+    
+    .upload-actions {
+        margin: 0 1rem 1rem;
+    }
+}
+
+/* ===== ESTILOS PARA MODAL DE IMAGEN ===== */
+.image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.image-modal-content {
+    background: white;
+    border-radius: 20px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    to { 
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.image-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.image-modal-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.close-modal {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.close-modal:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.image-modal-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #f8f9fa;
+}
+
+.image-modal-body img {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    object-fit: contain;
+}
+
+.image-modal-footer {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    background: white;
+    border-top: 1px solid #e9ecef;
+    justify-content: flex-end;
+}
+
+.btn-modal-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.btn-modal-action:first-child {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+}
+
+.btn-modal-action:first-child:hover {
+    background: linear-gradient(135deg, #2980b9, #1f4e79);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+}
+
+.btn-modal-action:last-child {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    color: white;
+}
+
+.btn-modal-action:last-child:hover {
+    background: linear-gradient(135deg, #7f8c8d, #6c7b7d);
+    transform: translateY(-2px);
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .image-modal-content {
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+    
+    .image-modal-header {
+        padding: 1rem 1.5rem;
+    }
+    
+    .image-modal-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .image-modal-body {
+        padding: 1rem;
+    }
+    
+    .image-modal-footer {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+    }
+    
+    .btn-modal-action {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+// ===== FUNCIONALIDAD MEJORADA DE UPLOAD =====
+let selectedFiles = [];
+const maxFileSize = 500 * 1024 * 1024; // 500MB
+const maxFiles = 10;
+const allowedTypes = {
+    'image/jpeg': 'image',
+    'image/jpg': 'image', 
+    'image/png': 'image',
+    'image/gif': 'image',
+    'image/webp': 'image',
+    'video/mp4': 'video',
+    'video/avi': 'video',
+    'video/mov': 'video',
+    'video/webm': 'video'
+};
+
+// Elementos del DOM
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('files');
+const filesPreview = document.getElementById('filesPreview');
+const previewGrid = document.getElementById('previewGrid');
+const uploadActions = document.getElementById('uploadActions');
+const fileCount = document.getElementById('fileCount');
+const uploadForm = document.getElementById('uploadForm');
+const uploadProgress = document.getElementById('uploadProgress');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+
+// ===== DRAG & DROP =====
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+});
+
+dropZone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+});
+
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    
+    const files = Array.from(e.dataTransfer.files);
+    handleFiles(files);
+});
+
+// ===== SELECCIÓN DE ARCHIVOS =====
+fileInput.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    handleFiles(files);
+});
+
+// ===== MANEJO DE ARCHIVOS =====
+function handleFiles(files) {
+    // Validar número de archivos
+    if (selectedFiles.length + files.length > maxFiles) {
+        showAlert(`Máximo ${maxFiles} archivos permitidos`, 'warning');
+        return;
+    }
+    
+    // Procesar cada archivo
+    files.forEach(file => {
+        if (validateFile(file)) {
+            selectedFiles.push(file);
+        }
+    });
+    
+    updatePreview();
+    updateFileInput();
+}
+
+// ===== VALIDACIÓN DE ARCHIVOS =====
+function validateFile(file) {
+    // Validar tipo
+    if (!allowedTypes[file.type]) {
+        showAlert(`Tipo de archivo no permitido: ${file.name}`, 'warning');
+        return false;
+    }
+    
+    // Validar tamaño
+    if (file.size > maxFileSize) {
+        showAlert(`Archivo demasiado grande: ${file.name}. Máximo 500MB`, 'warning');
+        return false;
+    }
+    
+    // Validar duplicados
+    if (selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+        showAlert(`Archivo duplicado: ${file.name}`, 'warning');
+        return false;
+    }
+    
+    return true;
+}
+
+// ===== ACTUALIZAR PREVIEW =====
+function updatePreview() {
+    if (selectedFiles.length === 0) {
+        filesPreview.style.display = 'none';
+        uploadActions.style.display = 'none';
+        return;
+    }
+    
+    filesPreview.style.display = 'block';
+    uploadActions.style.display = 'flex';
+    fileCount.textContent = selectedFiles.length;
+    
+    previewGrid.innerHTML = '';
+    
+    selectedFiles.forEach((file, index) => {
+        const previewItem = createPreviewItem(file, index);
+        previewGrid.appendChild(previewItem);
+    });
+}
+
+// ===== CREAR ITEM DE PREVIEW =====
+function createPreviewItem(file, index) {
+    const div = document.createElement('div');
+    div.className = 'preview-item';
+    
+    const fileType = allowedTypes[file.type];
+    const fileSize = formatFileSize(file.size);
+    
+    let mediaElement = '';
+    if (fileType === 'image') {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            div.querySelector('.file-preview').innerHTML = `<img src="${e.target.result}" alt="${file.name}">`;
+        };
+        reader.readAsDataURL(file);
+        mediaElement = '<div class="file-preview"><i class="fas fa-image file-icon"></i></div>';
+    } else {
+        mediaElement = '<div class="file-preview"><i class="fas fa-video file-icon"></i></div>';
+    }
+    
+    div.innerHTML = `
+        ${mediaElement}
+        <div class="file-name">${file.name}</div>
+        <div class="file-size">${fileSize}</div>
+        <button type="button" class="remove-file" onclick="removeFile(${index})">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    return div;
+}
+
+// ===== REMOVER ARCHIVO =====
+function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    updatePreview();
+    updateFileInput();
+}
+
+// ===== LIMPIAR ARCHIVOS =====
+function clearFiles() {
+    selectedFiles = [];
+    fileInput.value = '';
+    updatePreview();
+}
+
+// ===== ACTUALIZAR INPUT =====
+function updateFileInput() {
+    const dt = new DataTransfer();
+    selectedFiles.forEach(file => dt.items.add(file));
+    fileInput.files = dt.files;
+}
+
+// ===== FORMATEAR TAMAÑO =====
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// ===== MOSTRAR ALERTAS =====
+function showAlert(message, type = 'info') {
+    // Crear alerta temporal
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type} alert-dismissible fade show`;
+    alert.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideInRight 0.3s ease;
+    `;
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="close" onclick="this.parentElement.remove()">
+            <span>&times;</span>
+        </button>
+    `;
+    
+    document.body.appendChild(alert);
+    
+    // Auto-remover después de 5 segundos
+    setTimeout(() => {
+        if (alert.parentElement) {
+            alert.remove();
+        }
+    }, 5000);
+}
+
+    // Inicializar cuando se carga la página
+    document.addEventListener('DOMContentLoaded', function() {
+        updateFileCount();
+        updateUploadActions();
+    });
+    
+    // Simular progreso (el progreso real se manejará en el backend)
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 90) progress = 90;
+        
+        progressFill.style.width = progress + '%';
+        progressText.textContent = `Subiendo archivos... ${Math.round(progress)}%`;
+        
+        if (progress >= 90) {
+            clearInterval(interval);
+            progressText.textContent = 'Procesando archivos...';
+        }
+    }, 200);
+});
+
+// ===== ANIMACIONES CSS =====
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .alert {
+        padding: 12px 20px;
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .alert-warning {
+        background: linear-gradient(135deg, #ff9800, #f57c00);
+        color: white;
+    }
+    
+    .alert-info {
+        background: linear-gradient(135deg, #2196f3, #1976d2);
+        color: white;
+    }
+    
+    .close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 10px;
+    }
+`;
+document.head.appendChild(style);
+
+// ===== FUNCIONALIDAD MODAL DE IMAGEN =====
+let currentImageUrl = '';
+
+function openImageModal(imageUrl, filename) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('imageModalTitle');
+    
+    currentImageUrl = imageUrl;
+    modalImage.src = imageUrl;
+    modalTitle.textContent = filename || 'Vista de Imagen';
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+    
+    // Cerrar con ESC
+    document.addEventListener('keydown', handleEscKey);
+    
+    // Cerrar al hacer click fuera del modal
+    modal.addEventListener('click', handleOutsideClick);
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto'; // Restaurar scroll del body
+    
+    // Remover event listeners
+    document.removeEventListener('keydown', handleEscKey);
+    modal.removeEventListener('click', handleOutsideClick);
+}
+
+function downloadImage() {
+    if (currentImageUrl) {
+        const link = document.createElement('a');
+        link.href = currentImageUrl;
+        link.download = document.getElementById('imageModalTitle').textContent;
+        link.click();
+    }
+}
+
+function handleEscKey(event) {
+    if (event.key === 'Escape') {
+        closeImageModal();
+    }
+}
+
+function handleOutsideClick(event) {
+    const modalContent = document.querySelector('.image-modal-content');
+    if (!modalContent.contains(event.target)) {
+        closeImageModal();
+    }
+}
+
+console.log('✅ Sistema de upload multimedia mejorado cargado');
+</script>
+{% endblock %}

@@ -1,0 +1,1424 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Dashboard de Administración - Jardín Infantil Sonrisas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/administrador/admin_dashboard.css') }}">
+<style>
+/* RESET ESPECÍFICO PARA DASHBOARD */
+.dashboard-container * {
+    box-sizing: border-box !important;
+}
+
+/* ===== FONDO CON IMAGEN FONDO.PNG ===== */
+body,
+html {
+    background: url("{{ url_for('static', filename='img/fondo.png') }}") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    min-height: 100vh !important;
+}
+
+/* Contenedor principal del dashboard */
+body .dashboard-container,
+html .dashboard-container {
+    background: transparent !important;
+    padding: 20px !important;
+}
+
+/* Secciones del dashboard con fondo blanco */
+body .dashboard-section,
+html .dashboard-section {
+    background: #ffffff !important;
+    border-radius: 15px !important;
+    padding: 25px !important;
+    margin-bottom: 25px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid #e9ecef !important;
+}
+
+/* ===== ESTILOS FINALES BONITOS */
+body .dashboard-container .quick-access-section,
+html .dashboard-container .quick-access-section {
+    margin-bottom: 50px !important;
+}
+
+/* ESTILOS FINALES BONITOS */
+/* Grid de accesos rápidos */
+body .dashboard-container .quick-access-grid,
+html .dashboard-container .quick-access-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+    gap: 25px !important;
+    align-items: stretch !important;
+}
+
+/* Todas las tarjetas del mismo tamaño */
+body .dashboard-container .quick-access-grid .access-card,
+html .dashboard-container .quick-access-grid .access-card {
+    min-height: 180px !important;
+    max-height: 180px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Tarjeta destacada NO más grande, mismo tamaño */
+body .dashboard-container .access-card.featured,
+html .dashboard-container .access-card.featured {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 2px solid rgba(102, 126, 234, 0.3) !important;
+    min-height: 180px !important;
+    max-height: 180px !important;
+}
+
+/* Grid responsive mejorado */
+@media (min-width: 1200px) {
+    body .dashboard-container .quick-access-grid,
+    html .dashboard-container .quick-access-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+@media (max-width: 1199px) and (min-width: 768px) {
+    body .dashboard-container .quick-access-grid,
+    html .dashboard-container .quick-access-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 767px) {
+    body .dashboard-container .quick-access-grid,
+    html .dashboard-container .quick-access-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Espaciado mejorado entre filas */
+body .dashboard-container .row,
+html .dashboard-container .row {
+    margin-bottom: 30px !important;
+}
+
+body .dashboard-container .col-md-4,
+html .dashboard-container .col-md-4 {
+    padding: 0 20px !important;
+    margin-bottom: 30px !important;
+}
+
+body .dashboard-container .col-md-6,
+html .dashboard-container .col-md-6 {
+    padding: 0 20px !important;
+    margin-bottom: 30px !important;
+}
+
+body .dashboard-container .section-header,
+html .dashboard-container .section-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin-bottom: 30px !important;
+    padding: 20px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-radius: 15px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+body .dashboard-container .access-card,
+html .dashboard-container .access-card {
+    background: #ffffff !important;
+    border-radius: 15px !important;
+    padding: 25px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    transition: all 0.3s ease !important;
+    border: 1px solid #e9ecef !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    margin-bottom: 20px !important;
+}
+
+body .dashboard-container .access-card:hover,
+html .dashboard-container .access-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+    background: #ffffff !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    border-color: #dee2e6 !important;
+}
+
+/* ICONOS Y TÍTULOS */
+body .dashboard-container .card-icon,
+html .dashboard-container .card-icon {
+    width: 60px !important;
+    height: 60px !important;
+    background: #f8f9fa !important;
+    border-radius: 15px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 24px !important;
+    color: #6c757d !important;
+    border: 1px solid #e9ecef !important;
+    flex-shrink: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+body .dashboard-container .card-icon i,
+html .dashboard-container .card-icon i {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+body .dashboard-container .card-content,
+html .dashboard-container .card-content {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+/* Mostrar solo contenido esencial en accesos rápidos */
+body .dashboard-container .quick-access-grid .card-actions,
+html .dashboard-container .quick-access-grid .card-actions {
+    display: none !important;
+}
+
+body .dashboard-container .quick-access-grid .card-stats,
+html .dashboard-container .quick-access-grid .card-stats {
+    display: flex !important;
+    margin-bottom: 0 !important;
+}
+
+/* Asegurar que título y descripción sean visibles */
+body .dashboard-container .quick-access-grid .card-title,
+html .dashboard-container .quick-access-grid .card-title {
+    display: block !important;
+    visibility: visible !important;
+}
+
+body .dashboard-container .quick-access-grid .card-description,
+html .dashboard-container .quick-access-grid .card-description {
+    display: block !important;
+    visibility: visible !important;
+}
+
+body .dashboard-container .card-title,
+html .dashboard-container .card-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #2c3e50 !important;
+    margin-bottom: 8px !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+}
+
+body .dashboard-container .card-description,
+html .dashboard-container .card-description {
+    font-size: 14px !important;
+    color: #495057 !important;
+    margin-bottom: 12px !important;
+    opacity: 0.8 !important;
+    line-height: 1.4 !important;
+}
+
+body .dashboard-container .card-stats,
+html .dashboard-container .card-stats {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin-bottom: 10px !important;
+}
+
+body .dashboard-container .stat-item,
+html .dashboard-container .stat-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 13px !important;
+    color: #667eea !important;
+    font-weight: 600 !important;
+}
+
+body .dashboard-container .card-arrow,
+html .dashboard-container .card-arrow {
+    color: #667eea !important;
+    font-size: 18px !important;
+    opacity: 0.7 !important;
+    transition: all 0.3s ease !important;
+}
+
+body .dashboard-container .access-card:hover .card-arrow,
+html .dashboard-container .access-card:hover .card-arrow {
+    opacity: 1 !important;
+    transform: translateX(5px) !important;
+}
+
+body .dashboard-container .section-icon,
+html .dashboard-container .section-icon {
+    width: 50px !important;
+    height: 50px !important;
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-size: 20px !important;
+}
+
+body .dashboard-container .section-title,
+html .dashboard-container .section-title {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: white !important;
+    margin: 0 !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+}
+
+body .dashboard-container .section-subtitle,
+html .dashboard-container .section-subtitle {
+    color: rgba(255, 255, 255, 0.8) !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+}
+
+body .dashboard-container .card-icon,
+html .dashboard-container .card-icon {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 24px !important;
+    color: white !important;
+    flex-shrink: 0 !important;
+}
+
+body .dashboard-container .card-icon.students,
+html .dashboard-container .card-icon.students {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+}
+
+body .dashboard-container .card-icon.users,
+html .dashboard-container .card-icon.users {
+    background: linear-gradient(135deg, #42a5f5, #1e88e5) !important;
+}
+
+body .dashboard-container .card-icon.sessions,
+html .dashboard-container .card-icon.sessions {
+    background: linear-gradient(135deg, #26c6da, #00acc1) !important;
+}
+
+body .dashboard-container .card-icon.reports,
+html .dashboard-container .card-icon.reports {
+    background: linear-gradient(135deg, #ab47bc, #8e24aa) !important;
+}
+
+body .dashboard-container .card-title,
+html .dashboard-container .card-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #2c3e50 !important;
+    margin: 0 0 8px 0 !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+}
+
+body .dashboard-container .card-description,
+html .dashboard-container .card-description {
+    color: #7f8c8d !important;
+    font-size: 14px !important;
+    margin: 0 0 15px 0 !important;
+    line-height: 1.4 !important;
+}
+
+/* GRID Y LAYOUT */
+body .dashboard-container .quick-access-grid,
+html .dashboard-container .quick-access-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+    gap: 25px !important;
+}
+
+body .dashboard-container .card-content,
+html .dashboard-container .card-content {
+    flex: 1 !important;
+}
+
+body .dashboard-container .card-arrow,
+html .dashboard-container .card-arrow {
+    color: #bdc3c7 !important;
+    font-size: 18px !important;
+    transition: all 0.3s ease !important;
+}
+
+body .dashboard-container .access-card:hover .card-arrow,
+html .dashboard-container .access-card:hover .card-arrow {
+    color: #667eea !important;
+    transform: translateX(5px) !important;
+}
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+    body .dashboard-container .col-md-6,
+    html .dashboard-container .col-md-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body .dashboard-container .access-card,
+    html .dashboard-container .access-card {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 20px !important;
+        padding: 25px !important;
+    }
+    
+    body .dashboard-container .card-icon,
+    html .dashboard-container .card-icon {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 24px !important;
+        margin: 0 auto !important;
+    }
+    
+    body .dashboard-container .col-md-4,
+    body .dashboard-container .col-md-6,
+    html .dashboard-container .col-md-4,
+    html .dashboard-container .col-md-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        padding: 0 10px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    body .dashboard-container .card-arrow,
+    html .dashboard-container .card-arrow {
+        display: none !important;
+    }
+}
+
+.dashboard-container .quick-access-section {
+    margin-bottom: 40px !important;
+}
+
+.dashboard-container .section-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin-bottom: 30px !important;
+    padding: 20px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-radius: 15px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.dashboard-container .section-icon {
+    width: 50px !important;
+    height: 50px !important;
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-size: 20px !important;
+}
+
+.dashboard-container .section-title {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: white !important;
+    margin: 0 !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+}
+
+.dashboard-container .section-subtitle {
+    color: rgba(255, 255, 255, 0.8) !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+}
+
+.dashboard-container .quick-access-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+    gap: 25px !important;
+}
+
+.dashboard-container .access-card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border-radius: 20px !important;
+    padding: 25px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    transition: all 0.3s ease !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.dashboard-container .access-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+.dashboard-container .access-card.featured {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)) !important;
+    border: 2px solid rgba(102, 126, 234, 0.3) !important;
+}
+
+.dashboard-container .card-icon {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 24px !important;
+    color: white !important;
+    flex-shrink: 0 !important;
+}
+
+.dashboard-container .card-icon.students {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+}
+
+.dashboard-container .card-icon.users {
+    background: linear-gradient(135deg, #42a5f5, #1e88e5) !important;
+}
+
+.dashboard-container .card-icon.sessions {
+    background: linear-gradient(135deg, #26c6da, #00acc1) !important;
+}
+
+.dashboard-container .card-icon.reports {
+    background: linear-gradient(135deg, #ab47bc, #8e24aa) !important;
+}
+
+.dashboard-container .card-content {
+    flex: 1 !important;
+}
+
+.dashboard-container .card-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #2c3e50 !important;
+    margin: 0 0 8px 0 !important;
+    font-family: 'Montserrat Alternates', sans-serif !important;
+}
+
+.dashboard-container .card-description {
+    color: #7f8c8d !important;
+    font-size: 14px !important;
+    margin: 0 0 15px 0 !important;
+    line-height: 1.4 !important;
+}
+
+.dashboard-container .card-stats {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 15px !important;
+    margin-bottom: 15px !important;
+}
+
+.dashboard-container .stat-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 12px !important;
+    color: #667eea !important;
+    font-weight: 600 !important;
+}
+
+.dashboard-container .card-actions {
+    display: flex !important;
+    gap: 10px !important;
+}
+
+.dashboard-container .action-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 12px !important;
+    color: #667eea !important;
+    font-weight: 600 !important;
+}
+
+.dashboard-container .action-btn a {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+.dashboard-container .action-btn:hover {
+    color: #764ba2 !important;
+}
+
+.dashboard-container .card-arrow {
+    color: #bdc3c7 !important;
+    font-size: 18px !important;
+    transition: all 0.3s ease !important;
+}
+
+.dashboard-container .access-card:hover .card-arrow {
+    color: #667eea !important;
+    transform: translateX(5px) !important;
+}
+
+.activity-section {
+    margin-bottom: 40px !important;
+}
+
+.activity-list {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border-radius: 20px !important;
+    padding: 25px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.activity-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    padding: 15px 0 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.activity-item:last-child {
+    border-bottom: none !important;
+}
+
+.activity-icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    color: white !important;
+    flex-shrink: 0 !important;
+}
+
+.activity-icon.login {
+    background: linear-gradient(135deg, #4caf50, #388e3c) !important;
+}
+
+.activity-icon.create {
+    background: linear-gradient(135deg, #2196f3, #1976d2) !important;
+}
+
+.activity-icon.update {
+    background: linear-gradient(135deg, #ff9800, #f57c00) !important;
+}
+
+.activity-content {
+    flex: 1 !important;
+}
+
+.activity-title {
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    margin: 0 0 4px 0 !important;
+    font-size: 14px !important;
+}
+
+.activity-description {
+    color: #7f8c8d !important;
+    font-size: 12px !important;
+    margin: 0 !important;
+}
+
+.activity-time {
+    color: #bdc3c7 !important;
+    font-size: 12px !important;
+    font-style: italic !important;
+}
+
+@media (max-width: 768px) {
+    .quick-access-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .access-card {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 15px !important;
+    }
+    
+    .section-header {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 10px !important;
+    }
+    
+    .card-stats {
+        justify-content: center !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+    <!-- Header Principal -->
+    <div class="dashboard-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-tachometer-alt"></i>
+            </div>
+            <div class="header-text">
+                <h1 class="dashboard-title">Panel de Administración</h1>
+                <p class="dashboard-subtitle">Hola{{ ', ' + session.get('nombre') if session.get('nombre') else ' Administrador' }}. Controla y supervisa Teaching Notes desde aquí.</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="current-time" id="currentTime"></div>
+            <div class="notifications-container">
+                <button class="btn-notifications" id="notificationsBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">0</span>
+                </button>
+                <div class="notifications-dropdown" id="notificationsDropdown">
+                    <div class="notifications-header">
+                        <h3>Notificaciones</h3>
+                        <button class="btn-mark-all-read" id="markAllReadBtn">
+                            <i class="fas fa-check-double"></i>
+                            Marcar todas como leídas
+                        </button>
+                    </div>
+                    <div class="notifications-list" id="notificationsList">
+                        <div class="notification-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Cargando notificaciones...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-refresh" onclick="refreshDashboard()">
+                <i class="fas fa-sync-alt"></i>
+                Actualizar
+            </button>
+        </div>
+    </div>
+
+    <!-- Estadísticas Principales -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon users">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ total_users or 0 }}</div>
+                <div class="stat-label">Usuarios Totales</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +12% este mes
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon active">
+                <i class="fas fa-user-clock"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number pulse">{{ active_sessions or 0 }}</div>
+                <div class="stat-label">Sesiones Activas</div>
+                <div class="stat-change">
+                    <i class="fas fa-circle pulse-dot"></i>
+                    En tiempo real
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon observations">
+                <i class="fas fa-clipboard-check"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ total_observations or 0 }}</div>
+                <div class="stat-label">Observaciones</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +8% esta semana
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon activity">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ system_activity or 95 }}%</div>
+                <div class="stat-label">Actividad del Sistema</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-check-circle"></i>
+                    Óptimo
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accesos Rápidos -->
+    <div class="quick-access-section">
+        <div class="section-header">
+            <div class="section-icon">
+                <i class="fas fa-rocket"></i>
+            </div>
+            <h2 class="section-title">Accesos Rápidos</h2>
+            <p class="section-subtitle">Gestiona las funciones principales del sistema</p>
+        </div>
+        
+        <div class="quick-access-grid">
+            <!-- Gestión de Estudiantes - DESTACADO -->
+            <a class="access-card featured" href="{{ url_for('admin_bp.listar_estudiantes') }}" 
+               style="background: rgba(255, 255, 255, 0.2) !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important; border: 2px solid rgba(102, 126, 234, 0.3) !important; border-radius: 25px !important; padding: 30px 25px !important; display: flex !important; align-items: center !important; gap: 25px !important; text-decoration: none !important; color: inherit !important; transition: all 0.3s ease !important; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important; min-height: 180px !important; max-height: 180px !important;">
+                <div class="card-icon students" style="width: 70px !important; height: 70px !important; background: rgba(255, 255, 255, 0.2) !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; border-radius: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 28px !important; color: #667eea !important; border: 1px solid rgba(255, 255, 255, 0.3) !important; flex-shrink: 0 !important;">
+                    <i class="fas fa-user-graduate" style="display: block !important; visibility: visible !important; opacity: 1 !important;"></i>
+                </div>
+                <div class="card-content" style="flex: 1 !important; display: flex !important; flex-direction: column !important; justify-content: center !important;">
+                    <h3 class="card-title" style="font-size: 20px !important; font-weight: 700 !important; color: #2c3e50 !important; margin-bottom: 8px !important; font-family: 'Montserrat Alternates', sans-serif !important; display: block !important; visibility: visible !important;">🎓 Gestión de Estudiantes</h3>
+                    <p class="card-description" style="font-size: 14px !important; color: #495057 !important; margin-bottom: 12px !important; opacity: 0.8 !important; line-height: 1.4 !important; display: block !important; visibility: visible !important;">Administra estudiantes, asignaciones y vinculaciones</p>
+                    <div class="card-stats" style="display: flex !important; align-items: center !important; gap: 15px !important; margin-bottom: 0 !important;">
+                        <span class="stat-item" style="display: flex !important; align-items: center !important; gap: 6px !important; font-size: 13px !important; color: #667eea !important; font-weight: 600 !important;">
+                            <i class="fas fa-graduation-cap"></i>
+                            Ver todos los estudiantes
+                        </span>
+                    </div>
+                </div>
+                <div class="card-arrow" style="color: #667eea !important; font-size: 18px !important; opacity: 0.7 !important; transition: all 0.3s ease !important;">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+            
+            <!-- Gestión de Usuarios -->
+            <a class="access-card" href="{{ url_for('admin_bp.ver_usuarios_admin') }}">
+                <div class="card-icon users">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Gestión de Usuarios</h3>
+                    <p class="card-description">Administra usuarios, roles y permisos del sistema</p>
+                    <div class="card-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-user-plus"></i>
+                            {{ total_users or 0 }} usuarios
+                        </span>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Bitácora de Sesiones -->
+            <a class="access-card" href="{{ url_for('admin_bp.ver_sesiones') }}">
+                <div class="card-icon sessions">
+                    <i class="fas fa-history"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Bitácora de Sesiones</h3>
+                    <p class="card-description">Monitorea la actividad de usuarios en tiempo real</p>
+                    <div class="card-stats">
+                        <span class="stat-item active">
+                            <i class="fas fa-circle pulse-dot"></i>
+                            {{ active_sessions or 0 }} activas
+                        </span>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Auditoría del Sistema -->
+            <a class="access-card" href="{{ url_for('admin_bp.ver_auditoria') }}">
+                <div class="card-icon audit">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Auditoría del Sistema</h3>
+                    <p class="card-description">Revisa logs y actividad administrativa</p>
+                    <div class="card-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-shield-alt"></i>
+                            Seguridad activa
+                        </span>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Mi Perfil -->
+            <a class="access-card" href="{{ url_for('admin_bp.perfil_usuario') }}">
+                <div class="card-icon profile">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Mi Perfil</h3>
+                    <p class="card-description">Configura tu cuenta y preferencias</p>
+                    <div class="card-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-cog"></i>
+                            Personalizar
+                        </span>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Crear Usuario -->
+            <a class="access-card" href="{{ url_for('admin_bp.crear_usuario_admin') }}">
+                <div class="card-icon create">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Crear Usuario</h3>
+                    <p class="card-description">Añade nuevos usuarios al sistema</p>
+                    <div class="card-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-plus-circle"></i>
+                            Acción rápida
+                        </span>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <!-- Reportes del Sistema -->
+            <a class="access-card" href="#" onclick="showComingSoon()">
+                <div class="card-icon reports">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Reportes</h3>
+                    <p class="card-description">Genera reportes y estadísticas avanzadas</p>
+                    <div class="card-stats">
+                        <span class="stat-item coming-soon">
+                            <i class="fas fa-clock"></i>
+                            Próximamente
+                        </span>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Actividad Reciente -->
+    <div class="recent-activity-section">
+        <div class="section-header">
+            <div class="section-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <h2 class="section-title">Actividad Reciente</h2>
+            <p class="section-subtitle">Últimas acciones en el sistema</p>
+        </div>
+        
+        <div class="activity-card">
+            <div class="activity-list">
+                {% if recent_activity %}
+                    {% for activity in recent_activity %}
+                    <div class="activity-item">
+                        <div class="activity-icon {{ activity.type }}">
+                            {% if activity.type == 'user' %}
+                                <i class="fas fa-user-plus"></i>
+                            {% elif activity.type == 'session' %}
+                                <i class="fas fa-edit"></i>
+                            {% elif activity.type == 'observation' %}
+                                <i class="fas fa-user-times"></i>
+                            {% else %}
+                                <i class="fas fa-cog"></i>
+                            {% endif %}
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">{{ activity.title }}</div>
+                            <div class="activity-description">{{ activity.description }}</div>
+                            <div class="activity-time">{{ activity.time.strftime('%d/%m/%Y %H:%M') if activity.time else 'Fecha no disponible' }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="activity-item">
+                        <div class="activity-icon user">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Sistema iniciado</div>
+                            <div class="activity-description">Bienvenido al panel de administración de Teaching Notes</div>
+                            <div class="activity-time">Ahora</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon session">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Sesión iniciada</div>
+                            <div class="activity-description">{{ session.get('nombre', 'Administrador') }} inició sesión</div>
+                            <div class="activity-time">Hace unos momentos</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon observation">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Sistema listo</div>
+                            <div class="activity-description">Todas las funciones están operativas</div>
+                            <div class="activity-time">Estado actual</div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Variables globales
+let statsUpdateInterval;
+let activityUpdateInterval;
+let notificationsUpdateInterval;
+let notificationsDropdownOpen = false;
+
+// Actualizar hora en tiempo real
+function updateTime() {
+    const now = new Date();
+    const timeString = now.toLocaleString('es-ES', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    document.getElementById('currentTime').textContent = timeString;
+}
+
+// Función para mostrar mensaje de próximamente
+function showComingSoon() {
+    alert('Esta funcionalidad estará disponible próximamente.');
+}
+
+// Actualizar estadísticas del dashboard
+async function updateDashboardStats() {
+    try {
+        const response = await fetch('/admin/api/dashboard-stats');
+        const result = await response.json();
+        
+        if (result.success) {
+            const data = result.data;
+            
+            // Actualizar números con animación
+            animateNumber(document.querySelector('.stat-card:nth-child(1) .stat-number'), data.total_users);
+            animateNumber(document.querySelector('.stat-card:nth-child(2) .stat-number'), data.active_sessions);
+            animateNumber(document.querySelector('.stat-card:nth-child(3) .stat-number'), data.total_observations);
+            animateNumber(document.querySelector('.stat-card:nth-child(4) .stat-number'), data.system_activity, '%');
+            
+            // Actualizar estadísticas en las tarjetas de acceso rápido
+            const userCountElements = document.querySelectorAll('.access-card .stat-item');
+            userCountElements.forEach(element => {
+                if (element.textContent.includes('usuarios')) {
+                    element.innerHTML = `<i class="fas fa-user-plus"></i> ${data.total_users} usuarios`;
+                }
+                if (element.textContent.includes('activas')) {
+                    element.innerHTML = `<i class="fas fa-circle pulse-dot"></i> ${data.active_sessions} activas`;
+                }
+            });
+            
+            console.log('Estadísticas actualizadas:', data);
+        }
+    } catch (error) {
+        console.error('Error al actualizar estadísticas:', error);
+    }
+}
+
+// Actualizar actividad reciente
+async function updateRecentActivity() {
+    try {
+        const response = await fetch('/admin/api/recent-activity');
+        const result = await response.json();
+        
+        if (result.success && result.data.length > 0) {
+            const activityList = document.querySelector('.activity-list');
+            activityList.innerHTML = '';
+            
+            result.data.forEach(activity => {
+                const activityItem = createActivityItem(activity);
+                activityList.appendChild(activityItem);
+            });
+            
+            console.log('Actividad reciente actualizada');
+        }
+    } catch (error) {
+        console.error('Error al actualizar actividad reciente:', error);
+    }
+}
+
+// Crear elemento de actividad
+function createActivityItem(activity) {
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    
+    let iconClass = 'fas fa-cog';
+    if (activity.type === 'user') iconClass = 'fas fa-user-plus';
+    else if (activity.type === 'session') iconClass = 'fas fa-edit';
+    else if (activity.type === 'observation') iconClass = 'fas fa-user-times';
+    
+    // Formatear fecha
+    const date = new Date(activity.time);
+    const timeString = date.toLocaleString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    item.innerHTML = `
+        <div class="activity-icon ${activity.type}">
+            <i class="${iconClass}"></i>
+        </div>
+        <div class="activity-content">
+            <div class="activity-title">${activity.title}</div>
+            <div class="activity-description">${activity.description}</div>
+            <div class="activity-time">${timeString}</div>
+        </div>
+    `;
+    
+    return item;
+}
+
+// Animar números
+function animateNumber(element, targetValue, suffix = '') {
+    if (!element) return;
+    
+    const currentValue = parseInt(element.textContent) || 0;
+    const difference = targetValue - currentValue;
+    
+    if (difference === 0) return;
+    
+    const duration = 1000; // 1 segundo
+    const steps = 30;
+    const stepValue = difference / steps;
+    const stepDuration = duration / steps;
+    
+    let current = currentValue;
+    let step = 0;
+    
+    const timer = setInterval(() => {
+        step++;
+        current += stepValue;
+        
+        if (step >= steps) {
+            element.textContent = targetValue + suffix;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.round(current) + suffix;
+        }
+    }, stepDuration);
+}
+
+// Inicializar dashboard
+function initializeDashboard() {
+    // Actualizar tiempo
+    updateTime();
+    setInterval(updateTime, 60000);
+    
+    // Actualizar estadísticas cada 30 segundos
+    statsUpdateInterval = setInterval(updateDashboardStats, 30000);
+    
+    // Actualizar actividad cada 2 minutos
+    activityUpdateInterval = setInterval(updateRecentActivity, 120000);
+    
+    // Animación inicial de números
+    setTimeout(() => {
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(stat => {
+            const finalValue = parseInt(stat.textContent);
+            if (!isNaN(finalValue)) {
+                stat.textContent = '0';
+                animateNumber(stat, finalValue, stat.textContent.includes('%') ? '%' : '');
+            }
+        });
+    }, 500);
+}
+
+// Limpiar intervalos al salir de la página
+window.addEventListener('beforeunload', function() {
+    if (statsUpdateInterval) clearInterval(statsUpdateInterval);
+    if (activityUpdateInterval) clearInterval(activityUpdateInterval);
+    if (notificationsUpdateInterval) clearInterval(notificationsUpdateInterval);
+});
+
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', initializeDashboard);
+
+// Función para refrescar manualmente
+function refreshDashboard() {
+    updateDashboardStats();
+    updateRecentActivity();
+    updateNotifications();
+    
+    // Mostrar feedback visual
+    const refreshBtn = document.querySelector('.btn-refresh');
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+    refreshBtn.disabled = true;
+    
+    setTimeout(() => {
+        refreshBtn.innerHTML = originalText;
+        refreshBtn.disabled = false;
+    }, 2000);
+}
+
+// Sistema de Notificaciones
+async function updateNotifications() {
+    try {
+        const response = await fetch('/admin/api/notifications');
+        const result = await response.json();
+        
+        if (result.success) {
+            const data = result.data;
+            updateNotificationBadge(data.unread_count);
+            updateNotificationsList(data.notifications);
+        }
+    } catch (error) {
+        console.error('Error al actualizar notificaciones:', error);
+    }
+}
+
+function updateNotificationBadge(count) {
+    const badge = document.getElementById('notificationBadge');
+    if (badge) {
+        badge.textContent = count;
+        if (count > 0) {
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+}
+
+function updateNotificationsList(notifications) {
+    const notificationsList = document.getElementById('notificationsList');
+    if (!notificationsList) return;
+    
+    if (notifications.length === 0) {
+        notificationsList.innerHTML = `
+            <div class="notification-empty">
+                <i class="fas fa-bell-slash"></i>
+                <p>No hay notificaciones</p>
+            </div>
+        `;
+        return;
+    }
+    
+    notificationsList.innerHTML = '';
+    notifications.forEach(notification => {
+        const notificationElement = createNotificationElement(notification);
+        notificationsList.appendChild(notificationElement);
+    });
+}
+
+function createNotificationElement(notification) {
+    const item = document.createElement('div');
+    item.className = `notification-item ${notification.type} ${notification.is_read ? '' : 'unread'}`;
+    item.dataset.id = notification.id;
+    
+    const iconClass = getNotificationIcon(notification.type);
+    const timeString = formatNotificationTime(notification.created_at);
+    
+    item.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-icon ${notification.type}">
+                <i class="${iconClass}"></i>
+            </div>
+            <div class="notification-text">
+                <div class="notification-title">${notification.title}</div>
+                <div class="notification-message">${notification.message}</div>
+                <div class="notification-time">${timeString}</div>
+            </div>
+        </div>
+    `;
+    
+    // Agregar evento click para marcar como leída
+    item.addEventListener('click', () => markNotificationAsRead(notification.id));
+    
+    return item;
+}
+
+function getNotificationIcon(type) {
+    const icons = {
+        'info': 'fas fa-info-circle',
+        'success': 'fas fa-check-circle',
+        'warning': 'fas fa-exclamation-triangle',
+        'error': 'fas fa-times-circle'
+    };
+    return icons[type] || 'fas fa-bell';
+}
+
+function formatNotificationTime(timeString) {
+    if (timeString === 'now') return 'Ahora';
+    
+    try {
+        const date = new Date(timeString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMins / 60);
+        const diffDays = Math.floor(diffHours / 24);
+        
+        if (diffMins < 1) return 'Ahora';
+        if (diffMins < 60) return `Hace ${diffMins} min`;
+        if (diffHours < 24) return `Hace ${diffHours}h`;
+        if (diffDays < 7) return `Hace ${diffDays}d`;
+        
+        return date.toLocaleDateString('es-ES');
+    } catch (error) {
+        return 'Fecha no disponible';
+    }
+}
+
+async function markNotificationAsRead(notificationId) {
+    try {
+        const response = await fetch(`/admin/api/notifications/${notificationId}/read`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+            }
+        });
+        
+        if (response.ok) {
+            // Actualizar visualmente
+            const notificationElement = document.querySelector(`[data-id="${notificationId}"]`);
+            if (notificationElement) {
+                notificationElement.classList.remove('unread');
+            }
+            
+            // Actualizar contador
+            updateNotifications();
+        }
+    } catch (error) {
+        console.error('Error al marcar notificación como leída:', error);
+    }
+}
+
+async function markAllNotificationsAsRead() {
+    try {
+        const response = await fetch('/admin/api/notifications/mark-all-read', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('meta[name=csrf-token]').getAttribute('content')
+            }
+        });
+        
+        if (response.ok) {
+            // Actualizar todas las notificaciones visualmente
+            const unreadNotifications = document.querySelectorAll('.notification-item.unread');
+            unreadNotifications.forEach(item => item.classList.remove('unread'));
+            
+            // Actualizar contador
+            updateNotificationBadge(0);
+        }
+    } catch (error) {
+        console.error('Error al marcar todas las notificaciones como leídas:', error);
+    }
+}
+
+function toggleNotificationsDropdown() {
+    const dropdown = document.getElementById('notificationsDropdown');
+    if (dropdown) {
+        notificationsDropdownOpen = !notificationsDropdownOpen;
+        
+        if (notificationsDropdownOpen) {
+            dropdown.classList.add('show');
+            updateNotifications(); // Actualizar al abrir
+        } else {
+            dropdown.classList.remove('show');
+        }
+    }
+}
+
+// Cerrar dropdown al hacer click fuera
+document.addEventListener('click', function(event) {
+    const notificationsContainer = document.querySelector('.notifications-container');
+    if (notificationsContainer && !notificationsContainer.contains(event.target)) {
+        const dropdown = document.getElementById('notificationsDropdown');
+        if (dropdown && notificationsDropdownOpen) {
+            dropdown.classList.remove('show');
+            notificationsDropdownOpen = false;
+        }
+    }
+});
+
+// Inicializar eventos de notificaciones
+function initializeNotifications() {
+    const notificationsBtn = document.getElementById('notificationsBtn');
+    const markAllReadBtn = document.getElementById('markAllReadBtn');
+    
+    if (notificationsBtn) {
+        notificationsBtn.addEventListener('click', toggleNotificationsDropdown);
+    }
+    
+    if (markAllReadBtn) {
+        markAllReadBtn.addEventListener('click', markAllNotificationsAsRead);
+    }
+    
+    // Actualizar notificaciones cada minuto
+    notificationsUpdateInterval = setInterval(updateNotifications, 60000);
+    
+    // Cargar notificaciones iniciales
+    updateNotifications();
+}
+
+// Actualizar el botón de refresh para usar la nueva función
+document.addEventListener('DOMContentLoaded', function() {
+    const refreshBtn = document.querySelector('.btn-refresh');
+    if (refreshBtn) {
+        refreshBtn.setAttribute('onclick', 'refreshDashboard()');
+    }
+    
+    // Inicializar notificaciones
+    initializeNotifications();
+});
+</script>
+{% endblock %}
