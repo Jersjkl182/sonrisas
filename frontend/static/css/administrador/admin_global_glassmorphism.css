@@ -1,0 +1,739 @@
+/* ===== CSS GLOBAL GLASSMORPHISM PARA TODO EL ADMINISTRADOR ===== */
+/* Este archivo se aplicará a TODOS los apartados de administrador */
+
+/* ===== FONDO CON IMAGEN GLOBAL ===== */
+body,
+html {
+    background: url("../img/fondo.png") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    min-height: 100vh !important;
+}
+
+/* FORZAR GLASSMORPHISM EN ELEMENTOS BASE - MÁXIMA PRIORIDAD */
+header.header,
+.header,
+body .header,
+html .header,
+body header.header,
+html header.header {
+    background: rgba(163, 215, 255, 0.15) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+    padding: 15px 0 !important;
+}
+
+/* ===== MENÚ LATERAL PROFESIONAL MEJORADO ===== */
+div.container-menu,
+.container-menu,
+body .container-menu,
+html .container-menu,
+body div.container-menu,
+html div.container-menu {
+    position: fixed !important;
+    top: 0 !important;
+    left: -320px !important;
+    width: 320px !important;
+    height: 100vh !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(25px) saturate(1.8) !important;
+    -webkit-backdrop-filter: blur(25px) saturate(1.8) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    z-index: 999 !important;
+    overflow: hidden !important;
+}
+
+/* Menú abierto */
+#btn-menu:checked ~ .container-menu,
+#btn-menu:checked ~ div.container-menu {
+    left: 0 !important;
+    box-shadow: 4px 0 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Contenedor interno del menú */
+.cont-menu,
+body .cont-menu,
+html .cont-menu {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    background: transparent !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Navegación */
+.cont-menu nav,
+body .cont-menu nav,
+html .cont-menu nav {
+    padding: 100px 0 20px 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+}
+
+/* Botón de cerrar mejorado */
+.ellipse-div,
+body .ellipse-div,
+html .ellipse-div {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.ellipse-div:hover,
+body .ellipse-div:hover,
+html .ellipse-div:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+.ellipse-div label,
+body .ellipse-div label,
+html .ellipse-div label {
+    color: #2c3e50 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* ===== ELEMENTOS DEL MENÚ PROFESIONAL ===== */
+.menu-item,
+body .menu-item,
+html .menu-item {
+    margin: 4px 16px !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Elemento de menú simple (como Inicio) */
+.menu-item:not(.collapsible):not(.logout-item),
+body .menu-item:not(.collapsible):not(.logout-item),
+html .menu-item:not(.collapsible):not(.logout-item) {
+    margin: 4px 16px !important;
+}
+
+.menu-item:not(.collapsible):not(.logout-item) .menu-header,
+body .menu-item:not(.collapsible):not(.logout-item) .menu-header,
+html .menu-item:not(.collapsible):not(.logout-item) .menu-header {
+    background: rgba(102, 126, 234, 0.08) !important;
+    border-color: rgba(102, 126, 234, 0.15) !important;
+}
+
+.menu-item:not(.collapsible):not(.logout-item) .menu-header:hover,
+body .menu-item:not(.collapsible):not(.logout-item) .menu-header:hover,
+html .menu-item:not(.collapsible):not(.logout-item) .menu-header:hover {
+    background: rgba(102, 126, 234, 0.15) !important;
+    border-color: rgba(102, 126, 234, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2) !important;
+}
+
+.menu-item:not(.collapsible):not(.logout-item) .menu-header a,
+body .menu-item:not(.collapsible):not(.logout-item) .menu-header a,
+html .menu-item:not(.collapsible):not(.logout-item) .menu-header a {
+    color: #667eea !important;
+    font-weight: 700 !important;
+}
+
+.menu-item:not(.collapsible):not(.logout-item) .menu-header i,
+body .menu-item:not(.collapsible):not(.logout-item) .menu-header i,
+html .menu-item:not(.collapsible):not(.logout-item) .menu-header i {
+    background: rgba(102, 126, 234, 0.15) !important;
+    color: #667eea !important;
+}
+
+/* Estilo especial para el elemento Inicio */
+.home-item,
+body .home-item,
+html .home-item,
+div.home-item {
+    margin: 8px 16px 12px 16px !important;
+    display: block !important;
+    visibility: visible !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+.home-item .menu-header,
+body .home-item .menu-header,
+html .home-item .menu-header,
+div.home-item .menu-header {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.08)) !important;
+    border: 1px solid rgba(102, 126, 234, 0.2) !important;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15) !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+}
+
+.home-item .menu-header:hover,
+body .home-item .menu-header:hover,
+html .home-item .menu-header:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.18), rgba(118, 75, 162, 0.12)) !important;
+    border-color: rgba(102, 126, 234, 0.3) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25) !important;
+    transform: translateX(6px) scale(1.02) !important;
+}
+
+.home-item .menu-header a,
+body .home-item .menu-header a,
+html .home-item .menu-header a {
+    color: #667eea !important;
+    font-weight: 700 !important;
+    font-size: 15px !important;
+}
+
+.home-item .menu-header i,
+body .home-item .menu-header i,
+html .home-item .menu-header i {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: white !important;
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 14px !important;
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3) !important;
+}
+
+.menu-item .menu-header,
+body .menu-item .menu-header,
+html .menu-item .menu-header {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 14px 18px !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+}
+
+.menu-item .menu-header:hover,
+body .menu-item .menu-header:hover,
+html .menu-item .menu-header:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    transform: translateX(4px) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.menu-item .menu-header a,
+body .menu-item .menu-header a,
+html .menu-item .menu-header a {
+    color: #2c3e50 !important;
+    text-decoration: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    flex: 1 !important;
+}
+
+.menu-item .menu-header i,
+body .menu-item .menu-header i,
+html .menu-item .menu-header i {
+    width: 20px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    color: #667eea !important;
+    background: rgba(102, 126, 234, 0.1) !important;
+    border-radius: 6px !important;
+    padding: 2px !important;
+}
+
+.toggle-icon,
+body .toggle-icon,
+html .toggle-icon {
+    color: #95a5a6 !important;
+    font-size: 12px !important;
+    transition: transform 0.3s ease !important;
+}
+
+.menu-item.active .toggle-icon,
+body .menu-item.active .toggle-icon,
+html .menu-item.active .toggle-icon {
+    transform: rotate(90deg) !important;
+    color: #667eea !important;
+}
+
+/* Submenú mejorado */
+.submenu,
+body .submenu,
+html .submenu {
+    max-height: 0 !important;
+    overflow: hidden !important;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-radius: 0 0 12px 12px !important;
+    margin-top: -12px !important;
+    padding-top: 12px !important;
+    list-style: none !important;
+}
+
+.menu-item.active .submenu,
+body .menu-item.active .submenu,
+html .menu-item.active .submenu {
+    max-height: 300px !important;
+}
+
+.submenu li,
+body .submenu li,
+html .submenu li {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.submenu li a,
+body .submenu li a,
+html .submenu li a {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 24px !important;
+    color: #34495e !important;
+    text-decoration: none !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+    margin: 2px 12px !important;
+    transition: all 0.3s ease !important;
+}
+
+.submenu li a:hover,
+body .submenu li a:hover,
+html .submenu li a:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #2c3e50 !important;
+    transform: translateX(4px) !important;
+}
+
+.submenu li a i,
+body .submenu li a i,
+html .submenu li a i {
+    width: 16px !important;
+    height: 16px !important;
+    font-size: 12px !important;
+    color: #7f8c8d !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Elemento de logout especial */
+.logout-item,
+body .logout-item,
+html .logout-item {
+    margin: 16px !important;
+    margin-top: auto !important;
+}
+
+.logout-item .menu-header,
+body .logout-item .menu-header,
+html .logout-item .menu-header {
+    background: rgba(231, 76, 60, 0.1) !important;
+    border-color: rgba(231, 76, 60, 0.2) !important;
+}
+
+.logout-item .menu-header:hover,
+body .logout-item .menu-header:hover,
+html .logout-item .menu-header:hover {
+    background: rgba(231, 76, 60, 0.15) !important;
+    border-color: rgba(231, 76, 60, 0.3) !important;
+}
+
+.logout-item .menu-header a,
+body .logout-item .menu-header a,
+html .logout-item .menu-header a {
+    color: #e74c3c !important;
+}
+
+.logout-item .menu-header i,
+body .logout-item .menu-header i,
+html .logout-item .menu-header i {
+    background: rgba(231, 76, 60, 0.15) !important;
+    color: #e74c3c !important;
+}
+
+/* ===== SCROLL PERSONALIZADO PARA EL MENÚ ===== */
+.cont-menu::-webkit-scrollbar,
+body .cont-menu::-webkit-scrollbar,
+html .cont-menu::-webkit-scrollbar {
+    width: 6px !important;
+}
+
+.cont-menu::-webkit-scrollbar-track,
+body .cont-menu::-webkit-scrollbar-track,
+html .cont-menu::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 3px !important;
+}
+
+.cont-menu::-webkit-scrollbar-thumb,
+body .cont-menu::-webkit-scrollbar-thumb,
+html .cont-menu::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 3px !important;
+    transition: background 0.3s ease !important;
+}
+
+.cont-menu::-webkit-scrollbar-thumb:hover,
+body .cont-menu::-webkit-scrollbar-thumb:hover,
+html .cont-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ===== ANIMACIONES DE ENTRADA PARA ELEMENTOS DEL MENÚ ===== */
+.menu-item,
+.logout-item {
+    opacity: 0 !important;
+    transform: translateX(-20px) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Asegurar que el elemento Inicio sea visible */
+.home-item {
+    opacity: 0 !important;
+    transform: translateX(-20px) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
+#btn-menu:checked ~ .container-menu .menu-item,
+#btn-menu:checked ~ .container-menu .logout-item,
+#btn-menu:checked ~ .container-menu .home-item {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Delay escalonado para animación */
+.home-item { transition-delay: 0.05s !important; }
+.menu-item:nth-child(2) { transition-delay: 0.1s !important; }
+.menu-item:nth-child(3) { transition-delay: 0.15s !important; }
+.menu-item:nth-child(4) { transition-delay: 0.2s !important; }
+.menu-item:nth-child(5) { transition-delay: 0.25s !important; }
+.menu-item:nth-child(6) { transition-delay: 0.3s !important; }
+.logout-item { transition-delay: 0.35s !important; }
+
+/* ===== RESPONSIVE PARA MENÚ LATERAL ===== */
+@media (max-width: 768px) {
+    .container-menu,
+    body .container-menu,
+    html .container-menu {
+        width: 280px !important;
+        left: -280px !important;
+    }
+    
+    .menu-item .menu-header,
+    body .menu-item .menu-header,
+    html .menu-item .menu-header {
+        padding: 12px 16px !important;
+        font-size: 13px !important;
+    }
+    
+    .menu-item .menu-header i,
+    body .menu-item .menu-header i,
+    html .menu-item .menu-header i {
+        width: 18px !important;
+        height: 18px !important;
+        font-size: 14px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .container-menu,
+    body .container-menu,
+    html .container-menu {
+        width: 100% !important;
+        left: -100% !important;
+    }
+}
+
+/* DROPDOWN DE USUARIO GLASSMORPHISM */
+.user-dropdown-menu,
+body .user-dropdown-menu,
+html .user-dropdown-menu,
+div.user-dropdown-menu {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 15px !important;
+}
+
+/* BOTÓN DE PERFIL DE USUARIO */
+.user-profile-link,
+body .user-profile-link,
+html .user-profile-link {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 12px !important;
+    padding: 10px 15px !important;
+    color: #2c3e50 !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+}
+
+.user-profile-link:hover,
+body .user-profile-link:hover,
+html .user-profile-link:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ITEMS DEL DROPDOWN */
+.dropdown-item,
+body .dropdown-item,
+html .dropdown-item {
+    padding: 12px 20px !important;
+    color: #2c3e50 !important;
+    text-decoration: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    transition: all 0.3s ease !important;
+    border-radius: 8px !important;
+    margin: 5px !important;
+}
+
+.dropdown-item:hover,
+body .dropdown-item:hover,
+html .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #2c3e50 !important;
+    text-decoration: none !important;
+    transform: translateX(5px) !important;
+}
+
+.dropdown-item.logout-item:hover,
+body .dropdown-item.logout-item:hover,
+html .dropdown-item.logout-item:hover {
+    background: rgba(220, 53, 69, 0.1) !important;
+    color: #dc3545 !important;
+}
+
+/* SEPARADOR DEL DROPDOWN */
+.dropdown-divider,
+body .dropdown-divider,
+html .dropdown-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+    margin: 10px 0 !important;
+}
+
+/* ===== OVERLAY CON BLUR AZUL CLARO PROFESIONAL ===== */
+.capa,
+body .capa,
+html .capa {
+    background: linear-gradient(135deg, 
+        rgba(163, 215, 255, 0.3) 0%, 
+        rgba(102, 126, 234, 0.25) 50%, 
+        rgba(118, 75, 162, 0.2) 100%) !important;
+    backdrop-filter: blur(25px) saturate(1.8) !important;
+    -webkit-backdrop-filter: blur(25px) saturate(1.8) !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 998 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    pointer-events: none !important;
+    cursor: pointer !important;
+}
+
+#btn-menu:checked ~ .capa {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+/* Efecto de pulsación sutil en el overlay */
+.capa::before,
+body .capa::before,
+html .capa::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: radial-gradient(circle at center, 
+        rgba(163, 215, 255, 0.1) 0%, 
+        transparent 70%) !important;
+    animation: overlayPulse 3s ease-in-out infinite !important;
+    pointer-events: none !important;
+}
+
+@keyframes overlayPulse {
+    0%, 100% { 
+        opacity: 0.3 !important;
+        transform: scale(1) !important;
+    }
+    50% { 
+        opacity: 0.6 !important;
+        transform: scale(1.05) !important;
+    }
+}
+
+/* CONTENIDO PRINCIPAL */
+.admin-main-content,
+body .admin-main-content,
+html .admin-main-content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 20px !important;
+    margin-top: 80px !important;
+    margin-left: 0 !important;
+    transition: margin-left 0.3s ease !important;
+}
+
+/* BOTONES GLOBALES GLASSMORPHISM */
+.btn-primary,
+body .btn-primary,
+html .btn-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2) !important;
+    color: white !important;
+    padding: 12px 25px !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3) !important;
+}
+
+.btn-primary:hover,
+body .btn-primary:hover,
+html .btn-primary:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4) !important;
+    text-decoration: none !important;
+    color: white !important;
+}
+
+.btn-secondary,
+body .btn-secondary,
+html .btn-secondary {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #6c757d !important;
+    padding: 12px 25px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-secondary:hover,
+body .btn-secondary:hover,
+html .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-3px) !important;
+    text-decoration: none !important;
+    color: #6c757d !important;
+}
+
+/* CARDS Y CONTENEDORES GLASSMORPHISM */
+.page-header,
+body .page-header,
+html .page-header {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 25px !important;
+    padding: 30px !important;
+    margin-bottom: 30px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 20px !important;
+}
+
+/* ASEGURAR QUE TODOS LOS ELEMENTOS SEAN VISIBLES */
+body *,
+html * {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column !important;
+        text-align: center !important;
+        padding: 25px 20px !important;
+    }
+    
+    .admin-main-content {
+        padding: 15px !important;
+        margin-top: 70px !important;
+    }
+}

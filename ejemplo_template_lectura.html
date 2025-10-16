@@ -1,0 +1,278 @@
+<!-- =====================================================
+     EJEMPLO DE TEMPLATE PARA SISTEMA DE LECTURA
+     ===================================================== -->
+
+{% extends "base.html" %}
+
+{% block title %}Observaciones - Sistema de Lectura{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Estilos para el sistema de lectura */
+.observacion-leida {
+    background-color: rgba(40, 167, 69, 0.1) !important;
+}
+
+.observacion-no-leida {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.estado-lectura {
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+}
+
+.estadisticas-lectura {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.progress-lectura {
+    height: 8px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+}
+
+.progress-lectura .progress-bar {
+    background-color: #28a745;
+    transition: width 0.3s ease;
+}
+
+.btn-lectura-group {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .btn-lectura-group {
+        flex-direction: column;
+    }
+    
+    .btn-lectura-group .btn {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Estadísticas de Lectura -->
+    <div class="estadisticas-lectura">
+        <div class="row">
+            <div class="col-md-3 col-6 text-center">
+                <h3 id="total-observaciones">{{ estadisticas.total or 0 }}</h3>
+                <p class="mb-0">Total</p>
+            </div>
+            <div class="col-md-3 col-6 text-center">
+                <h3 id="observaciones-leidas" class="text-success">{{ estadisticas.leidas or 0 }}</h3>
+                <p class="mb-0">Leídas</p>
+            </div>
+            <div class="col-md-3 col-6 text-center">
+                <h3 id="observaciones-no-leidas" class="text-warning">{{ estadisticas.no_leidas or 0 }}</h3>
+                <p class="mb-0">No Leídas</p>
+            </div>
+            <div class="col-md-3 col-6 text-center">
+                <h3 id="porcentaje-leidas">{{ estadisticas.porcentaje_leidas or 0 }}%</h3>
+                <p class="mb-0">Progreso</p>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="progress-lectura">
+                    <div id="progress-lectura" class="progress-bar" 
+                         style="width: {{ estadisticas.porcentaje_leidas or 0 }}%"
+                         aria-valuenow="{{ estadisticas.porcentaje_leidas or 0 }}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list"></i> Lista de Observaciones
+                    </h5>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group float-right" role="group">
+                        <button type="button" class="btn btn-outline-primary btn-sm" 
+                                onclick="window.observacionesLectura.filtrarPorEstado('todas')">
+                            Todas
+                        </button>
+                        <button type="button" class="btn btn-outline-success btn-sm" 
+                                onclick="window.observacionesLectura.filtrarPorEstado('leidas')">
+                            Leídas
+                        </button>
+                        <button type="button" class="btn btn-outline-warning btn-sm" 
+                                onclick="window.observacionesLectura.filtrarPorEstado('no-leidas')">
+                            No Leídas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Observaciones -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>ESTADO LECTURA</th>
+                            <th>Título</th>
+                            <th>Estudiante</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for obs in observaciones %}
+                        <tr data-observacion-id="{{ obs.id }}" 
+                            class="{% if obs.leido %}observacion-leida{% else %}observacion-no-leida{% endif %}">
+                            
+                            <!-- Estado de Lectura -->
+                            <td>
+                                {% if obs.leido %}
+                                    <span class="estado-lectura badge badge-success">
+                                        <i class="fas fa-eye"></i> Leído
+                                    </span>
+                                    {% if obs.fecha_lectura %}
+                                        <small class="d-block text-muted">
+                                            {{ obs.fecha_lectura.strftime('%d/%m/%Y %H:%M') }}
+                                        </small>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="estado-lectura badge badge-warning">
+                                        <i class="fas fa-eye-slash"></i> No leído
+                                    </span>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Información de la Observación -->
+                            <td>
+                                <strong>{{ obs.titulo }}</strong>
+                                <small class="d-block text-muted">
+                                    {{ obs.descripcion[:50] }}{% if obs.descripcion|length > 50 %}...{% endif %}
+                                </small>
+                            </td>
+                            
+                            <td>{{ obs.hijo }}</td>
+                            
+                            <td>
+                                <span class="badge badge-{% if obs.tipo == 'Positiva' %}success{% elif obs.tipo == 'Negativa' %}danger{% else %}info{% endif %}">
+                                    {{ obs.tipo }}
+                                </span>
+                            </td>
+                            
+                            <td>{{ obs.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                            
+                            <!-- Acciones -->
+                            <td>
+                                <div class="btn-lectura-group">
+                                    <!-- Botón Toggle Lectura -->
+                                    {% if obs.leido %}
+                                        <button class="btn btn-sm btn-warning btn-toggle-lectura" 
+                                                data-observacion-id="{{ obs.id }}"
+                                                title="Marcar como no leído">
+                                            <i class="fas fa-eye-slash"></i>
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-sm btn-success btn-toggle-lectura" 
+                                                data-observacion-id="{{ obs.id }}"
+                                                title="Marcar como leído">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    {% endif %}
+                                    
+                                    <!-- Botones de Acción Tradicionales -->
+                                    <a href="{{ url_for('observaciones.ver', id=obs.id) }}" 
+                                       class="btn btn-sm btn-info" title="Ver">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    
+                                    <a href="{{ url_for('observaciones.editar', id=obs.id) }}" 
+                                       class="btn btn-sm btn-primary" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    
+                                    <button class="btn btn-sm btn-danger" 
+                                            onclick="confirmarEliminar({{ obs.id }})" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones Masivas -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h6 class="card-title">Acciones Masivas</h6>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-success" 
+                        onclick="marcarTodasComoLeidas()">
+                    <i class="fas fa-check-double"></i> Marcar todas como leídas
+                </button>
+                <button type="button" class="btn btn-warning" 
+                        onclick="marcarTodasComoNoLeidas()">
+                    <i class="fas fa-times-circle"></i> Marcar todas como no leídas
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Incluir el JavaScript del sistema de lectura -->
+<script src="{{ url_for('static', filename='js/observaciones_lectura.js') }}"></script>
+
+<script>
+// Funciones adicionales para acciones masivas
+function marcarTodasComoLeidas() {
+    if (confirm('¿Estás seguro de marcar todas las observaciones como leídas?')) {
+        const observacionIds = Array.from(document.querySelectorAll('tr[data-observacion-id]'))
+            .map(row => row.dataset.observacionId);
+        
+        if (window.observacionesLectura) {
+            window.observacionesLectura.marcarMultiplesComoLeidas(observacionIds);
+        }
+    }
+}
+
+function marcarTodasComoNoLeidas() {
+    if (confirm('¿Estás seguro de marcar todas las observaciones como no leídas?')) {
+        // Implementar lógica similar para marcar como no leídas
+        location.reload(); // Por ahora, recargar la página
+    }
+}
+
+function confirmarEliminar(observacionId) {
+    if (confirm('¿Estás seguro de eliminar esta observación?')) {
+        // Implementar lógica de eliminación
+        window.location.href = `/observaciones/eliminar/${observacionId}`;
+    }
+}
+</script>
+{% endblock %}
